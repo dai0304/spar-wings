@@ -29,15 +29,15 @@ import org.springframework.web.context.request.RequestAttributes;
 /**
  * TODO for daisuke
  * 
- * <code>
+ * <pre><code>
  * public class ... extends WebMvcConfigurerAdapter {
- *   @Bean
- *   @Profile("production")
+ *   &#64;Bean
+ *   &#64;Profile("production")
  *   public ErrorAttributes productionErrorAttributes() {
  *     return new ProductionErrorAttributes();
  *   }
  * }
- * </code>
+ * </code></pre>
  * 
  * @since #version#
  * @author daisuke
