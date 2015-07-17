@@ -4,13 +4,16 @@ buildscript {
 	repositories {
 		mavenCentral()
 		jcenter()
+		maven { url "http://repo.spring.io/plugins-release" }
 	}
 	dependencies {
-		classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.10.0'
-		classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+		classpath "nl.javadude.gradle.plugins:license-gradle-plugin:0.10.0"
+		classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2"
+		classpath "org.springframework.build.gradle:propdeps-plugin:0.0.6"
 	}
 }
 
+apply plugin: "propdeps"
 apply plugin: 'java'
 apply plugin: 'license'
 apply plugin: 'maven'
@@ -21,7 +24,7 @@ defaultTasks 'clean', 'build'
 
 // ======== deployment options (dispatched on group name) ========
 group = 'jp.xet'
-version = '0.1'
+version = '0.2'
 
 sourceCompatibility = targetCompatibility = 1.8
 
@@ -124,33 +127,33 @@ bintray {
 	}
 }
 
-// ======== librar ========
+// ======== library ========
 repositories {
 	mavenCentral()
 	maven { url 'http://maven.xet.jp/release' } // for baseunits
 }
 dependencies {
-	compile "org.slf4j:slf4j-api:1.7.12"
-	compile "org.slf4j:jul-to-slf4j:1.7.12"
 	compile "org.projectlombok:lombok:1.16.2"
-	compile 'com.google.guava:guava:18.0'
-	compile "jp.xet:baseunits:2.13"
-	compile 'javax.servlet:javax.servlet-api:3.1.0'
+	compile "org.slf4j:slf4j-api:1.7.12"
+	optional 'com.google.guava:guava:18.0'
+	optional "jp.xet:baseunits:2.13"
+	optional 'javax.servlet:javax.servlet-api:3.1.0'
 	
-	compile "com.amazonaws:aws-java-sdk-dynamodb:1.9.19+"
-	compile "com.amazonaws:aws-java-sdk-sns:1.9.19+"
+	optional "com.amazonaws:aws-java-sdk-dynamodb:1.10.5.1+"
+	optional "com.amazonaws:aws-java-sdk-sns:1.10.5.1+"
 	
-	compile "org.springframework.boot:spring-boot-autoconfigure:1.2.5.RELEASE"
-	compile 'org.springframework:spring-web:4.1.7.RELEASE'
-	compile 'org.springframework:spring-webmvc:4.1.7.RELEASE'
-	compile 'org.springframework.security:spring-security-core:3.2.5.RELEASE'
+	optional 'org.springframework:spring-web:4.1.7.RELEASE'
+	optional 'org.springframework:spring-webmvc:4.1.7.RELEASE'
+	optional 'org.springframework.security:spring-security-core:3.2.5.RELEASE'
+	
+	optional "org.springframework.boot:spring-boot-autoconfigure:1.2.5.RELEASE"
 	
 	deployerJars "org.springframework.build:aws-maven:4.7.0.RELEASE"
 }
 
 // ======== wrapper ========
 task wrapper(type: Wrapper) {
-	gradleVersion = '2.4'
+	gradleVersion = '2.5'
 }
 
 // ======== License =======
