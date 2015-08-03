@@ -21,7 +21,6 @@ import java.util.Map;
 import jp.xet.sparwings.aws.ec2.InstanceMetadata;
 import jp.xet.sparwings.common.utils.ExceptionUtil;
 import jp.xet.sparwings.spring.env.EnvironmentService;
-import lombok.Setter;
 
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.model.PublishRequest;
@@ -45,17 +44,10 @@ public class NotificationService implements InitializingBean {
 	
 	private static Logger logger = LoggerFactory.getLogger(NotificationService.class);
 	
-	@Setter
-	private static String appCodeName = "-";
+	private final String appCodeName;
 	
 	@Autowired
 	AmazonSNS sns;
-	
-	@Value("#{systemProperties['DEV_TOPIC_ARN']}")
-	String devTopicArn;
-	
-	@Value("#{systemProperties['OPS_TOPIC_ARN']}")
-	String opsTopicArn;
 	
 	@Autowired
 	InstanceMetadata instanceMetadata;
@@ -63,6 +55,25 @@ public class NotificationService implements InitializingBean {
 	@Autowired
 	EnvironmentService env;
 	
+	@Value("#{systemProperties['CFN_STACK_NAME']}")
+	String stackName;
+	
+	@Value("#{systemProperties['DEV_TOPIC_ARN']}")
+	String devTopicArn;
+	
+	@Value("#{systemProperties['OPS_TOPIC_ARN']}")
+	String opsTopicArn;
+	
+	
+	/**
+	 * インスタンスを生成する。
+	 * 
+	 * @param appCodeName
+	 * @since #version#
+	 */
+	public NotificationService(String appCodeName) {
+		this.appCodeName = appCodeName;
+	}
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -157,7 +168,7 @@ public class NotificationService implements InitializingBean {
 	}
 	
 	private void notifyMessage0(String topicArn, String subject, String message) {
-		subject = String.format("[%s] %s (%s)", appCodeName, subject, env.getActiveProfilesAsString());
+		subject = String.format("[%s:%s] %s (%s)", appCodeName, stackName, subject, env.getActiveProfilesAsString());
 		if (subject.length() > 100) {
 			logger.warn("Topic message subject is truncated.  Full subject is: {}", subject);
 			subject = subject.substring(0, 100);
