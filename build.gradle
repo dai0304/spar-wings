@@ -14,33 +14,33 @@ buildscript {
 }
 
 apply plugin: "propdeps"
-apply plugin: 'java'
-apply plugin: 'license'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
+apply plugin: "java"
+apply plugin: "license"
+apply plugin: "maven"
+apply plugin: "maven-publish"
+apply plugin: "com.jfrog.bintray"
 
-defaultTasks 'clean', 'build'
+defaultTasks "clean", "build"
 
 // ======== deployment options (dispatched on group name) ========
-group = 'jp.xet'
+group = "jp.xet"
 version = "0.3-SNAPSHOT"
 
 sourceCompatibility = targetCompatibility = 1.8
 
 ext {
-	artifactId = 'spar-wings'
-	defaultEncoding = 'UTF-8'
+	artifactId = "spar-wings"
+	defaultEncoding = "UTF-8"
 }
 
 // ======== create source and javadoc bundles ========
 task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = 'sources'
+	classifier = "sources"
 	from sourceSets.main.allSource
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-	classifier = 'javadoc'
+	classifier = "javadoc"
 	from javadoc.destinationDir
 }
 
@@ -79,7 +79,7 @@ publishing {
 uploadArchives {
 	repositories {
 		mavenDeployer {
-			assert project.hasProperty('awsAccessKey') && project.hasProperty('awsSecretKey'): "AWS credential is required"
+			assert project.hasProperty("awsAccessKey") && project.hasProperty("awsSecretKey"): "AWS credential is required"
 			def awsCredentials = [
 				userName: awsAccessKey,
 				passphrase: awsSecretKey
@@ -98,13 +98,13 @@ uploadArchives {
 
 [install.repositories.mavenInstaller, uploadArchives.repositories.mavenDeployer]*.pom*.whenConfigured { pom ->
 	pom.project {
-		inceptionYear '2015'
-		packaging 'jar'
+		inceptionYear "2015"
+		packaging "jar"
 		licenses {
 			license {
-				name 'The Apache Software License, Version 2.0'
-				url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-				distribution 'repo'
+				name "The Apache Software License, Version 2.0"
+				url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+				distribution "repo"
 			}
 		}
 	}
@@ -114,37 +114,41 @@ bintray {
 	user = bintrayUser
 	key = bintrayApiKey
 
-	publications = ['mavenStuff']
+	publications = ["mavenStuff"]
 	pkg {
-		repo = 'maven'
+		repo = "maven"
 		name = artifactId
-		desc = 'DynamoDB template'
-		websiteUrl = 'https://github.com/dai0304/spar-wings'
-		issueTrackerUrl = 'https://github.com/dai0304/spar-wings/issues'
-		vcsUrl = 'https://github.com/dai0304/spar-wings.git'
-		licenses = ['Apache-2.0']
-		labels = ['AWS', 'Spring framework']
+		desc = "AWS and Spring framework commons."
+		websiteUrl = "https://github.com/dai0304/spar-wings"
+		issueTrackerUrl = "https://github.com/dai0304/spar-wings/issues"
+		vcsUrl = "https://github.com/dai0304/spar-wings.git"
+		licenses = ["Apache-2.0"]
+		labels = ["AWS", "Spring framework"]
 	}
 }
 
-// ======== library ========
+//======== library versions ========
+ext {
+	springVersion = "4.1.7.RELEASE"
+	awsJavaSdkVersion = "1.10.8+"
+}
 repositories {
 	mavenCentral()
-	maven { url 'http://maven.xet.jp/release' } // for baseunits
+	maven { url "http://maven.xet.jp/release" } // for baseunits
 }
 dependencies {
 	compile "org.projectlombok:lombok:1.16.2"
 	compile "org.slf4j:slf4j-api:1.7.12"
-	optional 'com.google.guava:guava:18.0'
+	optional "com.google.guava:guava:18.0"
 	optional "jp.xet:baseunits:2.13"
-	optional 'javax.servlet:javax.servlet-api:3.1.0'
+	optional "javax.servlet:javax.servlet-api:3.1.0"
 	
-	optional "com.amazonaws:aws-java-sdk-dynamodb:1.10.5.1+"
-	optional "com.amazonaws:aws-java-sdk-sns:1.10.5.1+"
+	optional "com.amazonaws:aws-java-sdk-dynamodb:$awsJavaSdkVersion"
+	optional "com.amazonaws:aws-java-sdk-sns:$awsJavaSdkVersion"
 	
-	optional 'org.springframework:spring-web:4.1.7.RELEASE'
-	optional 'org.springframework:spring-webmvc:4.1.7.RELEASE'
-	optional 'org.springframework.security:spring-security-core:3.2.5.RELEASE'
+	optional "org.springframework:spring-web:$springVersion"
+	optional "org.springframework:spring-webmvc:$springVersion"
+	optional "org.springframework.security:spring-security-core:3.2.5.RELEASE"
 	
 	optional "org.springframework.boot:spring-boot-autoconfigure:1.2.5.RELEASE"
 	
@@ -153,16 +157,16 @@ dependencies {
 
 // ======== wrapper ========
 task wrapper(type: Wrapper) {
-	gradleVersion = '2.5'
+	gradleVersion = "2.5"
 }
 
 // ======== License =======
 license {
 	ext.year = Calendar.getInstance().get(Calendar.YEAR)
-	header = file('copyright/HEADER')
+	header file("copyright/HEADER")
 	strictCheck true
 	mapping {
-		java = 'SLASHSTAR_STYLE'
+		java = "SLASHSTAR_STYLE"
 	}
 }
 
