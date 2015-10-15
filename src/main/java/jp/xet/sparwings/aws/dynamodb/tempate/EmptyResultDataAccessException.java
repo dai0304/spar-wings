@@ -18,7 +18,7 @@ package jp.xet.sparwings.aws.dynamodb.tempate;
 /**
  * No results found.
  * 
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 @SuppressWarnings("serial")
@@ -28,7 +28,7 @@ public class EmptyResultDataAccessException extends Exception {
 	 * Constructs a new exception with the specified detail message.
 	 * 
 	 * @param message the detail message.
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public EmptyResultDataAccessException(String message) {
 		super(message);

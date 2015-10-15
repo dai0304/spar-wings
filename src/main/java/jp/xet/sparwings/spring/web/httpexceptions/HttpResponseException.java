@@ -18,7 +18,7 @@ package jp.xet.sparwings.spring.web.httpexceptions;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 @SuppressWarnings("serial")
@@ -36,7 +36,7 @@ public abstract class HttpResponseException extends RuntimeException {
 	 * 
 	 * @param message 例外メッセージ
 	 * @param cause 起因例外
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public HttpResponseException(String message, Throwable cause) {
 		super(message, cause);
@@ -46,7 +46,7 @@ public abstract class HttpResponseException extends RuntimeException {
 	 * インスタンスを生成する。
 	 * 
 	 * @param message 例外メッセージ
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public HttpResponseException(String message) {
 		super(message);
@@ -56,7 +56,7 @@ public abstract class HttpResponseException extends RuntimeException {
 	 * インスタンスを生成する。
 	 * 
 	 * @param cause 起因例外
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public HttpResponseException(Throwable cause) {
 		super(cause);

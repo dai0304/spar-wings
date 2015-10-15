@@ -30,7 +30,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 /**
  * リクエストログを取得する {@link HandlerInterceptor} 実装クラス。
  * 
- * @since #version#
+ * @since 0.3
  * @version $Id$
  * @author daisuke
  */

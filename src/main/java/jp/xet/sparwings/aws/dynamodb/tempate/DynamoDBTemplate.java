@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * It executes core DynamoDB workflow, leaving application code to provide query
  * and extract results. This class executes DynamoDB queries or updates.
  *
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 public class DynamoDBTemplate {
@@ -60,7 +60,7 @@ public class DynamoDBTemplate {
 	 * @param object the object to check
 	 * @param message the exception message to use if the assertion fails
 	 * @throws IllegalArgumentException if the object is {@code null}
-	 * @since #version#
+	 * @since 0.3
 	 */
 	private static void notNull(Object object, String message) {
 		if (object == null) {
@@ -80,7 +80,7 @@ public class DynamoDBTemplate {
 	 * Create the instance.
 	 * 
 	 * @param client {@link AmazonDynamoDB} client
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public DynamoDBTemplate(AmazonDynamoDB client) {
 		notNull(client, "AmazonDynamoDBClient must not be null");
@@ -103,7 +103,7 @@ public class DynamoDBTemplate {
 	 * @return item extracted by extractor
 	 * @throws EmptyResultDataAccessException if the result was not found
 	 * @see AmazonDynamoDB#getItem(GetItemRequest)
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public <T>T get(String tableName, Map<String, AttributeValue> key, Boolean consistentRead,
 			Optional<String> projectionExpression, ObjectExtractor<T> extractor) throws EmptyResultDataAccessException {
@@ -133,7 +133,7 @@ public class DynamoDBTemplate {
 	 * @param <T> the type of extract
 	 * @throws EmptyResultDataAccessException if the result was not found
 	 * @see AmazonDynamoDB#batchGetItem(com.amazonaws.services.dynamodbv2.model.BatchGetItemRequest)
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public <T>List<T> batchGet(String tableName, KeysAndAttributes keysAndAttributes, ObjectExtractor<T> extractor)
 			throws EmptyResultDataAccessException {
@@ -179,7 +179,7 @@ public class DynamoDBTemplate {
 	 * @return item extracted by extractor
 	 * @throws EmptyResultDataAccessException if the result was not found
 	 * @throws TooManyResultDataAccessException if multiple items found as query result
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public <T>T queryUnique(String tableName, Optional<String> indexName, Map<String, Condition> keyConditions,
 			Optional<String> projectionExpression, ObjectExtractor<T> extractor) throws EmptyResultDataAccessException,
@@ -214,7 +214,7 @@ public class DynamoDBTemplate {
 	 * @return items extracted by extractor
 	 * @throws EmptyResultDataAccessException if the result was not found
 	 * @see AmazonDynamoDB#query(QueryRequest)
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public <T>List<T> query(String tableName, Optional<String> indexName, Map<String, Condition> keyConditions,
 			Optional<String> projectionExpression, ObjectExtractor<T> extractor) throws EmptyResultDataAccessException {
@@ -253,7 +253,7 @@ public class DynamoDBTemplate {
 	 * @return items extracted by extractor
 	 * @throws EmptyResultDataAccessException if the result was not found
 	 * @see AmazonDynamoDB#scan(ScanRequest)
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public <T>List<T> scan(String tableName, Optional<String> indexName, Optional<Integer> limit,
 			Optional<String> projectionExpression, ObjectExtractor<T> extractor) throws EmptyResultDataAccessException {
@@ -282,7 +282,7 @@ public class DynamoDBTemplate {
 	 * @param updateExpression An expression that defines one or more attributes to be updated, the
 	 *         action to be performed on them, and new value(s) for them.
 	 * @see AmazonDynamoDB#updateItem(com.amazonaws.services.dynamodbv2.model.UpdateItemRequest)
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void update(String tableName, Map<String, AttributeValue> key, String updateExpression) {
 		notNull(tableName, "tableName must not be null");
@@ -301,7 +301,7 @@ public class DynamoDBTemplate {
 	 * @param tableName the name of DynamoDB table
 	 * @param key The primary key of the item to be deleted.
 	 * @see AmazonDynamoDB#deleteItem(com.amazonaws.services.dynamodbv2.model.DeleteItemRequest)
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void delete(String tableName, Map<String, AttributeValue> key) {
 		notNull(tableName, "tableName must not be null");

@@ -32,7 +32,7 @@ import org.springframework.beans.factory.FactoryBean;
 /**
  * Spring factory bean for {@link InstanceMetadata}.
  *
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 public class InstanceMetadataFactoryBean implements FactoryBean<InstanceMetadata> {

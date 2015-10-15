@@ -31,7 +31,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 /**
  * ログイン中のユーザ名を SLF4J のログに出力するためのServletFilter実装クラス。
  * 
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 public class UsernameLogFilter extends OncePerRequestFilter {

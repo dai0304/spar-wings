@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * SNS/SQSから受信したメッセージを表すクラス。
  * 
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 @ToString
@@ -77,7 +77,7 @@ public class SNSMessage {
 	 * </ul>
 	 * 
 	 * @return メッセージのタイプ
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public String getType() {
 		return type;
@@ -87,7 +87,7 @@ public class SNSMessage {
 	 * メッセージのタイプを設定する。
 	 * 
 	 * @param type メッセージのタイプ
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void setType(String type) {
 		this.type = type;
@@ -97,7 +97,7 @@ public class SNSMessage {
 	 * メッセージ発生元のSNSトピックARNを返す。
 	 * 
 	 * @return SNSトピックARN
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public String getTopicArn() {
 		return topicArn;
@@ -107,7 +107,7 @@ public class SNSMessage {
 	 * メッセージ発生元の AMazon SNS トピックARNを設定する。
 	 * 
 	 * @param topicArn SNSトピックARN
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void setTopicArn(String topicArn) {
 		this.topicArn = topicArn;
@@ -117,7 +117,7 @@ public class SNSMessage {
 	 * メッセージが送信された日時を返す。
 	 * 
 	 * @return メッセージが送信された日時
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public String getTimestamp() {
 		return timestamp;
@@ -127,7 +127,7 @@ public class SNSMessage {
 	 * メッセージが送信された日時を設定する。
 	 * 
 	 * @param timestamp メッセージが送信された日時
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
@@ -137,7 +137,7 @@ public class SNSMessage {
 	 * 使用される Amazon SNS 署名のバージョンを返す。
 	 * 
 	 * @return 使用される Amazon SNS 署名のバージョン
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public String getSignatureVersion() {
 		return signatureVersion;
@@ -147,7 +147,7 @@ public class SNSMessage {
 	 * 使用される Amazon SNS 署名のバージョンを設定する。
 	 * 
 	 * @param signatureVersion 使用される Amazon SNS 署名のバージョン
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void setSignatureVersion(String signatureVersion) {
 		this.signatureVersion = signatureVersion;
@@ -157,7 +157,7 @@ public class SNSMessage {
 	 * このメッセージに対する電子署名を返す。
 	 * 
 	 * @return 電子署名
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public String getSignature() {
 		return signature;
@@ -167,7 +167,7 @@ public class SNSMessage {
 	 * このメッセージに対する電子署名を設定する。
 	 * 
 	 * @param signature このメッセージに対する電子署名
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void setSignature(String signature) {
 		this.signature = signature;
@@ -177,7 +177,7 @@ public class SNSMessage {
 	 * メッセージの署名に使用された証明書の URL を返す。
 	 * 
 	 * @return メッセージの署名に使用された証明書の URL
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public String getSigningCertURL() {
 		return signingCertURL;
@@ -187,7 +187,7 @@ public class SNSMessage {
 	 * メッセージの署名に使用された証明書の URL を設定する。
 	 * 
 	 * @param signingCertURL メッセージの署名に使用された証明書の URL
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void setSigningCertURL(String signingCertURL) {
 		this.signingCertURL = signingCertURL;
@@ -197,7 +197,7 @@ public class SNSMessage {
 	 * 通知がトピックに公開されたときに指定された Subject パラメータを返す。
 	 * 
 	 * @return 通知がトピックに公開されたときに指定された Subject パラメータ
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public String getSubject() {
 		return subject;
@@ -207,7 +207,7 @@ public class SNSMessage {
 	 * 通知がトピックに公開されたときに指定された Subject パラメータを設定する。
 	 * 
 	 * @param subject 通知がトピックに公開されたときに指定された Subject パラメータ
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void setSubject(String subject) {
 		this.subject = subject;
@@ -219,7 +219,7 @@ public class SNSMessage {
 	 * <p>発行される各メッセージで一意です。再試行間に Amazon SNS が再送信する通知の場合、元のメッセージのメッセージ ID が使用されます。</p>
 	 * 
 	 * @return 共通のユニークな識別子
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public String getMessageId() {
 		return messageId;
@@ -229,7 +229,7 @@ public class SNSMessage {
 	 * 共通のユニークな識別子を設定する。
 	 * 
 	 * @param messageId 共通のユニークな識別子
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void setMessageId(String messageId) {
 		this.messageId = messageId;
@@ -239,7 +239,7 @@ public class SNSMessage {
 	 * 通知がトピックに発行されたときに指定された Message の値を返す。
 	 * 
 	 * @return 通知がトピックに発行されたときに指定された Message の値
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public String getMessage() {
 		return message;
@@ -249,7 +249,7 @@ public class SNSMessage {
 	 * 通知がトピックに発行されたときに指定された Message の値を設定する。
 	 * 
 	 * @param message 通知がトピックに発行されたときに指定された Message の値
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void setMessage(String message) {
 		this.message = message;
@@ -261,7 +261,7 @@ public class SNSMessage {
 	 * <p>この URL にアクセスすると、Amazon SNS はエンドポイントの受信登録を解除し、このエンドポイントへの通知の送信を停止します。</p>
 	 * 
 	 * @return このトピックからエンドポイントの受信登録を解除するために使用できる URL
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public String getUnsubscribeURL() {
 		return unsubscribeURL;
@@ -281,7 +281,7 @@ public class SNSMessage {
 	 * 受信登録を再確認するためにアクセスする必要がある URL を返す。
 	 * 
 	 * @return 受信登録を再確認するためにアクセスする必要がある URL
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public String getSubscribeURL() {
 		return subscribeURL;
@@ -291,7 +291,7 @@ public class SNSMessage {
 	 * 受信登録を再確認するためにアクセスする必要がある URL を設定する。
 	 * 
 	 * @param subscribeURL 受信登録を再確認するためにアクセスする必要がある URL
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void setSubscribeURL(String subscribeURL) {
 		this.subscribeURL = subscribeURL;
@@ -301,7 +301,7 @@ public class SNSMessage {
 	 * 受信登録を再確認するために ConfirmSubscription アクションで使用できる値を返す。
 	 * 
 	 * @return 受信登録を再確認するために ConfirmSubscription アクションで使用できる値
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public String getToken() {
 		return token;
@@ -311,7 +311,7 @@ public class SNSMessage {
 	 * 受信登録を再確認するために ConfirmSubscription アクションで使用できる値を設定する。
 	 * 
 	 * @param token 受信登録を再確認するために ConfirmSubscription アクションで使用できる値
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void setToken(String token) {
 		this.token = token;

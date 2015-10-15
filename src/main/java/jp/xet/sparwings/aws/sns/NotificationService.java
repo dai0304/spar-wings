@@ -37,7 +37,7 @@ import org.springframework.beans.factory.annotation.Value;
  * 
  * <p>開発担当者に対して各種イベントやエラー・障害等の通知を行うサービス。</p>
  * 
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 public class NotificationService implements InitializingBean {
@@ -69,7 +69,7 @@ public class NotificationService implements InitializingBean {
 	 * インスタンスを生成する。
 	 * 
 	 * @param appCodeName
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public NotificationService(String appCodeName) {
 		this.appCodeName = appCodeName;
@@ -86,7 +86,7 @@ public class NotificationService implements InitializingBean {
 	 * 
 	 * @param subject タイトル
 	 * @param message メッセージ本文
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void notifyOps(String subject, String message) {
 		notifyMessage0(opsTopicArn, subject, message);
@@ -97,7 +97,7 @@ public class NotificationService implements InitializingBean {
 	 * 
 	 * @param subject タイトル
 	 * @param message メッセージ本文
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void notifyDev(String subject, String message) {
 		notifyDev(subject, message, null);
@@ -109,7 +109,7 @@ public class NotificationService implements InitializingBean {
 	 * @param subject タイトル
 	 * @param message メッセージ本文
 	 * @param t 例外
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void notifyDev(String subject, String message, Throwable t) {
 		Map<String, String> messageMap = new HashMap<>();
@@ -121,7 +121,7 @@ public class NotificationService implements InitializingBean {
 	 * 開発担当者に例外エラーメッセージを通知する。
 	 * 
 	 * @param t 例外
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void notifyDev(Throwable t) {
 		notifyDev("unexpected exception", new HashMap<>(), t);
@@ -132,7 +132,7 @@ public class NotificationService implements InitializingBean {
 	 * 
 	 * @param message メッセージ本文
 	 * @param t 例外
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void notifyDev(String message, Throwable t) {
 		Map<String, String> messageMap = new HashMap<>();
@@ -146,7 +146,7 @@ public class NotificationService implements InitializingBean {
 	 * @param subject タイトル
 	 * @param messageMap メッセージ
 	 * @param t 例外
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void notifyDev(String subject, Map<String, String> messageMap, Throwable t) {
 		messageMap.put("profiles", env.getActiveProfilesAsString());

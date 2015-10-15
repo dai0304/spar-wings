@@ -25,7 +25,7 @@ import org.springframework.util.ObjectUtils;
 
 /**
  * @author Les Hazlewood
- * @since #version#
+ * @since 0.3
  */
 @SuppressWarnings("javadoc")
 public class RestError {

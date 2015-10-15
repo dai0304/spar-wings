@@ -132,7 +132,7 @@ public class MapRestErrorConverter implements RestErrorConverter<Map<?, ?>> {
 	 * TODO for daisuke
 	 * 
 	 * @return new {@link Map} instance
-	 * @since #version#
+	 * @since 0.3
 	 */
 	protected Map<String, Object> createMap() {
 		return new LinkedHashMap<>();

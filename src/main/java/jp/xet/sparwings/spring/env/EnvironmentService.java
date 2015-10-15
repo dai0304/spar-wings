@@ -26,7 +26,7 @@ import org.springframework.core.env.Environment;
 /**
  * システム環境（spring profile）を判定するサービスクラス。
  * 
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 public class EnvironmentService {
@@ -41,7 +41,7 @@ public class EnvironmentService {
 	 * @param profileName spring profile名
 	 * @return アクティブな場合は{@code true}、そうでない場合は{@code false}
 	 * @throws NullPointerException 引数に{@code null}を与えた場合
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public boolean is(String profileName) {
 		Preconditions.checkNotNull(profileName);
@@ -52,7 +52,7 @@ public class EnvironmentService {
 	 * 現在アクティブなspring profileをカンマ区切り文字列で返す。
 	 * 
 	 * @return 現在アクティブなspring profile
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public String getActiveProfilesAsString() {
 		return Joiner.on(',').join(env.getActiveProfiles());

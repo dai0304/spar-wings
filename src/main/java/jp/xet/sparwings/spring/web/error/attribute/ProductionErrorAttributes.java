@@ -39,7 +39,7 @@ import org.springframework.web.context.request.RequestAttributes;
  * }
  * </code></pre>
  * 
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 public class ProductionErrorAttributes implements ErrorAttributes {
