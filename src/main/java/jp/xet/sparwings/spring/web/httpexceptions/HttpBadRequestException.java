@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 @SuppressWarnings("serial")
@@ -31,7 +31,7 @@ public class HttpBadRequestException extends HttpResponseException {
 	/**
 	 * インスタンスを生成する。
 	 * 
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public HttpBadRequestException() {
 	}
@@ -41,7 +41,7 @@ public class HttpBadRequestException extends HttpResponseException {
 	 * 
 	 * @param message 例外メッセージ
 	 * @param cause 起因例外
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public HttpBadRequestException(String message, Throwable cause) {
 		super(message, cause);
@@ -51,7 +51,7 @@ public class HttpBadRequestException extends HttpResponseException {
 	 * インスタンスを生成する。
 	 * 
 	 * @param message 例外メッセージ
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public HttpBadRequestException(String message) {
 		super(message);
@@ -61,7 +61,7 @@ public class HttpBadRequestException extends HttpResponseException {
 	 * インスタンスを生成する。
 	 * 
 	 * @param cause 起因例外
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public HttpBadRequestException(Throwable cause) {
 		super(cause);

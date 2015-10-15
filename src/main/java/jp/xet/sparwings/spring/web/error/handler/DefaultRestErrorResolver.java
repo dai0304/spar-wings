@@ -45,7 +45,7 @@ import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMeth
  * {@link RestError} instances.
  *
  * @author Les Hazlewood
- * @since #version#
+ * @since 0.3
  */
 @SuppressWarnings("javadoc")
 public class DefaultRestErrorResolver implements RestErrorResolver, MessageSourceAware, InitializingBean {

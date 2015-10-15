@@ -41,7 +41,7 @@ import org.springframework.core.convert.converter.Converter;
  * @see Converter
  *
  * @author Les Hazlewood
- * @since #version#
+ * @since 0.3
  */
 public interface RestErrorConverter<T> extends Converter<RestError, T> {
 	
@@ -52,7 +52,7 @@ public interface RestErrorConverter<T> extends Converter<RestError, T> {
 	 * @param re the {@code RestError} instance to convert to another object instance 'understood' by other registered
 	 *           {@code HttpMessageConverter} instances.
 	 * @return an object suited for HTTP response rendering by an {@code HttpMessageConverter}
-	 * @since #version#
+	 * @since 0.3
 	 */
 	@Override
 	T convert(RestError re);

@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Spring factyory bean for {@link Region}.
  *
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 public class RegionFactoryBean implements FactoryBean<Region> {

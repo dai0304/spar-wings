@@ -21,7 +21,6 @@ import java.util.Map;
 import jp.xet.sparwings.aws.ec2.InstanceMetadata;
 import jp.xet.sparwings.common.utils.ExceptionUtil;
 import jp.xet.sparwings.spring.env.EnvironmentService;
-import lombok.Setter;
 
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.model.PublishRequest;
@@ -38,24 +37,17 @@ import org.springframework.beans.factory.annotation.Value;
  * 
  * <p>開発担当者に対して各種イベントやエラー・障害等の通知を行うサービス。</p>
  * 
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 public class NotificationService implements InitializingBean {
 	
 	private static Logger logger = LoggerFactory.getLogger(NotificationService.class);
 	
-	@Setter
-	private static String appCodeName = "-";
+	private final String appCodeName;
 	
 	@Autowired
 	AmazonSNS sns;
-	
-	@Value("#{systemProperties['DEV_TOPIC_ARN']}")
-	String devTopicArn;
-	
-	@Value("#{systemProperties['OPS_TOPIC_ARN']}")
-	String opsTopicArn;
 	
 	@Autowired
 	InstanceMetadata instanceMetadata;
@@ -63,6 +55,25 @@ public class NotificationService implements InitializingBean {
 	@Autowired
 	EnvironmentService env;
 	
+	@Value("#{systemProperties['CFN_STACK_NAME']}")
+	String stackName;
+	
+	@Value("#{systemProperties['DEV_TOPIC_ARN']}")
+	String devTopicArn;
+	
+	@Value("#{systemProperties['OPS_TOPIC_ARN']}")
+	String opsTopicArn;
+	
+	
+	/**
+	 * インスタンスを生成する。
+	 * 
+	 * @param appCodeName
+	 * @since 0.3
+	 */
+	public NotificationService(String appCodeName) {
+		this.appCodeName = appCodeName;
+	}
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -75,7 +86,7 @@ public class NotificationService implements InitializingBean {
 	 * 
 	 * @param subject タイトル
 	 * @param message メッセージ本文
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void notifyOps(String subject, String message) {
 		notifyMessage0(opsTopicArn, subject, message);
@@ -86,7 +97,7 @@ public class NotificationService implements InitializingBean {
 	 * 
 	 * @param subject タイトル
 	 * @param message メッセージ本文
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void notifyDev(String subject, String message) {
 		notifyDev(subject, message, null);
@@ -98,7 +109,7 @@ public class NotificationService implements InitializingBean {
 	 * @param subject タイトル
 	 * @param message メッセージ本文
 	 * @param t 例外
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void notifyDev(String subject, String message, Throwable t) {
 		Map<String, String> messageMap = new HashMap<>();
@@ -110,7 +121,7 @@ public class NotificationService implements InitializingBean {
 	 * 開発担当者に例外エラーメッセージを通知する。
 	 * 
 	 * @param t 例外
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void notifyDev(Throwable t) {
 		notifyDev("unexpected exception", new HashMap<>(), t);
@@ -121,7 +132,7 @@ public class NotificationService implements InitializingBean {
 	 * 
 	 * @param message メッセージ本文
 	 * @param t 例外
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void notifyDev(String message, Throwable t) {
 		Map<String, String> messageMap = new HashMap<>();
@@ -135,7 +146,7 @@ public class NotificationService implements InitializingBean {
 	 * @param subject タイトル
 	 * @param messageMap メッセージ
 	 * @param t 例外
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public void notifyDev(String subject, Map<String, String> messageMap, Throwable t) {
 		messageMap.put("profiles", env.getActiveProfilesAsString());
@@ -157,7 +168,7 @@ public class NotificationService implements InitializingBean {
 	}
 	
 	private void notifyMessage0(String topicArn, String subject, String message) {
-		subject = String.format("[%s] %s (%s)", appCodeName, subject, env.getActiveProfilesAsString());
+		subject = String.format("[%s:%s] %s (%s)", appCodeName, stackName, subject, env.getActiveProfilesAsString());
 		if (subject.length() > 100) {
 			logger.warn("Topic message subject is truncated.  Full subject is: {}", subject);
 			subject = subject.substring(0, 100);

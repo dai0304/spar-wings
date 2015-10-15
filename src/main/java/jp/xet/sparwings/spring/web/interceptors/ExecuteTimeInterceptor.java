@@ -32,7 +32,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 /**
  * {@link HandlerInterceptor} implementation to logging request handling time.
  * 
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 public class ExecuteTimeInterceptor extends HandlerInterceptorAdapter {

@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 /**
  * {@link JsonSerializer} implementation to serialize {@link BigDecimal} with specified format.
  * 
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 public class BigDecimalSerializer extends JsonSerializer<BigDecimal> {

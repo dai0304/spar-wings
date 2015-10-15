@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Amazon SNSによる署名の検証を行うクラス。
  * 
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 public class AmazonSNSMessageVerifier {
