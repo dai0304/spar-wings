@@ -18,7 +18,7 @@ package jp.xet.sparwings.aws.dynamodb.tempate;
 /**
  * Too many results found in query expect for only one result.
  * 
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 @SuppressWarnings("serial")

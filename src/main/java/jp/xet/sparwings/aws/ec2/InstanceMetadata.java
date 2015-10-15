@@ -23,7 +23,7 @@ import lombok.ToString;
 /**
  * EC2 Instance Metadata.
  * 
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 @ToString

@@ -22,7 +22,7 @@ import org.springframework.web.context.request.ServletWebRequest;
  * to render a Rest error representation to the response body.
  *
  * @author Les Hazlewood
- * @since #version#
+ * @since 0.3
  */
 public interface RestErrorResolver {
 	
@@ -35,7 +35,7 @@ public interface RestErrorResolver {
 	 * @param ex      the exception that was thrown during handler execution
 	 * @return a resolved {@code RestError} instance to render as the response body or <code>null</code> for default
 	 *         processing
-	 * @since #version#
+	 * @since 0.3
 	 */
 	RestError resolveError(ServletWebRequest request, Object handler, Exception ex);
 }

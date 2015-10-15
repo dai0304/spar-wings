@@ -213,7 +213,7 @@ public class RestExceptionHandler extends AbstractHandlerExceptionResolver imple
 	 * @param error
 	 * @return
 	 * @throws Exception
-	 * @since #version#
+	 * @since 0.3
 	 */
 	protected ModelAndView getModelAndView(ServletWebRequest webRequest, Object handler, RestError error)
 			throws Exception {

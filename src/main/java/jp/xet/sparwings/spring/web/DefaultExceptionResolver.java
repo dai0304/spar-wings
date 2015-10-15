@@ -34,7 +34,7 @@ import org.springframework.web.servlet.handler.AbstractHandlerExceptionResolver;
 /**
  * Notify to developers when the HTTP request handling ends with Exception.
  * 
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 public class DefaultExceptionResolver extends AbstractHandlerExceptionResolver {

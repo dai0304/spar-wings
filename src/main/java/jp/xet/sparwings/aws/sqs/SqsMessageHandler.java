@@ -21,7 +21,7 @@ import com.amazonaws.services.sqs.model.Message;
 /**
  * SQS message handler invoked by {@link SqsMessagePoller}.
  * 
- * @since #version#
+ * @since 0.3
  * @version $Id$
  * @author daisuke
  * @see SqsMessagePoller
@@ -34,7 +34,7 @@ public interface SqsMessageHandler {
 	 * @param message received SQS message
 	 * @return always {@code null}
 	 * @throws Exception any exception
-	 * @since #version#
+	 * @since 0.3
 	 */
 	Void handle(Message message) throws Exception;
 	

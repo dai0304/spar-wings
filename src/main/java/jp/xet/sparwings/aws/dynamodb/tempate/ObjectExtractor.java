@@ -24,7 +24,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
  * a get/query operation to their corresponding Object [T] representation.
  * 
  * @param <T> type of extract
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 public interface ObjectExtractor<T> {
@@ -34,7 +34,7 @@ public interface ObjectExtractor<T> {
 	 * 
 	 * @param values {@link AttributeValue} map
 	 * @return extract
-	 * @since #version#
+	 * @since 0.3
 	 */
 	T extract(Map<String, AttributeValue> values);
 	

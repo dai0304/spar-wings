@@ -44,7 +44,7 @@ import org.springframework.util.DigestUtils;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.3
  * @version $Id$
  * @author daisuke
  */
@@ -104,7 +104,7 @@ public class SqsMessagePoller {
 	 * @param retry {@link RetryTemplate}
 	 * @param workerQueueUrl URL of queue to poll
 	 * @param messageHandler SQS message handler
-	 * @since #version#
+	 * @since 0.3
 	 */
 	public SqsMessagePoller(AmazonSQS sqs, RetryTemplate retry, String workerQueueUrl, SqsMessageHandler messageHandler) {
 		this.sqs = sqs;
@@ -116,7 +116,7 @@ public class SqsMessagePoller {
 	/**
 	 * TODO for daisuke
 	 * 
-	 * @since #version#
+	 * @since 0.3
 	 */
 	@Scheduled(fixedDelay = 1)
 	public void loop() {

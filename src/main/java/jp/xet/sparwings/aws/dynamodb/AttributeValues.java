@@ -27,7 +27,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.3
  * @version $Id$
  * @author daisuke
  */

@@ -33,7 +33,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * <p>Generated Request-ID is set to {@code X-Request-Id} response header
  * and {@link MDC} value which identified by {@code requestId}.</p>
  * 
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 public class RequestIdFilter extends OncePerRequestFilter {
@@ -65,7 +65,7 @@ public class RequestIdFilter extends OncePerRequestFilter {
 	 * Generate request ID.
 	 * 
 	 * @return request ID
-	 * @since #version#
+	 * @since 0.3
 	 */
 	protected String generateRequestID() {
 		return UUID.randomUUID().toString();

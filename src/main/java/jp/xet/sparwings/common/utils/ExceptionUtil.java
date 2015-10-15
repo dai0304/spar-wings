@@ -21,7 +21,7 @@ import java.io.StringWriter;
 /**
  * Utility class for {@link Exception}s and {@link Throwable}s.
  * 
- * @since #version#
+ * @since 0.3
  * @author daisuke
  */
 public final class ExceptionUtil {
