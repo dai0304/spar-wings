@@ -13,30 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.xet.sparwings.aws.dynamodb.tempate;
+package jp.xet.sparwings.aws.dynamodb;
 
 import java.util.Map;
 
+import com.amazonaws.services.dynamodbv2.model.AttributeAction;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.AttributeValueUpdate;
 
 /**
- * Implementations of this interface are responsible for converting DynamoDB results returned by
- * a get/query operation to their corresponding Object [T] representation.
- * 
- * @param <T> type of extract
- * @since 0.3
  * @author daisuke
  */
-@FunctionalInterface
-public interface ObjectExtractor<T> {
+public class DynamoDBUtils {
 	
-	/**
-	 * TODO for daisuke
-	 * 
-	 * @param values {@link AttributeValue} map
-	 * @return extract
-	 * @since 0.3
-	 */
-	T extract(Map<String, AttributeValue> values);
+	public static void nullSafeUpdateS(Map<String, AttributeValueUpdate> updates, String column, String value) {
+		if (value == null || value.length() == 0) {
+			updates.put(column, new AttributeValueUpdate().withAction(AttributeAction.DELETE));
+		} else {
+			updates.put(column, new AttributeValueUpdate(new AttributeValue(value), AttributeAction.PUT));
+		}
+	}
 	
+	public static String nullSafeGetS(AttributeValue value) {
+		return value == null ? null : value.getS();
+	}
 }
