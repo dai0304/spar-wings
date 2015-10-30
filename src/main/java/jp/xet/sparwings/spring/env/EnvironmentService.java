@@ -57,4 +57,9 @@ public class EnvironmentService {
 	public String getActiveProfilesAsString() {
 		return Joiner.on(',').join(env.getActiveProfiles());
 	}
+	
+	@Override
+	public String toString() {
+		return env.toString();
+	}
 }
