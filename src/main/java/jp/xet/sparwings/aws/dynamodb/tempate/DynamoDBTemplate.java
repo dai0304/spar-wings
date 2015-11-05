@@ -16,6 +16,7 @@
 package jp.xet.sparwings.aws.dynamodb.tempate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.AttributeValueUpdate;
 import com.amazonaws.services.dynamodbv2.model.BatchGetItemResult;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.amazonaws.services.dynamodbv2.model.GetItemRequest;
@@ -37,6 +39,7 @@ import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 /**
  * <b>This is the central class in the DynamoDB Template package.</b>
@@ -106,13 +109,17 @@ public class DynamoDBTemplate {
 	 * @since 0.3
 	 */
 	public <T>T get(String tableName, Map<String, AttributeValue> key, Boolean consistentRead,
-			Optional<String> projectionExpression, ObjectExtractor<T> extractor) throws EmptyResultDataAccessException {
+			Optional<String> projectionExpression, ObjectExtractor<T> extractor, String... columnsToInclude)
+			throws EmptyResultDataAccessException {
 		notNull(tableName, "tableName must not be null");
 		notNull(extractor, "extractor must not be null");
 		logger.debug("Executing query on {} for {}", tableName, renderKey(key));
 		
 		GetItemRequest request = new GetItemRequest(tableName, key, consistentRead);
 		projectionExpression.ifPresent(request::setProjectionExpression);
+		if (columnsToInclude != null && columnsToInclude.length > 0) {
+			request.setAttributesToGet(Arrays.asList(columnsToInclude));
+		}
 		
 		GetItemResult result = client.getItem(request);
 		
@@ -182,9 +189,9 @@ public class DynamoDBTemplate {
 	 * @since 0.3
 	 */
 	public <T>T queryUnique(String tableName, Optional<String> indexName, Map<String, Condition> keyConditions,
-			Optional<String> projectionExpression, ObjectExtractor<T> extractor) throws EmptyResultDataAccessException,
-			TooManyResultDataAccessException {
-		List<T> items = query(tableName, indexName, keyConditions, projectionExpression, extractor);
+			Optional<String> projectionExpression, ObjectExtractor<T> extractor, String... columnsToInclude)
+			throws EmptyResultDataAccessException, TooManyResultDataAccessException {
+		List<T> items = query(tableName, indexName, keyConditions, projectionExpression, extractor, columnsToInclude);
 		
 		if (items.size() == 0) {
 			throw new EmptyResultDataAccessException("No results found in " + tableName
@@ -210,6 +217,7 @@ public class DynamoDBTemplate {
 	 *     be separated by commas.  If this is empty, then all attributes will be returned. If any of the requested
 	 *     attributes are not found, they will not appear in the result.
 	 * @param extractor to convert attribute map to the entity
+	 * @param columnsToInclude
 	 * @param <T> the type of extract
 	 * @return items extracted by extractor
 	 * @throws EmptyResultDataAccessException if the result was not found
@@ -217,7 +225,8 @@ public class DynamoDBTemplate {
 	 * @since 0.3
 	 */
 	public <T>List<T> query(String tableName, Optional<String> indexName, Map<String, Condition> keyConditions,
-			Optional<String> projectionExpression, ObjectExtractor<T> extractor) throws EmptyResultDataAccessException {
+			Optional<String> projectionExpression, ObjectExtractor<T> extractor, String... columnsToInclude)
+			throws EmptyResultDataAccessException {
 		notNull(tableName, "tableName must not be null");
 		notNull(extractor, "extractor must not be null");
 		logger.debug("Executing query on {} for {}", tableName, renderKey(keyConditions));
@@ -227,6 +236,9 @@ public class DynamoDBTemplate {
 			.withKeyConditions(keyConditions);
 		projectionExpression.ifPresent(request::setProjectionExpression);
 		indexName.ifPresent(request::setIndexName);
+		if (columnsToInclude != null && columnsToInclude.length > 0) {
+			request.setAttributesToGet(Arrays.asList(columnsToInclude));
+		}
 		
 		QueryResult result = client.query(request);
 		
@@ -281,18 +293,31 @@ public class DynamoDBTemplate {
 	 * @param key The primary key of the item to be updated.
 	 * @param updateExpression An expression that defines one or more attributes to be updated, the
 	 *         action to be performed on them, and new value(s) for them.
+	 * @param expressionAttributeValues One or more values that can be substituted in an expression.
 	 * @see AmazonDynamoDB#updateItem(com.amazonaws.services.dynamodbv2.model.UpdateItemRequest)
 	 * @since 0.3
 	 */
-	public void update(String tableName, Map<String, AttributeValue> key, String updateExpression) {
+	public void update(String tableName, Map<String, AttributeValue> key, String updateExpression,
+			Map<String, AttributeValue> expressionAttributeValues) {
 		notNull(tableName, "tableName must not be null");
 		logger.debug("Update item on {} for {} as {}", tableName, renderKey(key), updateExpression);
 		
 		UpdateItemRequest request = new UpdateItemRequest()
 			.withTableName(tableName)
 			.withKey(key)
-			.withUpdateExpression(updateExpression);
+			.withUpdateExpression(updateExpression)
+			.withExpressionAttributeValues(expressionAttributeValues);
 		client.updateItem(request);
+	}
+	
+	@Deprecated
+	@SuppressWarnings("javadoc")
+	public void update(String tableName, Map<String, AttributeValue> key, Map<String, AttributeValueUpdate> updates) {
+		Assert.notNull(tableName, "tableName must not be null");
+		if (logger.isDebugEnabled()) {
+			logger.debug("Update item on {} for {} as {}", tableName, renderKey(key), updates);
+		}
+		client.updateItem(tableName, key, updates);
 	}
 	
 	/**

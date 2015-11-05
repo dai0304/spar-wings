@@ -16,6 +16,7 @@
 package jp.xet.sparwings.aws.sns;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import jp.xet.sparwings.aws.ec2.InstanceMetadata;
@@ -28,6 +29,7 @@ import com.google.common.base.Strings;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,20 +57,20 @@ public class NotificationService implements InitializingBean {
 	@Autowired
 	EnvironmentService env;
 	
-	@Value("#{systemProperties['CFN_STACK_NAME']}")
+	@Value("#{systemEnvironment['CFN_STACK_NAME'] ?: systemProperties['CFN_STACK_NAME']}")
 	String stackName;
 	
-	@Value("#{systemProperties['DEV_TOPIC_ARN']}")
+	@Value("#{systemEnvironment['DEV_TOPIC_ARN'] ?: systemProperties['DEV_TOPIC_ARN']}")
 	String devTopicArn;
 	
-	@Value("#{systemProperties['OPS_TOPIC_ARN']}")
+	@Value("#{systemEnvironment['OPS_TOPIC_ARN'] ?: systemProperties['OPS_TOPIC_ARN']}")
 	String opsTopicArn;
 	
 	
 	/**
 	 * インスタンスを生成する。
 	 * 
-	 * @param appCodeName
+	 * @param appCodeName Application code name
 	 * @since 0.3
 	 */
 	public NotificationService(String appCodeName) {
@@ -77,8 +79,8 @@ public class NotificationService implements InitializingBean {
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		logger.info("devTopicArn = {}", devTopicArn);
-		logger.info("opsTopicArn = {}", opsTopicArn);
+		logger.info("Initialize devTopicArn = {}", devTopicArn);
+		logger.info("Initialize opsTopicArn = {}", opsTopicArn);
 	}
 	
 	/**
@@ -135,7 +137,7 @@ public class NotificationService implements InitializingBean {
 	 * @since 0.3
 	 */
 	public void notifyDev(String message, Throwable t) {
-		Map<String, String> messageMap = new HashMap<>();
+		Map<String, String> messageMap = new LinkedHashMap<>();
 		messageMap.put("message", message);
 		notifyDev("unexpected exception", messageMap, t);
 	}
@@ -149,9 +151,8 @@ public class NotificationService implements InitializingBean {
 	 * @since 0.3
 	 */
 	public void notifyDev(String subject, Map<String, String> messageMap, Throwable t) {
-		messageMap.put("profiles", env.getActiveProfilesAsString());
-		messageMap.put("instance id", instanceMetadata.getInstanceId());
-		messageMap.put("instance detail", instanceMetadata.toString());
+		messageMap.put("environment", env.toString());
+		messageMap.put("instanceMetadata", instanceMetadata.toString());
 		if (t != null) {
 			messageMap.put("stackTrace", ExceptionUtil.toString(t));
 		}
@@ -161,6 +162,9 @@ public class NotificationService implements InitializingBean {
 	
 	private String createMessage(Map<String, String> messageMap) {
 		StringBuilder sb = new StringBuilder();
+		for (Map.Entry<String, String> e : MDC.getCopyOfContextMap().entrySet()) {
+			sb.append("MDC-").append(e.getKey()).append(": ").append(e.getValue()).append("\n");
+		}
 		for (Map.Entry<String, String> e : messageMap.entrySet()) {
 			sb.append(e.getKey()).append(": ").append(e.getValue()).append("\n");
 		}
@@ -184,6 +188,7 @@ public class NotificationService implements InitializingBean {
 				.withTopicArn(topicArn)
 				.withSubject(subject)
 				.withMessage(message));
+			logger.debug("SNS Notification published: {} - {}", topicArn, subject);
 		} catch (Exception e) {
 			logger.error("SNS Publish failed: {} - {} - {}", topicArn, subject, message, e);
 		}

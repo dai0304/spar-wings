@@ -17,6 +17,7 @@ package jp.xet.sparwings.spring.security;
 
 import java.io.IOException;
 
+import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * ログイン中のユーザ名を SLF4J のログに出力するためのServletFilter実装クラス。
+ * ログイン中のユーザ名をMDCに出力するための{@link Filter ServletFilter} 実装クラス。
  * 
  * @since 0.3
  * @author daisuke

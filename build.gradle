@@ -24,7 +24,7 @@ defaultTasks "clean", "build"
 
 // ======== deployment options (dispatched on group name) ========
 group = "jp.xet"
-version = "0.3.1"
+version = "0.4"
 
 sourceCompatibility = targetCompatibility = 1.8
 
@@ -131,6 +131,7 @@ bintray {
 ext {
 	springVersion = "4.1.7.RELEASE"
 	springRetryVersion = "1.1.2.RELEASE"
+	springSecurityOauth2Version= "2.0.6.RELEASE"
 	awsJavaSdkVersion = "1.10.+"
 	
 	// test
@@ -158,6 +159,7 @@ dependencies {
 	optional "org.springframework:spring-web:$springVersion"
 	optional "org.springframework:spring-webmvc:$springVersion"
 	optional "org.springframework.security:spring-security-core:3.2.5.RELEASE"
+	optional "org.springframework.security.oauth:spring-security-oauth2:$springSecurityOauth2Version"
 	optional "org.springframework.retry:spring-retry:$springRetryVersion"
 	
 	optional "org.springframework.boot:spring-boot-autoconfigure:1.2.5.RELEASE"
