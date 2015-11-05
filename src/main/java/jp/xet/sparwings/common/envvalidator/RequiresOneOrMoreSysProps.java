@@ -21,7 +21,7 @@ import java.util.Arrays;
 /**
  * どれか1つ以上必須。
  * 
- * @since #version#
+ * @since 0.4
  * @version $Id$
  * @author daisuke
  */

@@ -19,7 +19,7 @@ package jp.xet.sparwings.common.envvalidator;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.4
  * @version $Id$
  * @author daisuke
  */
@@ -29,7 +29,7 @@ public interface ApplicationRequirement {
 	 * TODO for daisuke
 	 * 
 	 * @return
-	 * @since #version#
+	 * @since 0.4
 	 */
 	boolean violation();
 	
@@ -37,7 +37,7 @@ public interface ApplicationRequirement {
 	 * TODO for daisuke
 	 * 
 	 * @return
-	 * @since #version#
+	 * @since 0.4
 	 */
 	String getViolationMessage();
 }
