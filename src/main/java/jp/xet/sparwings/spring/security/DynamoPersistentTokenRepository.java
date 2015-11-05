@@ -46,7 +46,7 @@ import org.springframework.util.Assert;
 /**
  * Amazon DynamoDB based persistent login token repository implementation.
  * 
- * @since #version#
+ * @since 0.4
  * @version $Id$
  * @author daisuke
  */

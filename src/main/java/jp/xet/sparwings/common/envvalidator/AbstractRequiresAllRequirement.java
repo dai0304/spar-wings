@@ -24,7 +24,7 @@ import com.google.common.collect.Iterables;
 /**
  * すべての設定値が必要。
  * 
- * @since #version#
+ * @since 0.4
  * @version $Id$
  * @author daisuke
  */
@@ -61,7 +61,7 @@ public abstract class AbstractRequiresAllRequirement implements ApplicationRequi
 	 * 
 	 * @param key key
 	 * @return if the key exists
-	 * @since #version#
+	 * @since 0.4
 	 */
 	protected abstract boolean exists(String key);
 	
@@ -69,7 +69,7 @@ public abstract class AbstractRequiresAllRequirement implements ApplicationRequi
 	 * TODO for daisuke
 	 * 
 	 * @return target name
-	 * @since #version#
+	 * @since 0.4
 	 */
 	protected abstract String getTargetName();
 	

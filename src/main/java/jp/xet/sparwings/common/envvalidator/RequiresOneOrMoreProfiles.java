@@ -23,7 +23,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 /**
  * どれか1つ以上必須。
  * 
- * @since #version#
+ * @since 0.4
  * @version $Id$
  * @author daisuke
  */

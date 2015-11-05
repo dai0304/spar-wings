@@ -24,7 +24,7 @@ import com.google.common.collect.Iterables;
 /**
  * いずれか1つ以上の設定値が必要。
  * 
- * @since #version#
+ * @since 0.4
  * @version $Id$
  * @author daisuke
  */
@@ -61,7 +61,7 @@ public abstract class AbstractRequiresOneOrMoreRequirement implements Applicatio
 	 * 
 	 * @param key
 	 * @return
-	 * @since #version#
+	 * @since 0.4
 	 */
 	protected abstract boolean exists(String key);
 	
@@ -69,7 +69,7 @@ public abstract class AbstractRequiresOneOrMoreRequirement implements Applicatio
 	 * TODO for daisuke
 	 * 
 	 * @return
-	 * @since #version#
+	 * @since 0.4
 	 */
 	protected abstract String getTargetName();
 	

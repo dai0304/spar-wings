@@ -21,7 +21,7 @@ import java.util.Collection;
 /**
  * 全ての環境変数が必要。
  * 
- * @since #version#
+ * @since 0.4
  * @version $Id$
  * @author daisuke
  */

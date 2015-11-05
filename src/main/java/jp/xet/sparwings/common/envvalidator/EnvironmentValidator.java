@@ -26,7 +26,7 @@ import lombok.NonNull;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.4
  * @version $Id$
  * @author daisuke
  */
@@ -38,7 +38,7 @@ public class EnvironmentValidator {
 	 * 
 	 * @param requirements
 	 * @return
-	 * @since #version#
+	 * @since 0.4
 	 */
 	public static Collection<String> validate(Collection<ApplicationRequirement> requirements) {
 		return new EnvironmentValidator(requirements).getViolationMessages();
@@ -49,7 +49,7 @@ public class EnvironmentValidator {
 	 * 
 	 * @param requirements
 	 * @return
-	 * @since #version#
+	 * @since 0.4
 	 */
 	public static Collection<String> validate(ApplicationRequirement... requirements) {
 		return validate(Arrays.asList(requirements));
@@ -64,7 +64,7 @@ public class EnvironmentValidator {
 	 * TODO for daisuke
 	 * 
 	 * @return
-	 * @since #version#
+	 * @since 0.4
 	 */
 	public Collection<String> getViolationMessages() {
 		return requirements.stream()
