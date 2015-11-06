@@ -29,7 +29,7 @@ import org.springframework.data.domain.Sort;
  * Empty implementation of {@link Page}
  * 
  *  * @param <T> the type of which the page consists.
- * @since #version#
+ * @since 0.5
  * @version $Id$
  * @author daisuke
  */
