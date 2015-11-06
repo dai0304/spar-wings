@@ -23,7 +23,7 @@ import org.springframework.security.core.GrantedAuthority;
 /**
  * SUによる認証トークン。
  * 
- * @since #version#
+ * @since 0.6
  * @version $Id$
  * @author daisuke
  */
