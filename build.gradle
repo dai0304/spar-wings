@@ -133,6 +133,7 @@ ext {
 	springRetryVersion = "1.1.2.RELEASE"
 	springSecurityOauth2Version= "2.0.6.RELEASE"
 	awsJavaSdkVersion = "1.10.+"
+	springDataVersion = "1.11.+"
 	
 	// test
 	junitVersion = "4.11"
@@ -161,6 +162,7 @@ dependencies {
 	optional "org.springframework.security:spring-security-core:3.2.5.RELEASE"
 	optional "org.springframework.security.oauth:spring-security-oauth2:$springSecurityOauth2Version"
 	optional "org.springframework.retry:spring-retry:$springRetryVersion"
+	optional "org.springframework.data:spring-data-commons:$springDataVersion"
 	
 	optional "org.springframework.boot:spring-boot-autoconfigure:1.2.5.RELEASE"
 	
