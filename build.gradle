@@ -150,6 +150,7 @@ dependencies {
 	optional "com.google.guava:guava:18.0"
 	optional "jp.xet:baseunits:2.13"
 	optional "javax.servlet:javax.servlet-api:3.1.0"
+	optional "com.googlecode.htmlcompressor:htmlcompressor:1.5.2"
 	
 	optional "javax.json:javax.json-api:1.0"
 	optional "org.glassfish:javax.json:1.0.4"

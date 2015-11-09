@@ -50,7 +50,8 @@ public final class InitializationUtil {
 				.map(e -> {
 					String key = e.getKey().toString();
 					Object value = e.getKey().toString().toLowerCase().contains("secret") ? "********" : e.getValue();
-					return String.format("%s = %s\033[m", key, value);
+					String clear = value.toString().contains("\033") ? "\033[m" : "";
+					return String.format("%s = %s%s", key, value, clear);
 				})
 				.forEach(logger::info);
 		} catch (Exception e) {
