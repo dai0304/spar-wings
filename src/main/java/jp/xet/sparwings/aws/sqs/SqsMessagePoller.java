@@ -121,7 +121,7 @@ public class SqsMessagePoller {
 	public void loop() {
 		ReceiveMessageResult receiveMessageResult;
 		try {
-			logger.trace("Steart SQS long polling");
+			logger.trace("Start SQS long polling");
 			receiveMessageResult = sqs.receiveMessage(new ReceiveMessageRequest(workerQueueUrl)
 				.withWaitTimeSeconds(waitTimeSeconds)
 				.withMaxNumberOfMessages(maxNumberOfMessages)
