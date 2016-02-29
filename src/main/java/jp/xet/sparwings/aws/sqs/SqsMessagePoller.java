@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import com.amazonaws.services.sqs.AmazonSQS;
@@ -47,25 +48,22 @@ import org.springframework.util.DigestUtils;
  * @version $Id$
  * @author daisuke
  */
+@RequiredArgsConstructor
 public class SqsMessagePoller {
 	
 	private static Logger logger = LoggerFactory.getLogger(SqsMessagePoller.class);
 	
 	@Getter
-	@Setter
-	private AmazonSQS sqs;
+	private final AmazonSQS sqs;
 	
 	@Getter
-	@Setter
-	private RetryTemplate retry;
+	private final RetryTemplate retry;
 	
 	@Getter
-	@Setter
-	private String workerQueueUrl;
+	private final String workerQueueUrl;
 	
 	@Getter
-	@Setter
-	private SqsMessageHandler messageHandler;
+	private final SqsMessageHandler messageHandler;
 	
 	@Getter
 	@Setter
@@ -95,22 +93,6 @@ public class SqsMessagePoller {
 	@Setter
 	private int maxNumberOfMessages = 10;
 	
-	
-	/**
-	 * Create instance.
-	 * 
-	 * @param sqs {@link AmazonSQS}
-	 * @param retry {@link RetryTemplate}
-	 * @param workerQueueUrl URL of queue to poll
-	 * @param messageHandler SQS message handler
-	 * @since 0.3
-	 */
-	public SqsMessagePoller(AmazonSQS sqs, RetryTemplate retry, String workerQueueUrl, SqsMessageHandler messageHandler) {
-		this.sqs = sqs;
-		this.retry = retry;
-		this.workerQueueUrl = workerQueueUrl;
-		this.messageHandler = messageHandler;
-	}
 	
 	/**
 	 * TODO for daisuke
