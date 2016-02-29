@@ -24,6 +24,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.slf4j.MDC;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -38,9 +41,23 @@ import org.springframework.web.filter.OncePerRequestFilter;
  */
 public class RequestIdFilter extends OncePerRequestFilter {
 	
-	private static final String HEADER_REQUEST_ID_KEY = "X-Request-Id";
+	private static final String DEFAULT_REQUEST_ID_ATTRIBUTE = "requestId";
 	
-	private static final String MDC_REQUEST_ID_KEY = "requestId";
+	private static final String DEFAULT_REQUEST_ID_HEADER = "X-Request-Id";
+	
+	private static final String DEFAULT_REQUEST_ID_MDC_KEY = "requestId";
+	
+	@Getter
+	@Setter
+	String requestIdAttribute = DEFAULT_REQUEST_ID_ATTRIBUTE;
+	
+	@Getter
+	@Setter
+	String requestIdMdcKey = DEFAULT_REQUEST_ID_MDC_KEY;
+	
+	@Getter
+	@Setter
+	String requestIdHeader = DEFAULT_REQUEST_ID_HEADER;
 	
 	
 	@Override
@@ -52,12 +69,17 @@ public class RequestIdFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		
 		String requestId = generateRequestID();
-		MDC.put(MDC_REQUEST_ID_KEY, requestId);
-		response.setHeader(HEADER_REQUEST_ID_KEY, requestId);
+		if (requestIdAttribute != null) {
+			request.setAttribute(requestIdAttribute, requestId);
+		}
+		if (requestIdMdcKey != null) {
+			MDC.put(requestIdMdcKey, requestId);
+		}
+		response.setHeader(requestIdHeader, requestId);
 		try {
 			filterChain.doFilter(request, response);
 		} finally {
-			MDC.remove(MDC_REQUEST_ID_KEY);
+			MDC.remove(requestIdMdcKey);
 		}
 	}
 	

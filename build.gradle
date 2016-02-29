@@ -24,7 +24,7 @@ defaultTasks "clean", "build"
 
 // ======== deployment options (dispatched on group name) ========
 group = "jp.xet"
-version = "0.7"
+version = "0.8"
 
 sourceCompatibility = targetCompatibility = 1.8
 
@@ -164,6 +164,8 @@ dependencies {
 	optional "org.springframework.security.oauth:spring-security-oauth2:$springSecurityOauth2Version"
 	optional "org.springframework.retry:spring-retry:$springRetryVersion"
 	optional "org.springframework.data:spring-data-commons:$springDataVersion"
+	optional "org.springframework.data:spring-data-redis:1.4.4.RELEASE"
+	optional "redis.clients:jedis:2.5.2"
 	
 	optional "org.springframework.boot:spring-boot-autoconfigure:1.2.5.RELEASE"
 	
