@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * {@link RateLimitService} implementation to store values in redis.
  * 
- * @since #version#
+ * @since 0.8
  * @author daisuke
  */
 @RequiredArgsConstructor

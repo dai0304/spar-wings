@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 /**
  * レートリミットの消費量を指定するアノテーション。
  * 
- * @since #version#
+ * @since 0.8
  * @author daisuke
  */
 @Retention(RetentionPolicy.RUNTIME)

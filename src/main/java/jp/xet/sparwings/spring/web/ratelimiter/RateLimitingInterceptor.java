@@ -35,7 +35,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 /**
  * リクエスト毎にレートリミットを判断する {@link HandlerInterceptor} 実装クラス。
  * 
- * @since #version#
+ * @since 0.8
  * @author daisuke
  */
 public class RateLimitingInterceptor extends HandlerInterceptorAdapter {
@@ -53,7 +53,7 @@ public class RateLimitingInterceptor extends HandlerInterceptorAdapter {
 	 * インスタンスを生成する。
 	 * 
 	 * @param rateLimitService {@link RateLimitService}
-	 * @since #version#
+	 * @since 0.8
 	 */
 	public RateLimitingInterceptor(RateLimitService rateLimitService) {
 		this.rateLimitService = rateLimitService;

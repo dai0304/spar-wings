@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.8
  * @author daisuke
  */
 @SuppressWarnings("serial")

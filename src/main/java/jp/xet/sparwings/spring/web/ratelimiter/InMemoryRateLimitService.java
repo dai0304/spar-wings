@@ -28,7 +28,7 @@ import lombok.Getter;
 /**
  * {@link RateLimitService} implementation to store values in memory.
  * 
- * @since #version#
+ * @since 0.8
  * @author daisuke
  */
 public class InMemoryRateLimitService implements RateLimitService {
