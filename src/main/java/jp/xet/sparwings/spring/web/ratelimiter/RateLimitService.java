@@ -18,7 +18,7 @@ package jp.xet.sparwings.spring.web.ratelimiter;
 /**
  * TODO for daiuske
  * 
- * @since #version#
+ * @since 0.8
  * @author daisuke
  */
 public interface RateLimitService {

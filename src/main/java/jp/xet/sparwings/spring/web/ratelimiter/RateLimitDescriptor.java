@@ -24,7 +24,7 @@ import lombok.ToString;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.8
  * @author daisuke
  */
 @ToString
