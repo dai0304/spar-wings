@@ -17,13 +17,14 @@ package jp.xet.sparwings.spring.web.ratelimiter;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+
+import jp.xet.baseunits.timeutil.Clock;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import jp.xet.baseunits.timeutil.Clock;
-
-import lombok.Getter;
 
 /**
  * {@link RateLimitService} implementation to store values in memory.
@@ -37,11 +38,16 @@ public class InMemoryRateLimitService implements RateLimitService {
 	
 	private Map<String, RateLimitSpec> specs = new ConcurrentHashMap<>();
 	
+	@Setter
+	private Function<String, RateLimitRecovery> recoveryRepos = limitationUnit -> new RateLimitRecovery(10, 1000000);
+	
 	
 	@Override
 	public synchronized RateLimitDescriptor consume(String limitationUnit, long consumption) {
-		long fillRate = 10;
-		long maxBudget = 1000000;
+		RateLimitRecovery recovery = recoveryRepos.apply(limitationUnit);
+		long fillRate = recovery.getFillRate();
+		long maxBudget = recovery.getMaxBudget();
+		
 		long now = Clock.now().toEpochSec();
 		RateLimitSpec spec =
 				specs.computeIfAbsent(limitationUnit, p -> new RateLimitSpec(fillRate, maxBudget, maxBudget, now));
@@ -59,8 +65,10 @@ public class InMemoryRateLimitService implements RateLimitService {
 	
 	@Override
 	public RateLimitDescriptor get(String limitationUnit) {
-		long fillRate = 10;
-		long maxBudget = 10000;
+		RateLimitRecovery recovery = recoveryRepos.apply(limitationUnit);
+		long fillRate = recovery.getFillRate();
+		long maxBudget = recovery.getMaxBudget();
+		
 		long now = Clock.now().toEpochSec();
 		RateLimitSpec spec =
 				specs.computeIfAbsent(limitationUnit, p -> new RateLimitSpec(fillRate, maxBudget, maxBudget, now));

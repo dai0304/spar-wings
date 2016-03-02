@@ -93,7 +93,7 @@ public class RateLimitingInterceptor extends HandlerInterceptorAdapter {
 		
 		if (responseHeader) {
 			response.setHeader("X-RateLimit-Cost", String.valueOf(cost));
-			response.setHeader("X-RateLimit-FillRatePerMillisecond", String.valueOf(desc.getFillRate()));
+			response.setHeader("X-RateLimit-FillRate", String.valueOf(desc.getFillRate()));
 			response.setHeader("X-RateLimit-MaximumBudget", String.valueOf(desc.getMaxBudget()));
 			response.setHeader("X-RateLimit-CurrentBudget", String.valueOf(desc.getCurrentBudget()));
 		}
