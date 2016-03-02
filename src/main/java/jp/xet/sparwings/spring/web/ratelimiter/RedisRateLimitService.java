@@ -16,15 +16,16 @@
 package jp.xet.sparwings.spring.web.ratelimiter;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+
+import jp.xet.baseunits.timeutil.Clock;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-
-import jp.xet.baseunits.timeutil.Clock;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 /**
  * {@link RateLimitService} implementation to store values in redis.
@@ -40,14 +41,19 @@ public class RedisRateLimitService implements RateLimitService {
 	@Getter
 	private final RedisTemplate<String, Long> redisTemplate;
 	
+	@Setter
+	private Function<String, RateLimitRecovery> recoveryRepos = limitationUnit -> new RateLimitRecovery(10, 1000000);
+	
 	
 	@Override
 	public RateLimitDescriptor consume(String limitationUnit, long consumption) {
-		long fillRate = 10;
-		long maxBudget = 1000000;
+		RateLimitRecovery recovery = recoveryRepos.apply(limitationUnit);
+		long fillRate = recovery.getFillRate();
+		long maxBudget = recovery.getMaxBudget();
+		
 		long now = Clock.now().toEpochSec();
-		String tKey = "rate:t:" + limitationUnit;
-		String cKey = "rate:c:" + limitationUnit;
+		String tKey = "ratelimit:t:" + limitationUnit;
+		String cKey = "ratelimit:c:" + limitationUnit;
 		
 		long delta = consumption;
 		Long ts = redisTemplate.opsForValue().getAndSet(tKey, now);
@@ -73,11 +79,13 @@ public class RedisRateLimitService implements RateLimitService {
 	
 	@Override
 	public RateLimitDescriptor get(String limitationUnit) {
-		long fillRate = 10;
-		long maxBudget = 1000000;
+		RateLimitRecovery recovery = recoveryRepos.apply(limitationUnit);
+		long fillRate = recovery.getFillRate();
+		long maxBudget = recovery.getMaxBudget();
+		
 		long now = Clock.now().toEpochSec();
-		String tKey = "rate:t:" + limitationUnit;
-		String cKey = "rate:c:" + limitationUnit;
+		String tKey = "ratelimit:t:" + limitationUnit;
+		String cKey = "ratelimit:c:" + limitationUnit;
 		
 		long delta = 0;
 		Long ts = redisTemplate.opsForValue().getAndSet(tKey, now);
