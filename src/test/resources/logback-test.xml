@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!--
+
+    Copyright 2015-2016 Classmethod, Inc.
+    All Rights Reserved.
+
+    NOTICE:  All source code, documentation and other information
+    contained herein is, and remains the property of Classmethod, Inc.
+    Dissemination of this information or reproduction of this material
+    is strictly forbidden unless prior written permission is obtained
+    from Classmethod, Inc.
+
+-->
+<configuration scan="true" scanPeriod="30 seconds">
+  <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+    <resetJUL>true</resetJUL>
+  </contextListener>
+
+  <!-- ======== Appenders ======== -->
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <Target>System.out</Target>
+    <withJansi>true</withJansi>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSS,Japan} [%X{requestId}:%X{username}:%.8thread] %-5level %logger{36}:%line - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- ======== Loggers ======== -->
+  <logger name="jp.xet.sparwings" level="TRACE" />
+
+  <!-- Apache httpd client -->
+  <logger name="org.apache.http" level="INFO" />
+  <logger name="org.apache.http.wire" level="INFO" />
+
+  <!-- Apache Tomcat -->
+  <logger name="org.apache.catalina" level="INFO" />
+  <logger name="org.apache.coyote" level="INFO" />
+  <logger name="org.apache.tomcat" level="INFO" />
+  <logger name="org.apache.jasper" level="INFO" />
+
+  <!-- Spring framework -->
+  <logger name="org.springframework" level="INFO" />
+  <logger name="org.springframework.security" level="DEBUG" />
+  <logger name="org.springframework.jdbc.datasource.DataSourceUtils" level="INFO" />
+  <logger name="org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite" level="DEBUG" />
+  
+  <!-- AWS SDK -->
+  <logger name="com.amazonaws.request" level="INFO" />
+  <logger name="com.amazonaws.requestId" level="INFO" />
+  <logger name="com.amazonaws.internal" level="INFO" />
+  <logger name="com.amazonaws.latency" level="WARN" />
+  <logger name="com.amazonaws.http.AmazonHttpClient" level="WARN" />
+  <logger name="com.amazonaws.http.impl" level="WARN" />
+  <logger name="com.amazonaws.auth.AWS4Signer" level="INFO" />
+  <logger name="com.amazonaws.metrics.internal.cloudwatch.MetricUploaderThread" level="INFO" />
+  
+  <!-- Root Logger -->
+  <root level="DEBUG">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>
