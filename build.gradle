@@ -132,7 +132,7 @@ ext {
 	springVersion = "4.1.7.RELEASE"
 	springRetryVersion = "1.1.2.RELEASE"
 	springSecurityOauth2Version= "2.0.6.RELEASE"
-	awsJavaSdkVersion = "1.10.+"
+	awsJavaSdkVersion = "1.10.58"
 	springDataVersion = "1.11.+"
 	
 	slf4jVersion = "1.7.13"
@@ -164,6 +164,7 @@ dependencies {
 	
 	optional "com.amazonaws:aws-java-sdk-dynamodb:$awsJavaSdkVersion"
 	optional "com.amazonaws:aws-java-sdk-sns:$awsJavaSdkVersion"
+	optional "com.amazonaws:aws-java-sdk-sts:$awsJavaSdkVersion"
 	
 	optional "org.springframework:spring-web:$springVersion"
 	optional "org.springframework:spring-webmvc:$springVersion"

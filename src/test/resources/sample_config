@@ -1,0 +1,7 @@
+[profile test]
+role_arn = arn:aws:iam::000011112222:role/rolename
+source_profile = src
+
+[profile src]
+aws_access_key_id = SRC_ACCESS_KEY
+aws_secret_access_key = SRC_SECRET_ACCESS_KEY
