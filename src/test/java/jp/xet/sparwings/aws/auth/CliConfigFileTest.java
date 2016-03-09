@@ -29,6 +29,8 @@ import com.amazonaws.internal.StaticCredentialsProvider;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * TODO for daisuke
@@ -37,6 +39,7 @@ import org.junit.Test;
  * @version $Id$
  * @author daisuke
  */
+@RunWith(MockitoJUnitRunner.class)
 public class CliConfigFileTest {
 	
 	AwsCliConfigFile sut;
@@ -54,7 +57,6 @@ public class CliConfigFileTest {
 		Map<String, AwsCliProfile> actual = sut.getAllProfiles();
 		// verify
 		assertThat(actual.keySet(), hasItems("test", "src"));
-		sut.getCredentialsProvider("src");
 	}
 	
 	@Test
