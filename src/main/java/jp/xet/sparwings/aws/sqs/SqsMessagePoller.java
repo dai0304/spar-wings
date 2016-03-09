@@ -134,59 +134,49 @@ public class SqsMessagePoller {
 				DigestUtils.md5DigestAsHex(message.getReceiptHandle().getBytes())
 			});
 			
-			Future<Void> future = executor.submit(() -> {
-				try {
-					return messageHandler.handle(message);
-				} catch (Throwable t) {
-					logger.error("unexpected", t);
-					return null;
-				}
-			});
+			Future<Void> future = executor.submit(() -> messageHandler.handle(message));
 			logger.debug("Main task for {} is submitted", message.getMessageId());
 			
-			executor.execute(() -> {
-				try {
-					retry.execute(context -> {
-						try {
-							future.get(changeVisibilityThreshold, TimeUnit.SECONDS);
-							logger.debug("Job for SQS:{} was done", message.getMessageId());
-							sqs.deleteMessage(new DeleteMessageRequest(workerQueueUrl, message.getReceiptHandle()));
-							logger.info("SQS:{} was deleted", message.getMessageId());
-						} catch (InterruptedException e) {
-							Thread.currentThread().interrupt();
-							logger.warn("Job for SQS:{} was interrupted", message.getMessageId());
-						} catch (ExecutionException e) { // handle e.getCause()
-							logger.error("Job for SQS:{} was failed -> retry", message.getMessageId());
-							logger.error("  caused by", e.getCause());
-							throw new Exception("retry");
-						} catch (TimeoutException e) { // we need more time
-							logger.debug("Job for SQS:{} was timeout RHD:{}", new Object[] {
+			logger.debug("Start visibility timeout follow-up task for {}", message.getMessageId());
+			try {
+				retry.execute(context -> {
+					try {
+						future.get(changeVisibilityThreshold, TimeUnit.SECONDS);
+						logger.debug("Job for SQS:{} was done", message.getMessageId());
+						sqs.deleteMessage(new DeleteMessageRequest(workerQueueUrl, message.getReceiptHandle()));
+						logger.info("SQS:{} was deleted", message.getMessageId());
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+						logger.warn("Job for SQS:{} was interrupted", message.getMessageId());
+					} catch (ExecutionException e) { // handle e.getCause()
+						logger.error("Job for SQS:{} was failed", message.getMessageId(), e.getCause());
+					} catch (TimeoutException e) { // we need more time
+						logger.debug("Job for SQS:{} was timeout RHD:{}", new Object[] {
+							message.getMessageId(),
+							DigestUtils.md5DigestAsHex(message.getReceiptHandle().getBytes())
+						});
+						sqs.changeMessageVisibility(new ChangeMessageVisibilityRequest(
+								workerQueueUrl, message.getReceiptHandle(), visibilityTimeout));
+						if (logger.isDebugEnabled()) {
+							logger.debug("Visibility for SQS:{} was updated", new Object[] {
 								message.getMessageId(),
+								visibilityTimeout
+							});
+						} else if (logger.isTraceEnabled()) {
+							logger.trace("Visibility for SQS:{} was updated VT:{} RHD:{}", new Object[] {
+								message.getMessageId(),
+								visibilityTimeout,
 								DigestUtils.md5DigestAsHex(message.getReceiptHandle().getBytes())
 							});
-							sqs.changeMessageVisibility(new ChangeMessageVisibilityRequest(
-									workerQueueUrl, message.getReceiptHandle(), visibilityTimeout));
-							if (logger.isDebugEnabled()) {
-								logger.debug("Visibility for SQS:{} was updated", new Object[] {
-									message.getMessageId(),
-									visibilityTimeout
-								});
-							} else if (logger.isTraceEnabled()) {
-								logger.trace("Visibility for SQS:{} was updated VT:{} RHD:{}", new Object[] {
-									message.getMessageId(),
-									visibilityTimeout,
-									DigestUtils.md5DigestAsHex(message.getReceiptHandle().getBytes())
-								});
-							}
-							throw new Exception("retry");
 						}
-						return null;
-					});
-				} catch (Exception e) {
-					logger.error("unexpected", e);
-				}
-			});
-			logger.debug("Follow task for {} is submitted", message.getMessageId());
+						throw e;
+					}
+					return null;
+				});
+			} catch (Exception e) {
+				logger.error("Retry attempt exceeded?", e);
+			}
+			logger.debug("Visibility timeout follow-up task for {} was finished", message.getMessageId());
 		});
 	}
 }
