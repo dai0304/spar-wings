@@ -18,7 +18,6 @@ package jp.xet.sparwings.aws.sqs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
@@ -47,7 +46,7 @@ import org.springframework.retry.support.RetryTemplate;
 import org.springframework.util.DigestUtils;
 
 /**
- * TODO for daisuke
+ * Test for {@link SqsMessagePoller}.
  * 
  * @since 0.10
  * @version $Id$
@@ -117,10 +116,10 @@ public class SqsMessagePollerTest {
 		// exercise
 		sut.loop();
 		// verify
-		verify(sqs).receiveMessage(anyObject());
-		verify(messageHandler, never()).handle(anyObject());
-		verify(sqs, never()).deleteMessage(anyObject());
-		verify(sqs, never()).changeMessageVisibility(anyObject());
+		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
+		verify(messageHandler, never()).handle(any(Message.class));
+		verify(sqs, never()).deleteMessage(any(DeleteMessageRequest.class));
+		verify(sqs, never()).changeMessageVisibility(any(ChangeMessageVisibilityRequest.class));
 	}
 	
 	@Test
@@ -132,10 +131,10 @@ public class SqsMessagePollerTest {
 		// exercise
 		sut.loop();
 		// verify
-		verify(sqs).receiveMessage(anyObject());
+		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
 		verify(messageHandler).handle(eq(msg1));
 		verify(sqs).deleteMessage(eq(expectedDmr));
-		verify(sqs, never()).changeMessageVisibility(anyObject());
+		verify(sqs, never()).changeMessageVisibility(any(ChangeMessageVisibilityRequest.class));
 	}
 	
 	@Test
@@ -152,14 +151,14 @@ public class SqsMessagePollerTest {
 		// exercise
 		sut.loop();
 		// verify
-		verify(sqs).receiveMessage(anyObject());
+		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
 		verify(messageHandler).handle(eq(msg1));
 		verify(messageHandler).handle(eq(msg2));
 		verify(messageHandler).handle(eq(msg3));
 		verify(sqs).deleteMessage(eq(expectedDmr1));
 		verify(sqs).deleteMessage(eq(expectedDmr2));
 		verify(sqs).deleteMessage(eq(expectedDmr3));
-		verify(sqs, never()).changeMessageVisibility(anyObject());
+		verify(sqs, never()).changeMessageVisibility(any(ChangeMessageVisibilityRequest.class));
 	}
 	
 	@Test
@@ -172,7 +171,7 @@ public class SqsMessagePollerTest {
 		// exercise
 		sut.loop();
 		// verify
-		verify(sqs).receiveMessage(anyObject());
+		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
 		verify(messageHandler).handle(eq(msg1));
 		verify(sqs).deleteMessage(eq(expectedDmr));
 		
@@ -199,7 +198,7 @@ public class SqsMessagePollerTest {
 		// exercise
 		sut.loop();
 		// verify
-		verify(sqs).receiveMessage(anyObject());
+		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
 		verify(messageHandler).handle(eq(msg1));
 		verify(messageHandler).handle(eq(msg2));
 		verify(messageHandler).handle(eq(msg3));
@@ -238,7 +237,7 @@ public class SqsMessagePollerTest {
 		// exercise
 		sut.loop();
 		// verify
-		verify(sqs).receiveMessage(anyObject());
+		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
 		verify(messageHandler).handle(eq(msg1));
 		verify(sqs).deleteMessage(eq(expectedDmr));
 		
@@ -268,10 +267,10 @@ public class SqsMessagePollerTest {
 		// exercise
 		sut.loop();
 		// verify
-		verify(sqs).receiveMessage(anyObject());
+		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
 		verify(messageHandler).handle(eq(msg1));
 		verify(sqs, never()).deleteMessage(eq(expectedDmr));
-		verify(sqs, times(3)).changeMessageVisibility(anyObject());
+		verify(sqs, times(3)).changeMessageVisibility(any(ChangeMessageVisibilityRequest.class));
 	}
 	
 	@Test
@@ -284,10 +283,10 @@ public class SqsMessagePollerTest {
 		// exercise
 		sut.loop();
 		// verify
-		verify(sqs).receiveMessage(anyObject());
+		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
 		verify(messageHandler).handle(eq(msg1));
 		verify(sqs, never()).deleteMessage(eq(expectedDmr));
-		verify(sqs, never()).changeMessageVisibility(anyObject());
+		verify(sqs, never()).changeMessageVisibility(any(ChangeMessageVisibilityRequest.class));
 	}
 	
 	@Test
@@ -300,9 +299,9 @@ public class SqsMessagePollerTest {
 		// exercise
 		sut.loop();
 		// verify
-		verify(sqs).receiveMessage(anyObject());
+		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
 		verify(messageHandler).handle(eq(msg1));
 		verify(sqs, never()).deleteMessage(eq(expectedDmr));
-		verify(sqs).changeMessageVisibility(anyObject());
+		verify(sqs).changeMessageVisibility(any(ChangeMessageVisibilityRequest.class));
 	}
 }
