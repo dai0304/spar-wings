@@ -23,8 +23,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.base.Strings;
-
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -92,7 +90,7 @@ public class InstanceMetadataLogFilter extends OncePerRequestFilter {
 	}
 	
 	private void putIfNotNull(String key, String value) {
-		if (Strings.isNullOrEmpty(value) == false) {
+		if (value != null && value.isEmpty() == false) {
 			MDC.put(key, value);
 		}
 	}
