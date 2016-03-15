@@ -25,4 +25,5 @@ dependencies {
 	
 	compile project(":spar-wings-httpexceptions")
 	compile project(":spar-wings-aws-essential")
+	compile project(":spar-wings-sns-notification")
 }

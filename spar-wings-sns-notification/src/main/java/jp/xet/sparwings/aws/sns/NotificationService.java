@@ -15,17 +15,17 @@
  */
 package jp.xet.sparwings.aws.sns;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import jp.xet.sparwings.aws.ec2.InstanceMetadata;
-import jp.xet.sparwings.common.utils.ExceptionUtil;
 import jp.xet.sparwings.spring.env.EnvironmentService;
 
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.model.PublishRequest;
-import com.google.common.base.Strings;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +45,24 @@ import org.springframework.beans.factory.annotation.Value;
 public class NotificationService implements InitializingBean {
 	
 	private static Logger logger = LoggerFactory.getLogger(NotificationService.class);
+	
+	
+	/**
+	 * Returns stacktrace as string.
+	 *
+	 * @param t the exception
+	 * @return stacktrace
+	 * @since 0.1
+	 */
+	private static String toString(Throwable t) {
+		StringWriter writer = new StringWriter();
+		PrintWriter pw = new PrintWriter(writer);
+		
+		t.printStackTrace(pw);
+		
+		return writer.toString();
+	}
+	
 	
 	private final String appCodeName;
 	
@@ -154,7 +172,7 @@ public class NotificationService implements InitializingBean {
 		messageMap.put("environment", env.toString());
 		messageMap.put("instanceMetadata", instanceMetadata.toString());
 		if (t != null) {
-			messageMap.put("stackTrace", ExceptionUtil.toString(t));
+			messageMap.put("stackTrace", toString(t));
 		}
 		
 		notifyMessage0(devTopicArn, subject, createMessage(messageMap));
@@ -179,7 +197,7 @@ public class NotificationService implements InitializingBean {
 		}
 		
 		logger.debug("notify message to topic[{}] - {} : {}", topicArn, subject, message);
-		if (Strings.isNullOrEmpty(topicArn) || topicArn.equals("arn:aws:sns:null")) {
+		if (topicArn == null || topicArn.isEmpty() || topicArn.equals("arn:aws:sns:null")) {
 			logger.debug("topicArn: NULL");
 			return;
 		}

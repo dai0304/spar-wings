@@ -16,12 +16,11 @@
 package jp.xet.sparwings.spring.env;
 
 import java.util.Arrays;
-
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.util.Assert;
 
 /**
  * システム環境（spring profile）を判定するサービスクラス。
@@ -44,7 +43,7 @@ public class EnvironmentService {
 	 * @since 0.3
 	 */
 	public boolean is(String profileName) {
-		Preconditions.checkNotNull(profileName);
+		Assert.notNull(profileName);
 		return Arrays.asList(env.getActiveProfiles()).contains(profileName);
 	}
 	
@@ -55,7 +54,7 @@ public class EnvironmentService {
 	 * @since 0.3
 	 */
 	public String getActiveProfilesAsString() {
-		return Joiner.on(',').join(env.getActiveProfiles());
+		return Arrays.stream(env.getActiveProfiles()).collect(Collectors.joining(","));
 	}
 	
 	@Override
