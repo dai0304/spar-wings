@@ -1,5 +1,7 @@
 // -*- coding: utf-8; mode: groovy -*-
 
 dependencies {
-//	compile "com.google.guava:guava:18.0"
+	compile "com.google.guava:guava:18.0"
+	compile "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
+	compile "org.springframework.data:spring-data-commons:$springDataVersion"
 }
