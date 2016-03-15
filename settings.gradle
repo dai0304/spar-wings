@@ -1,0 +1,6 @@
+rootProject.name="spar-wings"
+
+include "spar-wings-monolith"
+include "spar-wings-ratelimiter"
+include "spar-wings-httpexceptions"
+include "spar-wings-aws-essential"
