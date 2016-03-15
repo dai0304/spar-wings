@@ -43,7 +43,7 @@ public class RequestIdFilter extends OncePerRequestFilter {
 	
 	private static final String DEFAULT_REQUEST_ID_ATTRIBUTE = "requestId";
 	
-	private static final String DEFAULT_REQUEST_ID_HEADER = "X-Request-Id";
+	private static final String DEFAULT_REQUEST_ID_HEADER = "Request-Id";
 	
 	private static final String DEFAULT_REQUEST_ID_MDC_KEY = "requestId";
 	
