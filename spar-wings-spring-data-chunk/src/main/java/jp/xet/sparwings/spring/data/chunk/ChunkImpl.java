@@ -1,12 +1,17 @@
 /*
- * Copyright 2015-2016 Classmethod, Inc.
- * All Rights Reserved.
+ * Copyright 2015-2016 Miyamoto Daisuke.
  *
- * NOTICE:  All source code, documentation and other information
- * contained herein is, and remains the property of Classmethod, Inc.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from Classmethod, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package jp.xet.sparwings.spring.data.chunk;
 
@@ -30,7 +35,7 @@ import org.springframework.util.Assert;
  * TODO for daisuke
  * 
  * @param <T>
- * @since #version#
+ * @since 0.11
  * @author daisuke
  */
 public class ChunkImpl<T> implements Chunk<T> {
@@ -52,7 +57,7 @@ public class ChunkImpl<T> implements Chunk<T> {
 	 * @param content must not be {@literal null}.
 	 * @param lastEvaluatedKey
 	 * @param chunkable can be {@literal null}.
-	 * @since #version#
+	 * @since 0.11
 	 */
 	public ChunkImpl(List<T> content, Object lastEvaluatedKey, Chunkable chunkable) {
 		Assert.notNull(content, "Content must not be null!");
@@ -106,7 +111,7 @@ public class ChunkImpl<T> implements Chunk<T> {
 	 * 
 	 * @param converter must not be {@literal null}.
 	 * @return
-	 * @since #version#
+	 * @since 0.11
 	 */
 	protected <S>List<S> getConvertedContent(Converter<? super T, ? extends S> converter) {
 		Assert.notNull(converter, "Converter must not be null!");

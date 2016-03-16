@@ -1,12 +1,17 @@
 /*
- * Copyright 2015-2016 Classmethod, Inc.
- * All Rights Reserved.
+ * Copyright 2015-2016 Miyamoto Daisuke.
  *
- * NOTICE:  All source code, documentation and other information
- * contained herein is, and remains the property of Classmethod, Inc.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from Classmethod, Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package jp.xet.sparwings.spring.data.chunk;
 
@@ -18,7 +23,7 @@ import org.springframework.data.domain.Sort.Direction;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.11
  * @author daisuke
  */
 public interface Chunk<T> extends Iterable<T> {
@@ -27,7 +32,7 @@ public interface Chunk<T> extends Iterable<T> {
 	 * Returns the page content as {@link List}.
 	 * 
 	 * @return
-	 * @since #version#
+	 * @since 0.11
 	 */
 	List<T> getContent();
 	
@@ -35,7 +40,7 @@ public interface Chunk<T> extends Iterable<T> {
 	 * TODO for daisuke
 	 * 
 	 * @return
-	 * @since #version#
+	 * @since 0.11
 	 */
 	Object getLastEvaluatedKey();
 	
@@ -43,7 +48,7 @@ public interface Chunk<T> extends Iterable<T> {
 	 * Returns the sorting direction for the {@link Chunk}.
 	 * 
 	 * @return
-	 * @since #version#
+	 * @since 0.11
 	 */
 	Direction getDirection();
 	
@@ -51,7 +56,7 @@ public interface Chunk<T> extends Iterable<T> {
 	 * Returns whether the {@link Chunk} has content at all.
 	 * 
 	 * @return
-	 * @since #version#
+	 * @since 0.11
 	 */
 	boolean hasContent();
 	
@@ -59,7 +64,7 @@ public interface Chunk<T> extends Iterable<T> {
 	 * Returns if there is a next {@link Chunk}.
 	 * 
 	 * @return if there is a next {@link Chunk}.
-	 * @since #version#
+	 * @since 0.11
 	 */
 	boolean hasNext();
 	
@@ -67,7 +72,7 @@ public interface Chunk<T> extends Iterable<T> {
 	 * Returns whether the current {@link Chunk} is the last one.
 	 * 
 	 * @return
-	 * @since #version#
+	 * @since 0.11
 	 */
 	boolean isLast();
 	
@@ -77,7 +82,7 @@ public interface Chunk<T> extends Iterable<T> {
 	 * sure they receive a non-{@literal null} value.
 	 * 
 	 * @return
-	 * @since #version#
+	 * @since 0.11
 	 */
 	Chunkable nextChunkable();
 	
@@ -86,7 +91,7 @@ public interface Chunk<T> extends Iterable<T> {
 	 * 
 	 * @param converter must not be {@literal null}.
 	 * @return a new {@link Chunk} with the content of the current one mapped by the given {@link Converter}.
-	 * @since #version#
+	 * @since 0.11
 	 */
 	<S>Chunk<S> map(Converter<? super T, ? extends S> converter);
 }
