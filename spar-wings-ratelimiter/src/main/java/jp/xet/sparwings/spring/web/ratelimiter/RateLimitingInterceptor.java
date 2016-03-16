@@ -81,8 +81,8 @@ public class RateLimitingInterceptor extends HandlerInterceptorAdapter {
 	
 	private void rateLimit(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws HttpTooManyRequestsException {
-		int cost = computeCost(request, response, handler);
-		String limitationUnit = getLimitationUnitName(request, response, handler);
+		int cost = computeCost(request, handler);
+		String limitationUnit = getLimitationUnitName(request, handler);
 		if (limitationUnit == null) {
 			return; // through
 		}
@@ -92,30 +92,29 @@ public class RateLimitingInterceptor extends HandlerInterceptorAdapter {
 		}
 		
 		if (responseHeader) {
-			response.setHeader("X-RateLimit-Cost", String.valueOf(cost));
-			response.setHeader("X-RateLimit-FillRate", String.valueOf(desc.getFillRate()));
-			response.setHeader("X-RateLimit-MaximumBudget", String.valueOf(desc.getMaxBudget()));
-			response.setHeader("X-RateLimit-CurrentBudget", String.valueOf(desc.getCurrentBudget()));
+			response.setHeader("RateLimit-Cost", String.valueOf(cost));
+			response.setHeader("RateLimit-FillRate", String.valueOf(desc.getFillRate()));
+			response.setHeader("RateLimit-MaximumBudget", String.valueOf(desc.getMaxBudget()));
+			response.setHeader("RateLimit-CurrentBudget", String.valueOf(desc.getCurrentBudget()));
 		}
 		
 		if (desc.getCurrentBudget() < 0) {
 			long millisecsToWait = desc.computeWaitMillisecsToConsume(cost);
 			if (responseHeader) {
-				response.setHeader("X-RateLimit-RetryAfter", String.valueOf(millisecsToWait));
+				response.setHeader("Retry-After", String.valueOf(millisecsToWait));
 			}
 			throw new HttpTooManyRequestsException(millisecsToWait);
 		}
 	}
 	
 	/**
-	 * TODO for daisuke
+	 * Compute cost of request.
 	 * 
-	 * @param request
-	 * @param response
-	 * @param handler
-	 * @return
+	 * @param request The request
+	 * @param handler The handler of request
+	 * @return cost
 	 */
-	protected int computeCost(HttpServletRequest request, HttpServletResponse response, Object handler) {
+	protected int computeCost(HttpServletRequest request, Object handler) {
 		RateLimited rateLimited = null;
 		if (handler instanceof HandlerMethod) {
 			rateLimited = ((HandlerMethod) handler).getMethodAnnotation(RateLimited.class);
@@ -127,12 +126,11 @@ public class RateLimitingInterceptor extends HandlerInterceptorAdapter {
 	/**
 	 * TODO for daisuke
 	 * 
-	 * @param request
-	 * @param response
-	 * @param handler
+	 * @param request The request
+	 * @param handler The handler of request
 	 * @return
 	 */
-	protected String getLimitationUnitName(HttpServletRequest request, HttpServletResponse response, Object handler) {
+	protected String getLimitationUnitName(HttpServletRequest request, Object handler) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null) {
 			Object principal = authentication.getPrincipal();

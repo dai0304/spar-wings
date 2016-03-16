@@ -15,17 +15,20 @@
  */
 package jp.xet.sparwings.aws.auth;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import java.io.File;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +39,8 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  * @author daisuke
  */
+@SuppressWarnings("javadoc")
+@RunWith(MockitoJUnitRunner.class)
 public class AwsCliConfigProfileCredentialsProviderTest {
 	
 	private static Logger logger = LoggerFactory.getLogger(AwsCliConfigProfileCredentialsProviderTest.class);
@@ -51,14 +56,19 @@ public class AwsCliConfigProfileCredentialsProviderTest {
 	
 	@Before
 	public void setup() throws Exception {
-		File file = new File(new File("."), "src/test/resources/sample_config");
 		when(configFile.getCredentialsProvider(eq("test"))).thenReturn(cp);
 		sut = new AwsCliConfigProfileCredentialsProvider(configFile, "test");
-		
 	}
 	
 	@Test
 	public void test() {
-		AWSCredentials credentials = sut.getCredentials();
+		// setup
+		AWSCredentials expectedAwsCredentials = mock(AWSCredentials.class);
+		when(cp.getCredentials()).thenReturn(expectedAwsCredentials);
+		// exercise
+		AWSCredentials actual = sut.getCredentials();
+		// verify
+		assertThat(actual, is(expectedAwsCredentials));
+		logger.info("{}", actual);
 	}
 }

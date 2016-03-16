@@ -28,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * {@link InstanceMetadata}をMDCに出力するための{@link Filter ServletFilter} 実装クラス。
+ * {@link Filter ServletFilter} implementation that put {@link InstanceMetadata} to {@link MDC}.
  * 
  * @since 0.3
  * @author daisuke

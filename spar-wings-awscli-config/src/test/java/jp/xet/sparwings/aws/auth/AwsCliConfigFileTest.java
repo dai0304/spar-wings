@@ -33,22 +33,22 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
- * TODO for daisuke
+ * Test for {@link AwsCliConfigFile}.
  * 
  * @since 0.10
  * @version $Id$
  * @author daisuke
  */
+@SuppressWarnings("javadoc")
 @RunWith(MockitoJUnitRunner.class)
-public class CliConfigFileTest {
+public class AwsCliConfigFileTest {
 	
 	AwsCliConfigFile sut;
 	
 	
 	@Before
 	public void setUp() throws Exception {
-		File configFile = new File(new File("."), "src/test/resources/sample_config");
-		sut = new AwsCliConfigFile(configFile);
+		sut = new AwsCliConfigFile(new File("./src/test/resources/sample_config"));
 	}
 	
 	@Test
