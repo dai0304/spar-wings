@@ -1,0 +1,7 @@
+// -*- coding: utf-8; mode: groovy -*-
+
+dependencies {
+	compile "com.amazonaws:aws-java-sdk-sns:$awsJavaSdkVersion"
+	compile project(":spar-wings-spring-essential")
+	compile project(":spar-wings-aws-essential")
+}

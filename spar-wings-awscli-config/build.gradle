@@ -1,0 +1,5 @@
+// -*- coding: utf-8; mode: groovy -*-
+
+dependencies {
+	compile "com.amazonaws:aws-java-sdk-sts:$awsJavaSdkVersion"
+}
