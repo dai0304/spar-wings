@@ -43,6 +43,7 @@ public class AmazonSNSMessageVerifier {
 	 * 
 	 * @param message 対象メッセージ
 	 * @throws NullPointerException 引数に{@code null}を与えた場合
+	 * @throws SecurityException
 	 * @since 1.0
 	 */
 	public void verify(SNSMessage message) {

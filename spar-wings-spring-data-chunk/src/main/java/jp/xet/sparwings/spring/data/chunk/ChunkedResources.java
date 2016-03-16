@@ -18,18 +18,22 @@ import java.util.Map;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-
-import org.springframework.util.Assert;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+
+import org.springframework.util.Assert;
+
 /**
  * TODO for daisuke
+ * 
+ * @param <T>
+ * @since #version#
+ * @author daisuke
  */
 @ToString
 public class ChunkedResources<T> {
@@ -39,20 +43,35 @@ public class ChunkedResources<T> {
 	private ChunkMetadata metadata;
 	
 	
+	/**
+	 * Creates a {@link ChunkedResources} instance with {@link Chunk}.
+	 * 
+	 * @param key must not be {@code null}.
+	 * @param chunk The {@link Chunk}
+	 * @since #version#
+	 */
 	public ChunkedResources(String key, Chunk<T> chunk) {
 		this(key, chunk.getContent(), new ChunkMetadata(chunk.getContent().size(), chunk.getLastEvaluatedKey()));
 	}
 	
+	/**
+	 * Creates a {@link ChunkedResources} instance with content collection.
+	 * 
+	 * @param key must not be {@code null}.
+	 * @param content The contents
+	 * @since #version#
+	 */
 	public ChunkedResources(String key, Collection<T> content) {
 		this(key, content, new ChunkMetadata(content.size(), null));
 	}
 	
 	/**
-	 * Creates a {@link ChunkedResources} instance.
+	 * Creates a {@link ChunkedResources} instance with iterable and metadata.
 	 * 
 	 * @param key must not be {@code null}.
 	 * @param iterable must not be {@code null}.
 	 * @param metadata must not be {@code null}.
+	 * @since #version#
 	 */
 	public ChunkedResources(String key, Iterable<T> iterable, ChunkMetadata metadata) {
 		Assert.notNull(key);
@@ -69,6 +88,7 @@ public class ChunkedResources<T> {
 	 * Returns the underlying elements.
 	 * 
 	 * @return the content will never be {@literal null}.
+	 * @since #version#
 	 */
 	@XmlElement(name = "embedded")
 	@com.fasterxml.jackson.annotation.JsonProperty("_embedded")
@@ -81,6 +101,12 @@ public class ChunkedResources<T> {
 		}
 	}
 	
+	/**
+	 * TODO for daisuke
+	 * 
+	 * @return
+	 * @since #version#
+	 */
 	@XmlElement(name = "chunk")
 	@com.fasterxml.jackson.annotation.JsonProperty("chunk")
 	public ChunkMetadata getMetadata() {
@@ -90,6 +116,8 @@ public class ChunkedResources<T> {
 	
 	/**
 	 * Value object for pagination metadata.
+	 * 
+	 * @since #version#
 	 */
 	@ToString
 	@EqualsAndHashCode

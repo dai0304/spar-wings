@@ -28,6 +28,10 @@ import org.springframework.util.Assert;
 
 /**
  * TODO for daisuke
+ * 
+ * @param <T>
+ * @since #version#
+ * @author daisuke
  */
 public class ChunkImpl<T> implements Chunk<T> {
 	
@@ -48,6 +52,7 @@ public class ChunkImpl<T> implements Chunk<T> {
 	 * @param content must not be {@literal null}.
 	 * @param lastEvaluatedKey
 	 * @param chunkable can be {@literal null}.
+	 * @since #version#
 	 */
 	public ChunkImpl(List<T> content, Object lastEvaluatedKey, Chunkable chunkable) {
 		Assert.notNull(content, "Content must not be null!");
@@ -101,6 +106,7 @@ public class ChunkImpl<T> implements Chunk<T> {
 	 * 
 	 * @param converter must not be {@literal null}.
 	 * @return
+	 * @since #version#
 	 */
 	protected <S>List<S> getConvertedContent(Converter<? super T, ? extends S> converter) {
 		Assert.notNull(converter, "Converter must not be null!");

@@ -14,13 +14,34 @@ import org.springframework.data.domain.Sort.Direction;
 
 /**
  * TODO for daisuke
+ * 
+	 * @since #version#
+ * @author daisuke
  */
 public interface Chunkable {
 	
+	/**
+	 * TODO for daisuke
+	 * 
+	 * @return
+	 * @since #version#
+	 */
 	Object getExclusiveStartKey();
 	
+	/**
+	 * TODO for daisuke
+	 * 
+	 * @return
+	 * @since #version#
+	 */
 	Integer getMaxPageSize();
 	
+	/**
+	 * TODO for daisuke
+	 * 
+	 * @return
+	 * @since #version#
+	 */
 	Direction getDirection();
 	
 	/**

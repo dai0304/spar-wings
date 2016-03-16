@@ -17,6 +17,9 @@ import org.springframework.data.domain.Sort.Direction;
 
 /**
  * TODO for daisuke
+ * 
+ * @since #version#
+ * @author daisuke
  */
 public interface Chunk<T> extends Iterable<T> {
 	
@@ -24,15 +27,23 @@ public interface Chunk<T> extends Iterable<T> {
 	 * Returns the page content as {@link List}.
 	 * 
 	 * @return
+	 * @since #version#
 	 */
 	List<T> getContent();
 	
+	/**
+	 * TODO for daisuke
+	 * 
+	 * @return
+	 * @since #version#
+	 */
 	Object getLastEvaluatedKey();
 	
 	/**
 	 * Returns the sorting direction for the {@link Chunk}.
 	 * 
 	 * @return
+	 * @since #version#
 	 */
 	Direction getDirection();
 	
@@ -40,6 +51,7 @@ public interface Chunk<T> extends Iterable<T> {
 	 * Returns whether the {@link Chunk} has content at all.
 	 * 
 	 * @return
+	 * @since #version#
 	 */
 	boolean hasContent();
 	
@@ -47,6 +59,7 @@ public interface Chunk<T> extends Iterable<T> {
 	 * Returns if there is a next {@link Chunk}.
 	 * 
 	 * @return if there is a next {@link Chunk}.
+	 * @since #version#
 	 */
 	boolean hasNext();
 	
@@ -54,6 +67,7 @@ public interface Chunk<T> extends Iterable<T> {
 	 * Returns whether the current {@link Chunk} is the last one.
 	 * 
 	 * @return
+	 * @since #version#
 	 */
 	boolean isLast();
 	
@@ -63,6 +77,7 @@ public interface Chunk<T> extends Iterable<T> {
 	 * sure they receive a non-{@literal null} value.
 	 * 
 	 * @return
+	 * @since #version#
 	 */
 	Chunkable nextChunkable();
 	
@@ -71,7 +86,7 @@ public interface Chunk<T> extends Iterable<T> {
 	 * 
 	 * @param converter must not be {@literal null}.
 	 * @return a new {@link Chunk} with the content of the current one mapped by the given {@link Converter}.
-	 * @since 1.10
+	 * @since #version#
 	 */
 	<S>Chunk<S> map(Converter<? super T, ? extends S> converter);
 }

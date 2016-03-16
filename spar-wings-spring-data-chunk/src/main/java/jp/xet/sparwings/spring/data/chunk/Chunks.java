@@ -15,15 +15,27 @@ import java.util.Collections;
 import lombok.experimental.UtilityClass;
 
 /**
- * TODO for daisuke
+ * Utilities about {@link Chunk}.
+ * 
+ * @since #version#
+ * @author daisuke
  */
 @UtilityClass
 public class Chunks {
 	
+	/**
+	 * Empty chunk shared instance.
+	 */
 	@SuppressWarnings("rawtypes")
 	public static final Chunk EMPTY_CHUNK = new ChunkImpl<>(Collections.emptyList(), null, null);
 	
 	
+	/**
+	 * Returns a empty chunk.
+	 * 
+	 * @return Empty chunk
+	 * @since #version#
+	 */
 	@SuppressWarnings("unchecked")
 	public static final <T>Chunk<T> emptyChunk() {
 		return EMPTY_CHUNK;
