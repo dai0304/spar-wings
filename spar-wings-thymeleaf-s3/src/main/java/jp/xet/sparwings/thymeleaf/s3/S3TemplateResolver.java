@@ -15,6 +15,8 @@
  */
 package jp.xet.sparwings.thymeleaf.s3;
 
+import com.amazonaws.services.s3.AmazonS3;
+
 import org.thymeleaf.TemplateProcessingParameters;
 import org.thymeleaf.templateresolver.TemplateResolver;
 
@@ -35,6 +37,17 @@ public class S3TemplateResolver extends TemplateResolver {
 	 */
 	public S3TemplateResolver(S3TemplateResourceResolver s3ResourceResolver) {
 		setResourceResolver(s3ResourceResolver);
+	}
+	
+	/**
+	 * Create instance.
+	 * 
+	 * @param s3 The Amazon S3 client
+	 * @param bucketName The bucket name for template
+	 * @since #version#
+	 */
+	public S3TemplateResolver(AmazonS3 s3, String bucketName) {
+		this(new S3TemplateResourceResolver(s3, bucketName));
 	}
 	
 	@Override
