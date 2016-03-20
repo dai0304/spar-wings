@@ -38,7 +38,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 /**
  * {@link ResourceLoader} implementation to load {@link S3ObjectResource}.
  * 
- * @since #version#
+ * @since 0.12
  * @author daisuke
  */
 @AllArgsConstructor
@@ -62,7 +62,7 @@ public class S3ObjectResourceLoader implements ResourceLoader, InitializingBean 
 	 * 
 	 * @param amazonS3 The Amazon S3 client
 	 * @param classLoader class loader for delegation
-	 * @since #version#
+	 * @since 0.12
 	 */
 	public S3ObjectResourceLoader(AmazonS3 amazonS3, ClassLoader classLoader) {
 		this.amazonS3 = amazonS3;
@@ -73,7 +73,7 @@ public class S3ObjectResourceLoader implements ResourceLoader, InitializingBean 
 	 * Create instance with client.
 	 * 
 	 * @param amazonS3 The Amazon S3 client
-	 * @since #version#
+	 * @since 0.12
 	 */
 	public S3ObjectResourceLoader(AmazonS3 amazonS3) {
 		this(amazonS3, ClassUtils.getDefaultClassLoader());

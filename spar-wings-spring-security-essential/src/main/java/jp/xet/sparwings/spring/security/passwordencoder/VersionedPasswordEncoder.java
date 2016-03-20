@@ -36,7 +36,7 @@ import org.springframework.util.Assert;
  * TODO for daisuke
  * 
  * @author daisuke
- * @since #version#
+ * @since 0.12
  */
 public class VersionedPasswordEncoder implements PasswordEncoder {
 	
@@ -77,7 +77,7 @@ public class VersionedPasswordEncoder implements PasswordEncoder {
 	/**
 	 * Create instance with default encoder map.
 	 * 
-	 * @since #version#
+	 * @since 0.12
 	 */
 	public VersionedPasswordEncoder() {
 		this("NoOp", "BC", DEFAULT_ENCODERS);

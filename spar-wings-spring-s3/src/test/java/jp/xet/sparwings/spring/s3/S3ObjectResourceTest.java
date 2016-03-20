@@ -42,7 +42,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 /**
  * Test for {@link S3ObjectResource}.
  * 
- * @since #version#
+ * @since 0.12
  * @version $Id$
  * @author daisuke
  */

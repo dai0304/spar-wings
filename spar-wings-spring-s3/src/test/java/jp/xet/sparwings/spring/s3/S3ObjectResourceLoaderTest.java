@@ -35,7 +35,7 @@ import org.springframework.core.io.ResourceLoader;
 /**
  * Test for {@link S3ObjectResourceLoader}.
  * 
- * @since #version#
+ * @since 0.12
  * @author daisuke
  */
 @SuppressWarnings("javadoc")

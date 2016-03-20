@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.12
  * @version $Id$
  * @author daisuke
  */
@@ -31,7 +31,7 @@ public interface RequestIdGenerator {
 	 * 
 	 * @param req The request for which this generater issues request ID
 	 * @return The request ID string
-	 * @since #version#
+	 * @since 0.12
 	 */
 	String generateRequestId(HttpServletRequest req);
 	
