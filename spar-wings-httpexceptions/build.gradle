@@ -1,5 +1,7 @@
 // -*- coding: utf-8; mode: groovy -*-
 
+description "Exceptions for Spring MVC framework to return error HTTP statuses."
+
 dependencies {
 	compile "org.springframework:spring-web:$springVersion"
 }

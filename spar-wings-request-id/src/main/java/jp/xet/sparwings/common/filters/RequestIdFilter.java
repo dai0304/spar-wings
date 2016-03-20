@@ -16,7 +16,6 @@
 package jp.xet.sparwings.common.filters;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -25,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 import org.slf4j.MDC;
@@ -47,17 +47,25 @@ public class RequestIdFilter extends OncePerRequestFilter {
 	
 	private static final String DEFAULT_REQUEST_ID_MDC_KEY = "requestId";
 	
+	@NonNull
 	@Getter
 	@Setter
-	String requestIdAttribute = DEFAULT_REQUEST_ID_ATTRIBUTE;
+	private String requestIdAttribute = DEFAULT_REQUEST_ID_ATTRIBUTE;
 	
+	@NonNull
 	@Getter
 	@Setter
-	String requestIdMdcKey = DEFAULT_REQUEST_ID_MDC_KEY;
+	private String requestIdMdcKey = DEFAULT_REQUEST_ID_MDC_KEY;
 	
+	@NonNull
 	@Getter
 	@Setter
-	String requestIdHeader = DEFAULT_REQUEST_ID_HEADER;
+	private String requestIdHeader = DEFAULT_REQUEST_ID_HEADER;
+	
+	@NonNull
+	@Getter
+	@Setter
+	private RequestIdGenerator generator = new UuidRequestIdGenerator();
 	
 	
 	@Override
@@ -68,7 +76,7 @@ public class RequestIdFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		
-		String requestId = generateRequestID();
+		String requestId = generator.generateRequestId(request);
 		if (requestIdAttribute != null) {
 			request.setAttribute(requestIdAttribute, requestId);
 		}
@@ -81,15 +89,5 @@ public class RequestIdFilter extends OncePerRequestFilter {
 		} finally {
 			MDC.remove(requestIdMdcKey);
 		}
-	}
-	
-	/**
-	 * Generate request ID.
-	 * 
-	 * @return request ID
-	 * @since 0.3
-	 */
-	protected String generateRequestID() {
-		return UUID.randomUUID().toString();
 	}
 }

@@ -1,5 +1,7 @@
 // -*- coding: utf-8; mode: groovy -*-
 
+description "Support library for Spring framework to use S3 objects as resources."
+
 dependencies {
 	compile "org.springframework:spring-web:$springVersion"
 	compile "org.springframework:spring-webmvc:$springVersion"

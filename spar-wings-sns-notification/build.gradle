@@ -1,5 +1,7 @@
 // -*- coding: utf-8; mode: groovy -*-
 
+description "Amazon SNS client wrapper to notify messages to developers or operators."
+
 dependencies {
 	compile "com.amazonaws:aws-java-sdk-sns:$awsJavaSdkVersion"
 	compile project(":spar-wings-spring-essential")

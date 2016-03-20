@@ -1,5 +1,7 @@
 // -*- coding: utf-8; mode: groovy -*-
 
+description "Support library to poll Amazon SQS queue."
+
 dependencies {
 	compile "org.springframework:spring-core:$springVersion"
 	compile "org.springframework:spring-context:$springVersion"

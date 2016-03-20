@@ -1,5 +1,7 @@
 // -*- coding: utf-8; mode: groovy -*-
 
+description "Essential support library for Spring framework."
+
 dependencies {
 	compile "org.springframework:spring-beans:$springVersion"
 }

@@ -1,5 +1,7 @@
 // -*- coding: utf-8; mode: groovy -*-
 
+description "Essential support library for Jackson v2."
+
 dependencies {
 	compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 }

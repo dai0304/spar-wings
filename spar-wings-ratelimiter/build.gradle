@@ -1,5 +1,7 @@
 // -*- coding: utf-8; mode: groovy -*-
 
+description "Support library for Spring MVC to support HTTP request rate limiter."
+
 dependencies {
 	compile "javax.servlet:javax.servlet-api:3.1.0"
 	compile "org.springframework:spring-webmvc:$springVersion"
