@@ -59,8 +59,7 @@ public class ProductionErrorAttributes implements ErrorAttributes {
 	
 	private void addStatus(Map<String, Object> errorAttributes,
 			RequestAttributes requestAttributes) {
-		Integer status = getAttribute(requestAttributes,
-				"javax.servlet.error.status_code");
+		Integer status = getAttribute(requestAttributes, "javax.servlet.error.status_code");
 		if (status == null) {
 			errorAttributes.put("status", 999);
 			errorAttributes.put("error", "None");
@@ -79,8 +78,8 @@ public class ProductionErrorAttributes implements ErrorAttributes {
 			RequestAttributes requestAttributes, boolean includeStackTrace) {
 		Throwable error = getError(requestAttributes);
 		Object message = getAttribute(requestAttributes, "javax.servlet.error.message");
-		if ((!StringUtils.isEmpty(message) || errorAttributes.get("message") == null)
-				&& !(error instanceof BindingResult)) {
+		if ((StringUtils.isEmpty(message) == false || errorAttributes.get("message") == null)
+				&& (error instanceof BindingResult) == false) {
 			errorAttributes.put("message", StringUtils.isEmpty(message) ? "No message available" : message);
 		}
 	}
