@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Miyamoto Daisuke.
+ * Copyright 2015-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package jp.xet.sparwings.thymeleaf.s3;
 
+import com.amazonaws.services.s3.AmazonS3;
+
 import org.thymeleaf.TemplateProcessingParameters;
 import org.thymeleaf.templateresolver.TemplateResolver;
 
@@ -23,7 +25,7 @@ import org.thymeleaf.templateresolver.TemplateResolver;
  * 
  * @since 0.11
  * @version $Id$
- * @author Daisuke F.
+ * @author fd0
  */
 public class S3TemplateResolver extends TemplateResolver {
 	
@@ -35,6 +37,17 @@ public class S3TemplateResolver extends TemplateResolver {
 	 */
 	public S3TemplateResolver(S3TemplateResourceResolver s3ResourceResolver) {
 		setResourceResolver(s3ResourceResolver);
+	}
+	
+	/**
+	 * Create instance.
+	 * 
+	 * @param s3 The Amazon S3 client
+	 * @param bucketName The bucket name for template
+	 * @since 0.12
+	 */
+	public S3TemplateResolver(AmazonS3 s3, String bucketName) {
+		this(new S3TemplateResourceResolver(s3, bucketName));
 	}
 	
 	@Override

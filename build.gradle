@@ -28,6 +28,7 @@ allprojects {
 	group = "jp.xet.${githubProjectName}"
 	version = currentVersion
 }
+description "Support library for Spring framework, AWS Java SDK and the others."
 
 subprojects {
 	apply plugin: "java"
@@ -103,7 +104,7 @@ subprojects {
 					asNode().children().last() + {
 						resolveStrategy = Closure.DELEGATE_FIRST
 						name project.name
-						description "Spring framework and AWS libraries"
+						description project.description
 						inceptionYear "2015"
 						licenses {
 							license {

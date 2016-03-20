@@ -1,5 +1,7 @@
 // -*- coding: utf-8; mode: groovy -*-
 
+description "Support library for Thymeleaf to retrieve template from S3 bucket."
+
 dependencies {
 	compile "com.amazonaws:aws-java-sdk-s3:$awsJavaSdkVersion"
 	compile "org.thymeleaf:thymeleaf:2.1.4.RELEASE"
