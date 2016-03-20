@@ -25,7 +25,7 @@ import org.thymeleaf.templateresolver.TemplateResolver;
  * 
  * @since 0.11
  * @version $Id$
- * @author Daisuke F.
+ * @author fd0
  */
 public class S3TemplateResolver extends TemplateResolver {
 	
