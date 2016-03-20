@@ -33,7 +33,7 @@ import org.thymeleaf.resourceresolver.IResourceResolver;
  * 
  * @since 0.8
  * @version $Id$
- * @author Daisuke F.
+ * @author fd0
  */
 @RequiredArgsConstructor
 public class S3TemplateResourceResolver implements IResourceResolver {

@@ -16,12 +16,11 @@ import org.springframework.core.io.Resource;
  * Test for {@link S3AssetsResolver}.
  * 
  * @since #version#
- * @author daisuke
+ * @author fd0
  */
 @SuppressWarnings("javadoc")
 @RunWith(MockitoJUnitRunner.class)
 public class S3AssetsResolverTest {
-	
 	
 	@Mock
 	Resource resource;
@@ -32,44 +31,48 @@ public class S3AssetsResolverTest {
 	
 	@Test
 	public void test_buildS3Uri() {
-		S3AssetsResolver s3AssetsResolver = new S3AssetsResolver(null, "assetsbucket", "foo");
+		// setup
 		String requestPath = "bar.jpg";
 		String expectedUri = "s3://assetsbucket/foo/bar.jpg";
+		S3AssetsResolver sut = new S3AssetsResolver(null, "assetsbucket", "foo");
 		// exercise
-		String actual = s3AssetsResolver.buildS3Uri(requestPath);
+		String actual = sut.buildS3Uri(requestPath);
 		// verify
 		assertThat(actual, is(expectedUri));
 	}
 	
 	@Test
 	public void test_buildS3Uri_noPrefix() {
-		S3AssetsResolver s3AssetsResolver = new S3AssetsResolver(null, "assetsbucket", "");
+		// setup
 		String requestPath = "bar.jpg";
 		String expectedUri = "s3://assetsbucket/bar.jpg";
+		S3AssetsResolver sut = new S3AssetsResolver(null, "assetsbucket", "");
 		// exercise
-		String actual = s3AssetsResolver.buildS3Uri(requestPath);
+		String actual = sut.buildS3Uri(requestPath);
 		// verify
 		assertThat(actual, is(expectedUri));
 	}
 	
 	@Test
 	public void test_resolveResourceInternal() {
+		// setup
 		when(resource.exists()).thenReturn(true);
 		when(s3ObjectResourceLoader.getResource(any(String.class))).thenReturn(resource);
-		S3AssetsResolver s3AssetsResolver = new S3AssetsResolver(s3ObjectResourceLoader, "assetsbucket", "foo");
+		S3AssetsResolver sut = new S3AssetsResolver(s3ObjectResourceLoader, "assetsbucket", "foo");
 		// exercise
-		Resource actual = s3AssetsResolver.resolveResourceInternal("");
+		Resource actual = sut.resolveResourceInternal("");
 		// verify
 		assertThat(actual, is(resource));
 	}
 	
 	@Test
 	public void test_resolveResourceInternal_nonexistent() {
+		// setup
 		when(resource.exists()).thenReturn(false);
 		when(s3ObjectResourceLoader.getResource(any(String.class))).thenReturn(resource);
-		S3AssetsResolver s3AssetsResolver = new S3AssetsResolver(s3ObjectResourceLoader, "assetsbucket", "foo");
+		S3AssetsResolver sut = new S3AssetsResolver(s3ObjectResourceLoader, "assetsbucket", "foo");
 		// exercise
-		Resource actual = s3AssetsResolver.resolveResourceInternal("");
+		Resource actual = sut.resolveResourceInternal("");
 		// verify
 		assertNull(actual);
 	}

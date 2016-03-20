@@ -9,8 +9,13 @@ import org.springframework.web.servlet.resource.AbstractResourceResolver;
 import org.springframework.web.servlet.resource.ResourceResolverChain;
 import org.springframework.web.util.UriComponentsBuilder;
 
+/**
+ * TODO for daisuke
+ * 
+ * @since #version#
+ * @author fd0
+ */
 public class S3AssetsResolver extends AbstractResourceResolver {
-	
 	
 	/**
 	 * resource loader from s3
@@ -28,6 +33,14 @@ public class S3AssetsResolver extends AbstractResourceResolver {
 	private String prefix;
 	
 	
+	/**
+	 * インスタンスを生成する。
+	 * 
+	 * @param s3ObjectResourceLoader
+	 * @param assetsBucket
+	 * @param prefix
+	 * @since #version#
+	 */
 	public S3AssetsResolver(S3ObjectResourceLoader s3ObjectResourceLoader, String assetsBucket, String prefix) {
 		this.s3ObjectResourceLoader = s3ObjectResourceLoader;
 		this.assetsBucket = assetsBucket;
@@ -41,28 +54,30 @@ public class S3AssetsResolver extends AbstractResourceResolver {
 	}
 	
 	/**
-	 * build s3 uri (s3://bucket/prefix/requestPath)
+	 * Build S3 URI (ex. s3://bucket/prefix/requestPath).
+	 * 
 	 * @param requestPath
 	 * @return Uri for s3
 	 */
 	public String buildS3Uri(String requestPath) {
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance();
 		uriComponentsBuilder.scheme("s3");
-		uriComponentsBuilder.host(this.assetsBucket);
-		if (!this.prefix.isEmpty()) {
-			uriComponentsBuilder.path(this.prefix);
+		uriComponentsBuilder.host(assetsBucket);
+		if (!prefix.isEmpty()) {
+			uriComponentsBuilder.path(prefix);
 		}
 		uriComponentsBuilder.pathSegment(requestPath);
 		return uriComponentsBuilder.toUriString();
 	}
 	
 	/**
-	 * resolve resource
+	 * Resolve resource.
+	 * 
 	 * @param requestPath
 	 * @return resource from s3
 	 */
 	public Resource resolveResourceInternal(String requestPath) {
-		Resource resource = this.s3ObjectResourceLoader.getResource(buildS3Uri(requestPath));
+		Resource resource = s3ObjectResourceLoader.getResource(buildS3Uri(requestPath));
 		if (!resource.exists()) {
 			return null; // returns 404;
 		}
