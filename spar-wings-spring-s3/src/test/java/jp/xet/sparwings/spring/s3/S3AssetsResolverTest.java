@@ -30,7 +30,7 @@ import org.springframework.core.io.Resource;
 /**
  * Test for {@link S3AssetsResolver}.
  * 
- * @since #version#
+ * @since 0.12
  * @author fd0
  */
 @SuppressWarnings("javadoc")

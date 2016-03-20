@@ -33,7 +33,7 @@ import org.springframework.security.crypto.password.StandardPasswordEncoder;
 /**
  * Test for {@link VersionedPasswordEncoder}.
  * 
- * @since #version#
+ * @since 0.12
  */
 @SuppressWarnings("javadoc")
 public class VersionedPasswordEncoderTest {

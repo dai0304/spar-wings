@@ -44,7 +44,7 @@ public class S3TemplateResolver extends TemplateResolver {
 	 * 
 	 * @param s3 The Amazon S3 client
 	 * @param bucketName The bucket name for template
-	 * @since #version#
+	 * @since 0.12
 	 */
 	public S3TemplateResolver(AmazonS3 s3, String bucketName) {
 		this(new S3TemplateResourceResolver(s3, bucketName));

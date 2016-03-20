@@ -27,7 +27,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.12
  * @author fd0
  */
 public class S3AssetsResolver extends AbstractResourceResolver {
@@ -54,7 +54,7 @@ public class S3AssetsResolver extends AbstractResourceResolver {
 	 * @param s3ObjectResourceLoader
 	 * @param assetsBucket
 	 * @param prefix
-	 * @since #version#
+	 * @since 0.12
 	 */
 	public S3AssetsResolver(S3ObjectResourceLoader s3ObjectResourceLoader, String assetsBucket, String prefix) {
 		this.s3ObjectResourceLoader = s3ObjectResourceLoader;

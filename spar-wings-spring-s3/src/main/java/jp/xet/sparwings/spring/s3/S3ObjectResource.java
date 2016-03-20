@@ -65,7 +65,7 @@ import org.springframework.core.task.support.ExecutorServiceAdapter;
 /**
  * {@link Resource} implementation for Amazon {@link S3Object}.
  *
- * @since #version#
+ * @since 0.12
  * @author daisuke
  */
 @ToString
@@ -106,7 +106,7 @@ public class S3ObjectResource extends AbstractResource implements WritableResour
 	 * @param bucketName The bucket name of S3
 	 * @param key The key of S3 object
 	 * @param taskExecutor The {@link TaskExecutor}
-	 * @since #version#
+	 * @since 0.12
 	 */
 	public S3ObjectResource(AmazonS3 amazonS3, String bucketName, String key, TaskExecutor taskExecutor) {
 		this(amazonS3, bucketName, key, Optional.empty(), taskExecutor);
@@ -120,7 +120,7 @@ public class S3ObjectResource extends AbstractResource implements WritableResour
 	 * @param key The key of S3 object
 	 * @param versionId The version ID (nullable)
 	 * @param taskExecutor The {@link TaskExecutor}
-	 * @since #version#
+	 * @since 0.12
 	 */
 	public S3ObjectResource(AmazonS3 amazonS3, String bucketName, String key, String versionId,
 			TaskExecutor taskExecutor) {
@@ -134,7 +134,7 @@ public class S3ObjectResource extends AbstractResource implements WritableResour
 	 * @param bucketName The bucket name of S3
 	 * @param key The key of S3 object
 	 * @param versionId The version ID
-	 * @since #version#
+	 * @since 0.12
 	 */
 	public S3ObjectResource(AmazonS3 amazonS3, String bucketName, String key, Optional<String> versionId) {
 		this(amazonS3, bucketName, key, versionId, new SyncTaskExecutor());
@@ -147,7 +147,7 @@ public class S3ObjectResource extends AbstractResource implements WritableResour
 	 * @param bucketName The bucket name of S3
 	 * @param key The key of S3 object
 	 * @param versionId The version ID (nullable)
-	 * @since #version#
+	 * @since 0.12
 	 */
 	public S3ObjectResource(AmazonS3 amazonS3, String bucketName, String key, String versionId) {
 		this(amazonS3, bucketName, key, Optional.ofNullable(versionId), new SyncTaskExecutor());
@@ -159,7 +159,7 @@ public class S3ObjectResource extends AbstractResource implements WritableResour
 	 * @param amazonS3 The Amazon S3 client
 	 * @param bucketName The bucket name of S3
 	 * @param key The key of S3 object
-	 * @since #version#
+	 * @since 0.12
 	 */
 	public S3ObjectResource(AmazonS3 amazonS3, String bucketName, String key) {
 		this(amazonS3, bucketName, key, Optional.empty(), new SyncTaskExecutor());
