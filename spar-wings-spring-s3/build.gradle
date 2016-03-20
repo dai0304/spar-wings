@@ -2,5 +2,7 @@
 
 dependencies {
 	compile "org.springframework:spring-web:$springVersion"
+	compile "org.springframework:spring-webmvc:$springVersion"
 	compile "com.amazonaws:aws-java-sdk-s3:$awsJavaSdkVersion"
+	compile "javax.servlet:javax.servlet-api:3.1.0"
 }
