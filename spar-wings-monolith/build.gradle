@@ -14,7 +14,9 @@ dependencies {
 	
 	compile "org.springframework:spring-web:$springVersion"
 	compile "org.springframework:spring-webmvc:$springVersion"
-	compile "org.springframework.security:spring-security-core:3.2.5.RELEASE"
+	compile "org.springframework.security:spring-security-core:$springSecurityVersion"
+	compile "org.springframework.security:spring-security-config:$springSecurityVersion"
+	compile "org.springframework.security:spring-security-web:$springSecurityVersion"
 	compile "org.springframework.security.oauth:spring-security-oauth2:$springSecurityOauth2Version"
 	compile "org.springframework.retry:spring-retry:$springRetryVersion"
 	compile "org.springframework.data:spring-data-commons:$springDataVersion"
