@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.13
  * @version $Id$
  * @author daisuke
  */

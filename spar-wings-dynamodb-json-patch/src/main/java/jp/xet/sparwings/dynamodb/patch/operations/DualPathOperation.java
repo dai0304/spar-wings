@@ -28,7 +28,7 @@ import com.github.fge.jackson.jsonpointer.JsonPointer;
 /**
  * Base class for JSON Patch operations taking two JSON Pointers as arguments
  * 
- * @since #version#
+ * @since 0.13
  * @version $Id$
  * @author daisuke
  */

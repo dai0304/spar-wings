@@ -22,7 +22,7 @@ import com.amazonaws.services.dynamodbv2.xspec.ExpressionSpecBuilder;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.13
  * @version $Id$
  * @author daisuke
  */

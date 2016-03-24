@@ -31,7 +31,7 @@ import com.github.fge.jackson.jsonpointer.JsonPointer;
 /**
  * Base class for patch operations taking a value in addition to a path
  * 
- * @since #version#
+ * @since 0.13
  * @version $Id$
  * @author daisuke
  */

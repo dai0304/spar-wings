@@ -35,7 +35,7 @@ import com.github.fge.jackson.jsonpointer.JsonPointer;
  * is defined by JSON Schema itself. As such, this operation reuses {@link
  * JsonNumEquals} for testing equality.</p>
  * 
- * @since #version#
+ * @since 0.13
  * @version $Id$
  * @author daisuke
  */
