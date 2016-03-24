@@ -135,7 +135,7 @@ subprojects {
 			pkg {
 				repo = "spar-wings"
 				name = project.name
-				desc = "AWS and Spring framework commons."
+				desc = project.description
 				websiteUrl = "https://github.com/dai0304/spar-wings"
 				issueTrackerUrl = "https://github.com/dai0304/spar-wings/issues"
 				vcsUrl = "https://github.com/dai0304/spar-wings.git"
