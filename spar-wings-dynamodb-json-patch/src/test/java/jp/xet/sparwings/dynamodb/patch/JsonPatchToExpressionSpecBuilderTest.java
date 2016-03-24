@@ -60,9 +60,9 @@ public class JsonPatchToExpressionSpecBuilderTest {
 	}
 	
 	@Test
-	public void test_add_singlePath_number() throws Exception {
+	public void test_replace_singlePath_number() throws Exception {
 		// setup
-		String patchExpression = "[ { \"op\": \"add\", \"path\": \"/a\", \"value\": 1 } ]";
+		String patchExpression = "[ { \"op\": \"replace\", \"path\": \"/a\", \"value\": 1 } ]";
 		JsonNode jsonNode = JsonLoader.fromString(patchExpression);
 		JsonPatch jsonPatch = JsonPatch.fromJson(jsonNode);
 		UpdateItemExpressionSpec expectedSpec = new ExpressionSpecBuilder()
@@ -80,9 +80,9 @@ public class JsonPatchToExpressionSpecBuilderTest {
 	}
 	
 	@Test
-	public void test_add_nestedPath_string() throws Exception {
+	public void test_replace_nestedPath_string() throws Exception {
 		// setup
-		String patchExpression = "[ { \"op\": \"add\", \"path\": \"/a/b\", \"value\": \"foo\" } ]";
+		String patchExpression = "[ { \"op\": \"replace\", \"path\": \"/a/b\", \"value\": \"foo\" } ]";
 		JsonNode jsonNode = JsonLoader.fromString(patchExpression);
 		JsonPatch jsonPatch = JsonPatch.fromJson(jsonNode);
 		UpdateItemExpressionSpec expectedSpec = new ExpressionSpecBuilder()
