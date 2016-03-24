@@ -49,7 +49,7 @@ import com.github.fge.jackson.jsonpointer.JsonPointer;
  * <p>It is an error condition if {@code path} does not point to an actual JSON
  * value.</p>
  * 
- * @since #version#
+ * @since 0.13
  * @version $Id$
  * @author daisuke
  */

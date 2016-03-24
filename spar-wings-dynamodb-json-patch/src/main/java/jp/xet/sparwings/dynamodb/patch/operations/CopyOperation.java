@@ -18,7 +18,7 @@ package jp.xet.sparwings.dynamodb.patch.operations;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.13
  * @version $Id$
  * @author daisuke
  */

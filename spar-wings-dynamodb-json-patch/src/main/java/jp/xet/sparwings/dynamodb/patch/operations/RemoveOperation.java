@@ -36,7 +36,7 @@ import com.github.fge.jackson.jsonpointer.JsonPointer;
  * <p>This operation only takes one pointer ({@code path}) as an argument. It
  * is an error condition if no JSON value exists at that pointer.</p>
  * 
- * @since #version#
+ * @since 0.13
  * @version $Id$
  * @author daisuke
  */

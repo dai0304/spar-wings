@@ -58,7 +58,7 @@ import com.github.fge.jackson.jsonpointer.JsonPointer;
  *     [ { "x": "victim" } ]
  * </pre>
  * 
- * @since #version#
+ * @since 0.13
  * @version $Id$
  * @author daisuke
  */
