@@ -1,0 +1,11 @@
+// -*- coding: utf-8; mode: groovy -*-
+
+description "Support library for DynamoDB to support JSON Patch (RFC 6902) request."
+
+dependencies {
+//	compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+	compile "com.github.fge:jackson-coreutils:1.6"
+	compile "com.amazonaws:aws-java-sdk-dynamodb:$awsJavaSdkVersion"
+	
+	testCompile "com.jayway.jsonpath:json-path-assert:2.2.0"
+}

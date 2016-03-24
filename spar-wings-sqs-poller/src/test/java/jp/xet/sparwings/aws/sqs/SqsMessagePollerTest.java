@@ -74,6 +74,8 @@ public class SqsMessagePollerTest {
 	@Before
 	public void setUp() throws Exception {
 		sut = new SqsMessagePoller(sqs, retry, Q_URL, messageHandler);
+		sut.setVisibilityTimeout(10);
+		sut.setChangeVisibilityThreshold(1);
 	}
 	
 	private ReceiveMessageResult receiveMessageResultOf(Message... msgs) {
@@ -99,7 +101,7 @@ public class SqsMessagePollerTest {
 		return invocation -> {
 			for (int i = 0; i < size; i++) {
 				logger.info("handler is working... {}/{}", i + 1, size);
-				Thread.sleep(10000);
+				Thread.sleep(333);
 			}
 			if (excepiton) {
 				throw new Exception();
@@ -181,7 +183,7 @@ public class SqsMessagePollerTest {
 		ChangeMessageVisibilityRequest cmvReq = captor.getValue();
 		assertThat(cmvReq.getQueueUrl(), is(Q_URL));
 		assertThat(cmvReq.getReceiptHandle(), is("rh-1"));
-		assertThat(cmvReq.getVisibilityTimeout(), is(300));
+		assertThat(cmvReq.getVisibilityTimeout(), is(10));
 	}
 	
 	@Test
@@ -212,19 +214,19 @@ public class SqsMessagePollerTest {
 		ChangeMessageVisibilityRequest cmvReq1 = captor.getAllValues().stream()
 			.filter(r -> r.getReceiptHandle().equals("rh-1")).findFirst().get();
 		assertThat(cmvReq1.getQueueUrl(), is(Q_URL));
-		assertThat(cmvReq1.getVisibilityTimeout(), is(300));
+		assertThat(cmvReq1.getVisibilityTimeout(), is(10));
 		
 		ChangeMessageVisibilityRequest cmvReq2 = captor.getAllValues().stream()
 			.filter(r -> r.getReceiptHandle().equals("rh-2")).findFirst().get();
 		assertThat(cmvReq2.getQueueUrl(), is(Q_URL));
 		assertThat(cmvReq2.getReceiptHandle(), is("rh-2"));
-		assertThat(cmvReq2.getVisibilityTimeout(), is(300));
+		assertThat(cmvReq2.getVisibilityTimeout(), is(10));
 		
 		ChangeMessageVisibilityRequest cmvReq3 = captor.getAllValues().stream()
 			.filter(r -> r.getReceiptHandle().equals("rh-3")).findFirst().get();
 		assertThat(cmvReq3.getQueueUrl(), is(Q_URL));
 		assertThat(cmvReq3.getReceiptHandle(), is("rh-3"));
-		assertThat(cmvReq3.getVisibilityTimeout(), is(300));
+		assertThat(cmvReq3.getVisibilityTimeout(), is(10));
 	}
 	
 	@Test
@@ -248,28 +250,29 @@ public class SqsMessagePollerTest {
 		ChangeMessageVisibilityRequest cmvReq1 = captor.getAllValues().get(0);
 		assertThat(cmvReq1.getQueueUrl(), is(Q_URL));
 		assertThat(cmvReq1.getReceiptHandle(), is("rh-1"));
-		assertThat(cmvReq1.getVisibilityTimeout(), is(300));
+		assertThat(cmvReq1.getVisibilityTimeout(), is(10));
 		
 		ChangeMessageVisibilityRequest cmvReq2 = captor.getAllValues().get(1);
 		assertThat(cmvReq2.getQueueUrl(), is(Q_URL));
 		assertThat(cmvReq2.getReceiptHandle(), is("rh-1"));
-		assertThat(cmvReq2.getVisibilityTimeout(), is(300));
+		assertThat(cmvReq2.getVisibilityTimeout(), is(10));
 	}
 	
 	@Test
 	public void test_1ExcessiveHeavyMessage() throws Exception {
 		// setup
-		sut.setChangeVisibilityThreshold(5);
+		sut.setVisibilityTimeout(60);
+		sut.setChangeVisibilityThreshold(1);
 		Message msg1 = createMessage(1);
 		DeleteMessageRequest expectedDmr = createDeleteMessageRequest(1);
 		when(sqs.receiveMessage(any(ReceiveMessageRequest.class))).thenReturn(receiveMessageResultOf(msg1));
-		when(messageHandler.handle(any(Message.class))).then(createHeavyJobAnswer(4, false));
+		when(messageHandler.handle(any(Message.class))).then(createHeavyJobAnswer(24, false));
 		// exercise
 		sut.loop();
 		// verify
 		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
 		verify(messageHandler).handle(eq(msg1));
-		verify(sqs, never()).deleteMessage(eq(expectedDmr));
+		verify(sqs, never()).deleteMessage(eq(expectedDmr)); // retry attempt exceeded
 		verify(sqs, times(3)).changeMessageVisibility(any(ChangeMessageVisibilityRequest.class));
 	}
 	
