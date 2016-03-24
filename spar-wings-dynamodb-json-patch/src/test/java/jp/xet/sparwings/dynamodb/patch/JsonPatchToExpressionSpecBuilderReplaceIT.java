@@ -37,7 +37,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -226,31 +225,6 @@ public class JsonPatchToExpressionSpecBuilderReplaceIT {
 		assertThat(json, hasJsonPath("$.key", equalTo("keyValue")));
 		assertThat(json, hasJsonPath("$.a[*]", hasSize(2)));
 		assertThat(json, hasJsonPath("$.a[*]", hasItems("baz", "qux")));
-	}
-	
-	@Test
-	@Ignore
-	public void test_replace_appenExisting_stringSet() throws Exception {
-		// setup
-		table.putItem(Item.fromMap(ImmutableMap.<String, Object> builder()
-			.put(KEY_ATTRIBUTE_NAME, VALUE)
-			.put("a", ImmutableSet.of("foo", "bar"))
-			.build()));
-		
-		String patchExpression = "[ { \"op\": \"replace\", \"path\": \"/a/0\", \"value\": [\"baz\",\"qux\"] } ]";
-		JsonNode jsonNode = JsonLoader.fromString(patchExpression);
-		JsonPatch jsonPatch = JsonPatch.fromJson(jsonNode);
-		// exercise
-		ExpressionSpecBuilder builder = sut.apply(jsonPatch);
-		UpdateItemExpressionSpec spec = builder.buildForUpdate();
-		table.updateItem(KEY_ATTRIBUTE_NAME, VALUE, spec);
-		// verify
-		Item item = table.getItem(PK);
-		String json = item.toJSON();
-		logger.info("{}", json);
-		assertThat(json, hasJsonPath("$.key", equalTo("keyValue")));
-		assertThat(json, hasJsonPath("$.a[*]", hasSize(4)));
-		assertThat(json, hasJsonPath("$.a[*]", hasItems("foo", "bar", "baz", "qux")));
 	}
 	
 	@Test
