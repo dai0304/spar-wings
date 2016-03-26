@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
@@ -72,7 +73,7 @@ public class JsonPatchToExpressionSpecBuilderReplaceIT {
 			amazonDynamoDB.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
 			table = new Table(amazonDynamoDB, "json_patch_test");
 			table.deleteItem(PK);
-		} catch (AmazonServiceException e) {
+		} catch (AmazonClientException e) {
 			throw new AssumptionViolatedException(null, e);
 		}
 	}
