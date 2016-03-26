@@ -36,6 +36,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.internal.AssumptionViolatedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,10 +64,14 @@ public class JsonPatchToExpressionSpecBuilderRemoveIT {
 	
 	@Before
 	public void setUp() throws Exception {
-		AmazonDynamoDB amazonDynamoDB = new AmazonDynamoDBClient();
-		amazonDynamoDB.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
-		table = new Table(amazonDynamoDB, "json_patch_test");
-		table.deleteItem(PK);
+		try {
+			AmazonDynamoDB amazonDynamoDB = new AmazonDynamoDBClient();
+			amazonDynamoDB.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
+			table = new Table(amazonDynamoDB, "json_patch_test");
+			table.deleteItem(PK);
+		} catch (AmazonServiceException e) {
+			throw new AssumptionViolatedException(null, e);
+		}
 	}
 	
 	@Test
