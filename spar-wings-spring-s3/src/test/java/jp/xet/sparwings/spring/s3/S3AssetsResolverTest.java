@@ -37,6 +37,7 @@ import org.springframework.core.io.Resource;
 @RunWith(MockitoJUnitRunner.class)
 public class S3AssetsResolverTest {
 	
+	
 	@Mock
 	Resource resource;
 	
@@ -61,6 +62,18 @@ public class S3AssetsResolverTest {
 		// setup
 		String requestPath = "bar.jpg";
 		String expectedUri = "s3://assetsbucket/bar.jpg";
+		S3AssetsResolver sut = new S3AssetsResolver(null, "assetsbucket", "");
+		// exercise
+		String actual = sut.buildS3Uri(requestPath);
+		// verify
+		assertThat(actual, is(expectedUri));
+	}
+	
+	@Test
+	public void test_buildS3Uri_subdir() {
+		// setup
+		String requestPath = "folder/bar.jpg";
+		String expectedUri = "s3://assetsbucket/folder/bar.jpg";
 		S3AssetsResolver sut = new S3AssetsResolver(null, "assetsbucket", "");
 		// exercise
 		String actual = sut.buildS3Uri(requestPath);
