@@ -32,6 +32,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 public class S3AssetsResolver extends AbstractResourceResolver {
 	
+	
 	/**
 	 * resource loader from s3
 	 */
@@ -81,7 +82,10 @@ public class S3AssetsResolver extends AbstractResourceResolver {
 		if (!prefix.isEmpty()) {
 			uriComponentsBuilder.path(prefix);
 		}
-		uriComponentsBuilder.pathSegment(requestPath);
+		String[] paths = requestPath.split("/");
+		for (String path : paths) {
+			uriComponentsBuilder.pathSegment(path);
+		}
 		return uriComponentsBuilder.toUriString();
 	}
 	
