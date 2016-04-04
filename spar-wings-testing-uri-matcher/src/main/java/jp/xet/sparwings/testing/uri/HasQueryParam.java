@@ -30,7 +30,7 @@ import org.hamcrest.TypeSafeMatcher;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.15
  * @version $Id$
  * @author daisuke
  */

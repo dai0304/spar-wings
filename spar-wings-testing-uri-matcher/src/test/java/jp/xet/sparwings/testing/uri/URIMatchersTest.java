@@ -36,7 +36,7 @@ import org.junit.Test;
 /**
  * Test for {@link URIMatchers}.
  * 
- * @since #version#
+ * @since 0.15
  * @version $Id$
  * @author daisuke
  */

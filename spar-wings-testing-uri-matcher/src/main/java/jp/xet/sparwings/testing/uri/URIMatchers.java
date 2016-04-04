@@ -25,7 +25,7 @@ import org.hamcrest.Matcher;
 /**
  * JUnit matchers to assert {@link URI}s.
  * 
- * @since #version#
+ * @since 0.15
  * @version $Id$
  * @author daisuke
  */
@@ -41,7 +41,7 @@ public class URIMatchers {
 	 * 
 	 * @param matcher The scheme string matcher
 	 * @return The scheme matcher
-	 * @since #version#
+	 * @since 0.15
 	 */
 	@Factory
 	public static Matcher<URI> hasScheme(Matcher<String> matcher) {
@@ -58,7 +58,7 @@ public class URIMatchers {
 	 * 
 	 * @param scheme The scheme string
 	 * @return The scheme matcher
-	 * @since #version#
+	 * @since 0.15
 	 */
 	@Factory
 	public static Matcher<URI> hasScheme(String scheme) {
@@ -75,7 +75,7 @@ public class URIMatchers {
 	 * 
 	 * @param matcher The authority string matcher
 	 * @return The authority matcher
-	 * @since #version#
+	 * @since 0.15
 	 */
 	@Factory
 	public static Matcher<URI> hasAuthority(Matcher<String> matcher) {
@@ -92,7 +92,7 @@ public class URIMatchers {
 	 * 
 	 * @param authority The authority string
 	 * @return The authority matcher
-	 * @since #version#
+	 * @since 0.15
 	 */
 	@Factory
 	public static Matcher<URI> hasAuthority(String authority) {
@@ -109,7 +109,7 @@ public class URIMatchers {
 	 * 
 	 * @param matcher The hostname string matcher
 	 * @return The hostname matcher
-	 * @since #version#
+	 * @since 0.15
 	 */
 	@Factory
 	public static Matcher<URI> hasHost(Matcher<String> matcher) {
@@ -126,7 +126,7 @@ public class URIMatchers {
 	 * 
 	 * @param host The hostname string
 	 * @return The hostname matcher
-	 * @since #version#
+	 * @since 0.15
 	 */
 	@Factory
 	public static Matcher<URI> hasHost(String host) {
@@ -143,7 +143,7 @@ public class URIMatchers {
 	 * 
 	 * @param matcher The port number matcher
 	 * @return The port number matcher
-	 * @since #version#
+	 * @since 0.15
 	 */
 	@Factory
 	public static Matcher<URI> hasPort(Matcher<Integer> matcher) {
@@ -160,7 +160,7 @@ public class URIMatchers {
 	 * 
 	 * @param port The port number
 	 * @return The port number matcher
-	 * @since #version#
+	 * @since 0.15
 	 */
 	@Factory
 	public static Matcher<URI> hasPort(int port) {
@@ -177,7 +177,7 @@ public class URIMatchers {
 	 * 
 	 * @param matcher The path matcher
 	 * @return The path matcher
-	 * @since #version#
+	 * @since 0.15
 	 */
 	@Factory
 	public static Matcher<URI> hasPath(Matcher<String> matcher) {
@@ -194,7 +194,7 @@ public class URIMatchers {
 	 * 
 	 * @param path The path
 	 * @return The path matcher
-	 * @since #version#
+	 * @since 0.15
 	 */
 	@Factory
 	public static Matcher<URI> hasPath(String path) {
@@ -211,7 +211,7 @@ public class URIMatchers {
 	 * 
 	 * @param key The query parameter name
 	 * @return The query parameter matcher
-	 * @since #version#
+	 * @since 0.15
 	 */
 	@Factory
 	public static Matcher<URI> hasQueryParam(String key) {
@@ -229,7 +229,7 @@ public class URIMatchers {
 	 * @param key The query parameter name
 	 * @param matcher The value matcher
 	 * @return The query parameter matcher
-	 * @since #version#
+	 * @since 0.15
 	 */
 	@Factory
 	public static Matcher<URI> hasQueryParam(String key, Matcher<String> matcher) {
@@ -246,7 +246,7 @@ public class URIMatchers {
 	 * 
 	 * @param key The fragment parameter name
 	 * @return The fragment parameter matcher
-	 * @since #version#
+	 * @since 0.15
 	 */
 	@Factory
 	public static Matcher<URI> hasFragmentParam(String key) {
@@ -264,7 +264,7 @@ public class URIMatchers {
 	 * @param key The fragment parameter name
 	 * @param matcher The value matcher
 	 * @return The fragment parameter matcher
-	 * @since #version#
+	 * @since 0.15
 	 */
 	@Factory
 	public static Matcher<URI> hasFragmentParam(String key, Matcher<String> matcher) {
