@@ -55,8 +55,11 @@ public class HasFragmentParam extends TypeSafeMatcher<URI> {
 	
 	@Override
 	protected boolean matchesSafely(URI item) {
-		List<NameValuePair> parsedParams = URLEncodedUtils.parse(item.getFragment(), Charset.forName("UTF-8"));
-		List<NameValuePair> nvps = parsedParams.stream()
+		String fragment = item.getFragment();
+		if (fragment == null) {
+			return false;
+		}
+		List<NameValuePair> nvps = URLEncodedUtils.parse(fragment, Charset.forName("UTF-8")).stream()
 			.filter(nvp -> nvp.getName().equals(name))
 			.collect(Collectors.toList());
 		
