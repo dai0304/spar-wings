@@ -1,0 +1,36 @@
+{
+  "timestamp": 1460622200299,
+  "event_type": "test_event",
+  "source": {
+    "product": {
+      "name": "foobar",
+      "role": "bazqux",
+      "version": "1.23"
+    },
+    "environment": {
+      "acoount_id": "000011112222",
+      "region": "ap-northeast-1",
+      "instance_id": "i-0123456789abcdef"
+    }
+  },
+  "authentication": {
+    "username": "test.user01",
+    "client_id": "test.client01"
+  },
+  "request": {
+    "request_id": "57e4e60b-fd57-402f-a5f2-bc984fa63c16",
+    "session_id": "4c0f6cbf-173a-4bef-af7a-20919954133b",
+    "remote_addr": "203.0.113.3",
+    "remote_host": "203.0.113.3",
+    "method": "GET",
+    "uri": "http://exmample.com/foo/bar"
+  },
+  "message": {
+    "queue": "some-queue",
+    "message_id": "2c71e5ce-e0bc-4d89-94b8-65a1e17126fb"
+  },
+  "foo": "some string",
+  "bar": 123,
+  "baz": true,
+  "qux": null
+}
