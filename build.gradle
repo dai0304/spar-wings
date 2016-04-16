@@ -85,6 +85,7 @@ subprojects {
 		mapping {
 			java = "SLASHSTAR_STYLE"
 		}
+		exclude "**/*.json"
 	}
 	
 	
