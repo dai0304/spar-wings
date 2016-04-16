@@ -34,7 +34,7 @@ import org.springframework.context.ApplicationListener;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.16
  * @author daisuke
  */
 @RequiredArgsConstructor

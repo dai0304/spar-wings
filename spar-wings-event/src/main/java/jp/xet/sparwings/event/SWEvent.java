@@ -38,7 +38,7 @@ import org.springframework.context.ApplicationEvent;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.16
  * @author daisuke
  */
 @ToString
@@ -87,7 +87,7 @@ public class SWEvent extends ApplicationEvent {
 	 * 
 	 * @param source The event source
 	 * @param eventType The event type
-	 * @since #version#
+	 * @since 0.16
 	 */
 	public SWEvent(EventSourceDescriptor source, String eventType) {
 		super(source);
@@ -116,7 +116,7 @@ public class SWEvent extends ApplicationEvent {
 	 * @param key The key string
 	 * @param value The value object
 	 * @return {@code this} for method chaining
-	 * @since #version#
+	 * @since 0.16
 	 */
 	public SWEvent with(String key, Object value) {
 		map.put(key, value);
@@ -128,7 +128,7 @@ public class SWEvent extends ApplicationEvent {
 	 * 
 	 * @param key The key string
 	 * @return The value
-	 * @since #version#
+	 * @since 0.16
 	 */
 	public Object get(String key) {
 		return map.get(key);
