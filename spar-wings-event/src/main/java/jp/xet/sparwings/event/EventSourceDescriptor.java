@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.16
  * @author daisuke
  */
 @Data
