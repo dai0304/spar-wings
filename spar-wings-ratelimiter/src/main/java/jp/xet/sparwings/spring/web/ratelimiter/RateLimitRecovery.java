@@ -27,6 +27,8 @@ import lombok.Data;
 @Data
 public class RateLimitRecovery {
 	
+	final String limitationUnitName;
+	
 	final long fillRate;
 	
 	final long maxBudget;

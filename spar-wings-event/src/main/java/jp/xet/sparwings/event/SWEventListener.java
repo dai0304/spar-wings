@@ -66,7 +66,7 @@ public class SWEventListener implements ApplicationListener<SWEvent> {
 			PublishResult publishResult = sns.publish(new PublishRequest()
 				.withTargetArn(eventTopicArn)
 				.withMessage(message));
-			logger.info("BaristaEvent {} was published: {}", event.getEventType(), publishResult.getMessageId());
+			logger.info("SWEvent {} was published: {}", event.getEventType(), publishResult.getMessageId());
 		} catch (Exception e) {
 			if (exceptionHandler != null) {
 				exceptionHandler.accept(e);

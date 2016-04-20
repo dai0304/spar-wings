@@ -15,10 +15,10 @@
  */
 package jp.xet.sparwings.jackson.patch;
 
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 /**
  * TODO for daisuke
  */
-public interface UpdateRequest<T> extends Function<T, T> {
+public interface UpdateRequest<T> extends UnaryOperator<T> {
 }

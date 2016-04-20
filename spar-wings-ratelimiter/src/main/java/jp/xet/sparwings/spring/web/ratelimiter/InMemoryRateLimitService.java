@@ -17,11 +17,11 @@ package jp.xet.sparwings.spring.web.ratelimiter;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
+
+import javax.servlet.http.HttpServletRequest;
 
 import jp.xet.baseunits.timeutil.Clock;
 import lombok.Getter;
-import lombok.Setter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,25 +32,26 @@ import org.slf4j.LoggerFactory;
  * @since 0.8
  * @author daisuke
  */
-public class InMemoryRateLimitService implements RateLimitService {
+public class InMemoryRateLimitService extends AbstractRateLimitService {
 	
 	private static Logger logger = LoggerFactory.getLogger(InMemoryRateLimitService.class);
 	
 	private Map<String, RateLimitSpec> specs = new ConcurrentHashMap<>();
 	
-	@Setter
-	private Function<String, RateLimitRecovery> recoveryRepos = limitationUnit -> new RateLimitRecovery(10, 1000000);
-	
 	
 	@Override
-	public synchronized RateLimitDescriptor consume(String limitationUnit, long consumption) {
-		RateLimitRecovery recovery = recoveryRepos.apply(limitationUnit);
+	public synchronized RateLimitDescriptor consume(HttpServletRequest request, long consumption) {
+		RateLimitRecovery recovery = computeRateLimitRecovery(request);
+		if (recovery == null) {
+			return null;
+		}
+		String limitationUnitName = recovery.getLimitationUnitName();
 		long fillRate = recovery.getFillRate();
 		long maxBudget = recovery.getMaxBudget();
 		
 		long now = Clock.now().toEpochSec();
-		RateLimitSpec spec =
-				specs.computeIfAbsent(limitationUnit, p -> new RateLimitSpec(fillRate, maxBudget, maxBudget, now));
+		RateLimitSpec spec = specs.computeIfAbsent(limitationUnitName,
+				p -> new RateLimitSpec(p, fillRate, maxBudget, maxBudget, now));
 		long secSinceLastUpdate = now - spec.getLastUpdateTime();
 		logger.info("Time (sec) since last update = {}", secSinceLastUpdate);
 		long fill = secSinceLastUpdate * spec.getFillRate();
@@ -64,14 +65,18 @@ public class InMemoryRateLimitService implements RateLimitService {
 	}
 	
 	@Override
-	public RateLimitDescriptor get(String limitationUnit) {
-		RateLimitRecovery recovery = recoveryRepos.apply(limitationUnit);
+	public RateLimitDescriptor get(HttpServletRequest request) {
+		RateLimitRecovery recovery = computeRateLimitRecovery(request);
+		if (recovery == null) {
+			return null;
+		}
+		String limitationUnitName = recovery.getLimitationUnitName();
 		long fillRate = recovery.getFillRate();
 		long maxBudget = recovery.getMaxBudget();
 		
 		long now = Clock.now().toEpochSec();
-		RateLimitSpec spec =
-				specs.computeIfAbsent(limitationUnit, p -> new RateLimitSpec(fillRate, maxBudget, maxBudget, now));
+		RateLimitSpec spec = specs.computeIfAbsent(limitationUnitName,
+				p -> new RateLimitSpec(limitationUnitName, fillRate, maxBudget, maxBudget, now));
 		long secSinceLastUpdate = now - spec.getLastUpdateTime();
 		logger.info("Time (sec) since last update = {}", secSinceLastUpdate);
 		long fill = secSinceLastUpdate * spec.getFillRate();
@@ -90,8 +95,9 @@ public class InMemoryRateLimitService implements RateLimitService {
 		private long lastUpdateTime;
 		
 		
-		public RateLimitSpec(long fillRate, long maxBudget, long currentBudget, long lastUpdateTime) {
-			super(fillRate, maxBudget, currentBudget);
+		public RateLimitSpec(String limitationUnit, long fillRate, long maxBudget, long currentBudget,
+				long lastUpdateTime) {
+			super(limitationUnit, fillRate, maxBudget, currentBudget);
 			this.lastUpdateTime = lastUpdateTime;
 		}
 	}

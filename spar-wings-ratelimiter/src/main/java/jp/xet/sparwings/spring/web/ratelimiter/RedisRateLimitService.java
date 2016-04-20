@@ -16,12 +16,12 @@
 package jp.xet.sparwings.spring.web.ratelimiter;
 
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+
+import javax.servlet.http.HttpServletRequest;
 
 import jp.xet.baseunits.timeutil.Clock;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,26 +34,27 @@ import org.springframework.data.redis.core.RedisTemplate;
  * @author daisuke
  */
 @RequiredArgsConstructor
-public class RedisRateLimitService implements RateLimitService {
+public class RedisRateLimitService extends AbstractRateLimitService {
 	
 	private static Logger logger = LoggerFactory.getLogger(RedisRateLimitService.class);
 	
 	@Getter
 	private final RedisTemplate<String, Long> redisTemplate;
 	
-	@Setter
-	private Function<String, RateLimitRecovery> recoveryRepos = limitationUnit -> new RateLimitRecovery(10, 1000000);
-	
 	
 	@Override
-	public RateLimitDescriptor consume(String limitationUnit, long consumption) {
-		RateLimitRecovery recovery = recoveryRepos.apply(limitationUnit);
+	public RateLimitDescriptor consume(HttpServletRequest request, long consumption) {
+		RateLimitRecovery recovery = computeRateLimitRecovery(request);
+		if (recovery == null) {
+			return null;
+		}
+		String limitationUnitName = recovery.getLimitationUnitName();
 		long fillRate = recovery.getFillRate();
 		long maxBudget = recovery.getMaxBudget();
 		
 		long now = Clock.now().toEpochSec();
-		String tKey = "ratelimit:t:" + limitationUnit;
-		String cKey = "ratelimit:c:" + limitationUnit;
+		String tKey = "ratelimit:t:" + limitationUnitName;
+		String cKey = "ratelimit:c:" + limitationUnitName;
 		
 		long delta = consumption;
 		Long ts = redisTemplate.opsForValue().getAndSet(tKey, now);
@@ -74,18 +75,22 @@ public class RedisRateLimitService implements RateLimitService {
 		redisTemplate.expire(tKey, expire, TimeUnit.SECONDS);
 		redisTemplate.expire(cKey, expire, TimeUnit.SECONDS);
 		
-		return new RateLimitDescriptor(fillRate, maxBudget, maxBudget - carma);
+		return new RateLimitDescriptor(limitationUnitName, fillRate, maxBudget, maxBudget - carma);
 	}
 	
 	@Override
-	public RateLimitDescriptor get(String limitationUnit) {
-		RateLimitRecovery recovery = recoveryRepos.apply(limitationUnit);
+	public RateLimitDescriptor get(HttpServletRequest request) {
+		RateLimitRecovery recovery = computeRateLimitRecovery(request);
+		if (recovery == null) {
+			return null;
+		}
+		String limitationUnitName = recovery.getLimitationUnitName();
 		long fillRate = recovery.getFillRate();
 		long maxBudget = recovery.getMaxBudget();
 		
 		long now = Clock.now().toEpochSec();
-		String tKey = "ratelimit:t:" + limitationUnit;
-		String cKey = "ratelimit:c:" + limitationUnit;
+		String tKey = "ratelimit:t:" + limitationUnitName;
+		String cKey = "ratelimit:c:" + limitationUnitName;
 		
 		long delta = 0;
 		Long ts = redisTemplate.opsForValue().getAndSet(tKey, now);
@@ -100,6 +105,6 @@ public class RedisRateLimitService implements RateLimitService {
 		redisTemplate.expire(tKey, expire, TimeUnit.SECONDS);
 		redisTemplate.expire(cKey, expire, TimeUnit.SECONDS);
 		
-		return new RateLimitDescriptor(fillRate, maxBudget, maxBudget - carma);
+		return new RateLimitDescriptor(limitationUnitName, fillRate, maxBudget, maxBudget - carma);
 	}
 }

@@ -15,6 +15,8 @@
  */
 package jp.xet.sparwings.spring.web.ratelimiter;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * TODO for daiuske
  * 
@@ -27,11 +29,19 @@ public interface RateLimitService {
 	 * 
 	 * TODO for daisuke
 	 * 
-	 * @param limitationUnit
+	 * @param request
 	 * @param consumption
 	 * @return {@link RateLimitDescriptor} or {@code null} if limitation is not applied.
+	 * @since 0.8
 	 */
-	RateLimitDescriptor consume(String limitationUnit, long consumption);
+	RateLimitDescriptor consume(HttpServletRequest request, long consumption);
 	
-	RateLimitDescriptor get(String limitationUnit);
+	/**
+	 * TODO for daisuke
+	 * 
+	 * @param limitationUnit
+	 * @return
+	 * @since 0.8
+	 */
+	RateLimitDescriptor get(HttpServletRequest request);
 }
