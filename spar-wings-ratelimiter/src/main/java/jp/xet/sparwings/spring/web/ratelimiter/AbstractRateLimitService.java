@@ -15,16 +15,11 @@
  */
 package jp.xet.sparwings.spring.web.ratelimiter;
 
-import java.util.Objects;
 import java.util.function.Function;
 
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.Setter;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * TODO for daisuke
@@ -34,25 +29,13 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 public abstract class AbstractRateLimitService implements RateLimitService {
 	
+	private long fillRate = 10L;
+	
+	private long maxBudget = 1000000L;
+	
 	@Setter
-	private Function<HttpServletRequest, RateLimitRecovery> recoveryStrategy = req -> {
-		String limitationUnitName = null;
-		
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null) {
-			Object principal = authentication.getPrincipal();
-			if (principal instanceof String) {
-				limitationUnitName = (String) principal;
-			} else if (principal instanceof UserDetails) {
-				UserDetails userDetails = (UserDetails) principal;
-				limitationUnitName = userDetails.getUsername();
-			} else {
-				limitationUnitName = Objects.toString(principal);
-			}
-		}
-		
-		return new RateLimitRecovery(limitationUnitName, 10, 1000000);
-	};
+	private Function<HttpServletRequest, RateLimitRecovery> recoveryStrategy =
+			req -> new RateLimitRecovery(req.getRemoteAddr(), fillRate, maxBudget);
 	
 	
 	protected RateLimitRecovery computeRateLimitRecovery(HttpServletRequest request) {

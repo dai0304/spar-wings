@@ -22,9 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import jp.xet.baseunits.timeutil.Clock;
 import lombok.Getter;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * {@link RateLimitService} implementation to store values in memory.
@@ -32,9 +30,8 @@ import org.slf4j.LoggerFactory;
  * @since 0.8
  * @author daisuke
  */
+@Slf4j
 public class InMemoryRateLimitService extends AbstractRateLimitService {
-	
-	private static Logger logger = LoggerFactory.getLogger(InMemoryRateLimitService.class);
 	
 	private Map<String, RateLimitSpec> specs = new ConcurrentHashMap<>();
 	
@@ -48,17 +45,21 @@ public class InMemoryRateLimitService extends AbstractRateLimitService {
 		String limitationUnitName = recovery.getLimitationUnitName();
 		long fillRate = recovery.getFillRate();
 		long maxBudget = recovery.getMaxBudget();
-		
 		long now = Clock.now().toEpochSec();
+		
 		RateLimitSpec spec = specs.computeIfAbsent(limitationUnitName,
 				p -> new RateLimitSpec(p, fillRate, maxBudget, maxBudget, now));
-		long secSinceLastUpdate = now - spec.getLastUpdateTime();
-		logger.info("Time (sec) since last update = {}", secSinceLastUpdate);
-		long fill = secSinceLastUpdate * spec.getFillRate();
-		long budget = Math.min(spec.getMaxBudget(), spec.getCurrentBudget() + fill) - consumption;
-		spec.lastUpdateTime = now;
 		
-		logger.info("Current budget and consumption: (filled {}) and {} - {}", fill, budget + consumption, consumption);
+		long secSinceLastUpdate = now - spec.getLastUpdateTime();
+		log.trace("Time (sec) since last update = {}", secSinceLastUpdate);
+		long fill = secSinceLastUpdate * spec.getFillRate();
+		long budget = Math.min(spec.getMaxBudget(), spec.getCurrentBudget() + fill);
+		log.info("Budget before current request (filled {}): {}", fill, budget);
+		
+		budget -= consumption;
+		log.info("Budget after current request (consumed {}): {}", consumption, budget);
+		
+		spec.lastUpdateTime = now;
 		spec.setCurrentBudget(budget);
 		
 		return spec;
@@ -78,13 +79,13 @@ public class InMemoryRateLimitService extends AbstractRateLimitService {
 		RateLimitSpec spec = specs.computeIfAbsent(limitationUnitName,
 				p -> new RateLimitSpec(limitationUnitName, fillRate, maxBudget, maxBudget, now));
 		long secSinceLastUpdate = now - spec.getLastUpdateTime();
-		logger.info("Time (sec) since last update = {}", secSinceLastUpdate);
+		log.info("Time (sec) since last update = {}", secSinceLastUpdate);
 		long fill = secSinceLastUpdate * spec.getFillRate();
 		long budget = Math.min(spec.getMaxBudget(), spec.getCurrentBudget() + fill);
 		spec.lastUpdateTime = now;
 		
 		spec.setCurrentBudget(budget);
-		logger.info("Current budget: (filled {}) and {}", fill, spec.getCurrentBudget());
+		log.info("Current budget: (filled {}) and {}", fill, spec.getCurrentBudget());
 		return spec;
 	}
 	
