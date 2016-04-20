@@ -15,7 +15,6 @@
  */
 package jp.xet.sparwings.spring.web.ratelimiter;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,9 +24,6 @@ import jp.xet.sparwings.spring.web.httpexceptions.HttpTooManyRequestsException;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -82,16 +78,13 @@ public class RateLimitingInterceptor extends HandlerInterceptorAdapter {
 	private void rateLimit(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws HttpTooManyRequestsException {
 		int cost = computeCost(request, handler);
-		String limitationUnit = getLimitationUnitName(request, handler);
-		if (limitationUnit == null) {
-			return; // through
-		}
-		RateLimitDescriptor desc = rateLimitService.consume(limitationUnit, cost);
+		RateLimitDescriptor desc = rateLimitService.consume(request, cost);
 		if (desc == null) {
 			return; // through
 		}
 		
 		if (responseHeader) {
+//			response.setHeader("RateLimit-Unit", desc.getLimitationUnitName());
 			response.setHeader("RateLimit-Cost", String.valueOf(cost));
 			response.setHeader("RateLimit-FillRate", String.valueOf(desc.getFillRate()));
 			response.setHeader("RateLimit-MaximumBudget", String.valueOf(desc.getMaxBudget()));
@@ -121,27 +114,5 @@ public class RateLimitingInterceptor extends HandlerInterceptorAdapter {
 		}
 		int cost = Optional.ofNullable(rateLimited).map(RateLimited::value).orElse(DEFAULT_CONSUMPTION);
 		return cost;
-	}
-	
-	/**
-	 * TODO for daisuke
-	 * 
-	 * @param request The request
-	 * @param handler The handler of request
-	 * @return
-	 */
-	protected String getLimitationUnitName(HttpServletRequest request, Object handler) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null) {
-			Object principal = authentication.getPrincipal();
-			if (principal instanceof String) {
-				return (String) principal;
-			} else if (principal instanceof UserDetails) {
-				UserDetails userDetails = (UserDetails) principal;
-				return userDetails.getUsername();
-			}
-			return Objects.toString(principal);
-		}
-		return null;
 	}
 }

@@ -31,6 +31,9 @@ import lombok.ToString;
 @AllArgsConstructor
 public class RateLimitDescriptor {
 	
+	@Getter
+	private String limitationUnitName;
+	
 	/**
 	 * Fill rate per millisec.
 	 */
