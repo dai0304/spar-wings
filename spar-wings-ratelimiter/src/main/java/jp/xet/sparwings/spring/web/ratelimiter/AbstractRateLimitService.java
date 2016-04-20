@@ -29,7 +29,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.17
  * @author daisuke
  */
 public abstract class AbstractRateLimitService implements RateLimitService {
