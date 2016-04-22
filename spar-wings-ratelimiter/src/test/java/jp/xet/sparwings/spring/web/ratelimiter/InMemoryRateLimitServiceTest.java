@@ -17,7 +17,8 @@ package jp.xet.sparwings.spring.web.ratelimiter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -33,11 +34,18 @@ import jp.xet.baseunits.timeutil.SystemClock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * TODO for daisuke
  */
+@RunWith(MockitoJUnitRunner.class)
 public class InMemoryRateLimitServiceTest {
+	
+	@Mock
+	HttpServletRequest request;
 	
 	InMemoryRateLimitService sut;
 	
@@ -45,18 +53,18 @@ public class InMemoryRateLimitServiceTest {
 	@Before
 	public void setUp() {
 		sut = new InMemoryRateLimitService();
-		sut.setRecoveryStrategy(req -> new RateLimitRecovery("user1", 2, 1000L));
+		sut.setRecoveryStrategy(req -> new RateLimitDescriptor("user1", 2, 1000L).withCurrentBudget(1000L));
+		when(request.getRemoteAddr()).thenReturn("192.0.2.123");
 	}
 	
 	@After
 	public void tearDown() throws Exception {
 		Clock.setTimeSource(SystemClock.timeSource());
+		reset(request);
 	}
 	
 	@Test
 	public void consume100() {
-		// setup
-		HttpServletRequest request = mock(HttpServletRequest.class);
 		// exercise
 		RateLimitDescriptor actual = sut.consume(request, 100);
 		// verify
@@ -68,7 +76,6 @@ public class InMemoryRateLimitServiceTest {
 	@Test
 	public void consume100_consume200() {
 		// setup
-		HttpServletRequest request = mock(HttpServletRequest.class);
 		Clock.setTimeSource(new FixedTimeSource(TimePoint.EPOCH));
 		sut.consume(request, 100);
 		// exercise
@@ -82,10 +89,9 @@ public class InMemoryRateLimitServiceTest {
 	@Test
 	public void consume100_recover20_consume200() {
 		// setup
-		HttpServletRequest request = mock(HttpServletRequest.class);
 		Clock.setTimeSource(new FixedTimeSource(TimePoint.EPOCH));
 		sut.consume(request, 100);
-		Clock.setTimeSource(new FixedTimeSource(TimePoint.from(10000L))); // recover 20
+		Clock.setTimeSource(new FixedTimeSource(TimePoint.from(10L))); // recover 20
 		// exercise
 		RateLimitDescriptor actual = sut.consume(request, 200);
 		// verify
@@ -97,10 +103,9 @@ public class InMemoryRateLimitServiceTest {
 	@Test
 	public void consume100_recover400_consume200() {
 		// setup
-		HttpServletRequest request = mock(HttpServletRequest.class);
 		Clock.setTimeSource(new FixedTimeSource(TimePoint.EPOCH));
 		sut.consume(request, 100);
-		Clock.setTimeSource(new FixedTimeSource(TimePoint.from(200000L))); // recover 400
+		Clock.setTimeSource(new FixedTimeSource(TimePoint.from(200L))); // recover 400
 		// exercise
 		RateLimitDescriptor actual = sut.consume(request, 200);
 		// verify
@@ -112,7 +117,6 @@ public class InMemoryRateLimitServiceTest {
 	@Test
 	public void consume10_50threads() throws InterruptedException {
 		// setup
-		HttpServletRequest request = mock(HttpServletRequest.class);
 		int threadCount = 50;
 		final CountDownLatch startLatch = new CountDownLatch(1);
 		final CountDownLatch endLatch = new CountDownLatch(threadCount);

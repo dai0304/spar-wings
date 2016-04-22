@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpServletRequest;
 
 import jp.xet.baseunits.timeutil.Clock;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -33,73 +32,50 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class InMemoryRateLimitService extends AbstractRateLimitService {
 	
-	private Map<String, RateLimitSpec> specs = new ConcurrentHashMap<>();
+	private Map<String, RateLimitDescriptor> specs = new ConcurrentHashMap<>();
 	
 	
 	@Override
 	public synchronized RateLimitDescriptor consume(HttpServletRequest request, long consumption) {
-		RateLimitRecovery recovery = computeRateLimitRecovery(request);
-		if (recovery == null) {
+		RateLimitDescriptor descriptor = computeRateLimitRecovery(request);
+		descriptor = specs.computeIfAbsent(descriptor.getLimitationUnitName(), p -> computeRateLimitRecovery(request));
+		if (descriptor == null) {
 			return null;
 		}
-		String limitationUnitName = recovery.getLimitationUnitName();
-		long fillRate = recovery.getFillRate();
-		long maxBudget = recovery.getMaxBudget();
-		long now = Clock.now().toEpochSec();
+		long now = Clock.now().toEpochMillisec();
 		
-		RateLimitSpec spec = specs.computeIfAbsent(limitationUnitName,
-				p -> new RateLimitSpec(p, fillRate, maxBudget, maxBudget, now));
-		
-		long secSinceLastUpdate = now - spec.getLastUpdateTime();
-		log.trace("Time (sec) since last update = {}", secSinceLastUpdate);
-		long fill = secSinceLastUpdate * spec.getFillRate();
-		long budget = Math.min(spec.getMaxBudget(), spec.getCurrentBudget() + fill);
+		long secSinceLastUpdate = now - descriptor.getLastUpdateTime();
+		log.debug("Time (sec) since last update = {}", secSinceLastUpdate);
+		long fill = secSinceLastUpdate * descriptor.getFillRate();
+		long budget = Math.min(descriptor.getMaxBudget(), descriptor.getCurrentBudget() + fill);
 		log.info("Budget before current request (filled {}): {}", fill, budget);
 		
 		budget -= consumption;
 		log.info("Budget after current request (consumed {}): {}", consumption, budget);
 		
-		spec.lastUpdateTime = now;
-		spec.setCurrentBudget(budget);
+		descriptor.setLastUpdateTime(now);
+		descriptor.setCurrentBudget(budget);
 		
-		return spec;
+		return descriptor;
 	}
 	
 	@Override
 	public RateLimitDescriptor get(HttpServletRequest request) {
-		RateLimitRecovery recovery = computeRateLimitRecovery(request);
-		if (recovery == null) {
+		RateLimitDescriptor descriptor = computeRateLimitRecovery(request);
+		descriptor = specs.computeIfAbsent(descriptor.getLimitationUnitName(), p -> computeRateLimitRecovery(request));
+		if (descriptor == null) {
 			return null;
 		}
-		String limitationUnitName = recovery.getLimitationUnitName();
-		long fillRate = recovery.getFillRate();
-		long maxBudget = recovery.getMaxBudget();
+		long now = Clock.now().toEpochMillisec();
 		
-		long now = Clock.now().toEpochSec();
-		RateLimitSpec spec = specs.computeIfAbsent(limitationUnitName,
-				p -> new RateLimitSpec(limitationUnitName, fillRate, maxBudget, maxBudget, now));
-		long secSinceLastUpdate = now - spec.getLastUpdateTime();
-		log.info("Time (sec) since last update = {}", secSinceLastUpdate);
-		long fill = secSinceLastUpdate * spec.getFillRate();
-		long budget = Math.min(spec.getMaxBudget(), spec.getCurrentBudget() + fill);
-		spec.lastUpdateTime = now;
+		long secSinceLastUpdate = now - descriptor.getLastUpdateTime();
+		log.debug("Time (sec) since last update = {}", secSinceLastUpdate);
+		long fill = secSinceLastUpdate * descriptor.getFillRate();
+		long budget = Math.min(descriptor.getMaxBudget(), descriptor.getCurrentBudget() + fill);
+		descriptor.setLastUpdateTime(now);
 		
-		spec.setCurrentBudget(budget);
-		log.info("Current budget: (filled {}) and {}", fill, spec.getCurrentBudget());
-		return spec;
-	}
-	
-	
-	private static class RateLimitSpec extends RateLimitDescriptor {
-		
-		@Getter
-		private long lastUpdateTime;
-		
-		
-		public RateLimitSpec(String limitationUnit, long fillRate, long maxBudget, long currentBudget,
-				long lastUpdateTime) {
-			super(limitationUnit, fillRate, maxBudget, currentBudget);
-			this.lastUpdateTime = lastUpdateTime;
-		}
+		descriptor.setCurrentBudget(budget);
+		log.info("Current budget: (filled {}) and {}", fill, descriptor.getCurrentBudget());
+		return descriptor;
 	}
 }

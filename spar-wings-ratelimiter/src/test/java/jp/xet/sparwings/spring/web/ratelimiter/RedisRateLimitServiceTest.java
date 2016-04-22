@@ -17,7 +17,7 @@ package jp.xet.sparwings.spring.web.ratelimiter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -33,6 +33,9 @@ import jp.xet.baseunits.timeutil.SystemClock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -42,7 +45,11 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 /**
  * TODO for daisuke
  */
+@RunWith(MockitoJUnitRunner.class)
 public class RedisRateLimitServiceTest {
+	
+	@Mock
+	HttpServletRequest request;
 	
 	RedisRateLimitService sut;
 	
@@ -61,7 +68,8 @@ public class RedisRateLimitServiceTest {
 		redisTemplate.afterPropertiesSet();
 		
 		sut = new RedisRateLimitService(redisTemplate);
-		sut.setRecoveryStrategy(req -> new RateLimitRecovery("user1", 2, 1000));
+		sut.setRecoveryStrategy(req -> new RateLimitDescriptor("user1", 2, 1000));
+		when(request.getRemoteAddr()).thenReturn("192.0.2.123");
 	}
 	
 	@After
@@ -75,8 +83,6 @@ public class RedisRateLimitServiceTest {
 	
 	@Test
 	public void consume100() {
-		// setup
-		HttpServletRequest request = mock(HttpServletRequest.class);
 		// exercise
 		RateLimitDescriptor actual = sut.consume(request, 100);
 		// verify
@@ -88,7 +94,6 @@ public class RedisRateLimitServiceTest {
 	@Test
 	public void consume100_consume200() {
 		// setup
-		HttpServletRequest request = mock(HttpServletRequest.class);
 		Clock.setTimeSource(new FixedTimeSource(TimePoint.EPOCH));
 		sut.consume(request, 100);
 		// exercise
@@ -102,10 +107,9 @@ public class RedisRateLimitServiceTest {
 	@Test
 	public void consume100_recover20_consume200() {
 		// setup
-		HttpServletRequest request = mock(HttpServletRequest.class);
 		Clock.setTimeSource(new FixedTimeSource(TimePoint.EPOCH));
 		sut.consume(request, 100);
-		Clock.setTimeSource(new FixedTimeSource(TimePoint.from(10000L))); // recover 20
+		Clock.setTimeSource(new FixedTimeSource(TimePoint.from(10L))); // recover 20
 		// exercise
 		RateLimitDescriptor actual = sut.consume(request, 200);
 		// verify
@@ -117,10 +121,9 @@ public class RedisRateLimitServiceTest {
 	@Test
 	public void consume100_recover400_consume200() {
 		// setup
-		HttpServletRequest request = mock(HttpServletRequest.class);
 		Clock.setTimeSource(new FixedTimeSource(TimePoint.EPOCH));
 		sut.consume(request, 100);
-		Clock.setTimeSource(new FixedTimeSource(TimePoint.from(200000L))); // recover 400
+		Clock.setTimeSource(new FixedTimeSource(TimePoint.from(200L))); // recover 400
 		// exercise
 		RateLimitDescriptor actual = sut.consume(request, 200);
 		// verify
@@ -132,7 +135,6 @@ public class RedisRateLimitServiceTest {
 	@Test
 	public void consume10_50threads() throws InterruptedException {
 		// setup
-		HttpServletRequest request = mock(HttpServletRequest.class);
 		int threadCount = 50;
 		final CountDownLatch startLatch = new CountDownLatch(1);
 		final CountDownLatch endLatch = new CountDownLatch(threadCount);

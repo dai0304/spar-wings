@@ -29,16 +29,20 @@ import lombok.Setter;
  */
 public abstract class AbstractRateLimitService implements RateLimitService {
 	
+	// recover 10 pt per millisec = 10000 pt per sec
+	@Setter
 	private long fillRate = 10L;
 	
+	// empty budget filled full within 100 sec
+	@Setter
 	private long maxBudget = 1000000L;
 	
 	@Setter
-	private Function<HttpServletRequest, RateLimitRecovery> recoveryStrategy =
-			req -> new RateLimitRecovery(req.getRemoteAddr(), fillRate, maxBudget);
+	private Function<HttpServletRequest, RateLimitDescriptor> recoveryStrategy =
+			req -> new RateLimitDescriptor(req.getRemoteAddr(), fillRate, maxBudget).withCurrentBudget(maxBudget);
 	
 	
-	protected RateLimitRecovery computeRateLimitRecovery(HttpServletRequest request) {
+	protected RateLimitDescriptor computeRateLimitRecovery(HttpServletRequest request) {
 		return recoveryStrategy.apply(request);
 	}
 }
