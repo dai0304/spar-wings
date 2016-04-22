@@ -29,7 +29,7 @@ import org.aspectj.lang.annotation.Aspect;
 /**
  * Aspect for fault injection to AWS DynamoDB cluent.
  * 
- * @since #version#
+ * @since 0.18
  * @author daisuke
  */
 @Aspect

@@ -32,7 +32,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 /**
  * Abstract implementation injecting fault.
  * 
- * @since #version#
+ * @since 0.18
  * @author daisuke
  */
 @Slf4j
@@ -51,7 +51,7 @@ public abstract class AbstractFaultInjectionAspect {
 	 * @param joinPoint {@link ProceedingJoinPoint}
 	 * @return return value
 	 * @throws Throwable -
-	 * @since #version#
+	 * @since 0.18
 	 */
 	public Object faultInjectionAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
 		log.trace("Start faultInjectionAdvice");

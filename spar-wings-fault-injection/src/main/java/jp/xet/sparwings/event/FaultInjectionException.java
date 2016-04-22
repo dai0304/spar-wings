@@ -18,7 +18,7 @@ package jp.xet.sparwings.event;
 /**
  * Exception to indicate fault injection is occured.
  * 
- * @since #version#
+ * @since 0.18
  * @author daisuke
  */
 @SuppressWarnings("serial")
