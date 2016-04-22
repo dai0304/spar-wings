@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * Aspect for fault injection to Spring MVC controllers.
  * 
- * @since #version#
+ * @since 0.18
  * @author daisuke
  */
 @Aspect
