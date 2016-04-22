@@ -21,10 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpServletRequest;
 
 import jp.xet.baseunits.timeutil.Clock;
-import lombok.Getter;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * {@link RateLimitService} implementation to store values in memory.
@@ -32,73 +29,53 @@ import org.slf4j.LoggerFactory;
  * @since 0.8
  * @author daisuke
  */
+@Slf4j
 public class InMemoryRateLimitService extends AbstractRateLimitService {
 	
-	private static Logger logger = LoggerFactory.getLogger(InMemoryRateLimitService.class);
-	
-	private Map<String, RateLimitSpec> specs = new ConcurrentHashMap<>();
+	private Map<String, RateLimitDescriptor> specs = new ConcurrentHashMap<>();
 	
 	
 	@Override
 	public synchronized RateLimitDescriptor consume(HttpServletRequest request, long consumption) {
-		RateLimitRecovery recovery = computeRateLimitRecovery(request);
-		if (recovery == null) {
+		RateLimitDescriptor descriptor = computeRateLimitRecovery(request);
+		descriptor = specs.computeIfAbsent(descriptor.getLimitationUnitName(), p -> computeRateLimitRecovery(request));
+		if (descriptor == null) {
 			return null;
 		}
-		String limitationUnitName = recovery.getLimitationUnitName();
-		long fillRate = recovery.getFillRate();
-		long maxBudget = recovery.getMaxBudget();
+		long now = Clock.now().toEpochMillisec();
 		
-		long now = Clock.now().toEpochSec();
-		RateLimitSpec spec = specs.computeIfAbsent(limitationUnitName,
-				p -> new RateLimitSpec(p, fillRate, maxBudget, maxBudget, now));
-		long secSinceLastUpdate = now - spec.getLastUpdateTime();
-		logger.info("Time (sec) since last update = {}", secSinceLastUpdate);
-		long fill = secSinceLastUpdate * spec.getFillRate();
-		long budget = Math.min(spec.getMaxBudget(), spec.getCurrentBudget() + fill) - consumption;
-		spec.lastUpdateTime = now;
+		long secSinceLastUpdate = now - descriptor.getLastUpdateTime();
+		log.debug("Time (sec) since last update = {}", secSinceLastUpdate);
+		long fill = secSinceLastUpdate * descriptor.getFillRate();
+		long budget = Math.min(descriptor.getMaxBudget(), descriptor.getCurrentBudget() + fill);
+		log.info("Budget before current request (filled {}): {}", fill, budget);
 		
-		logger.info("Current budget and consumption: (filled {}) and {} - {}", fill, budget + consumption, consumption);
-		spec.setCurrentBudget(budget);
+		budget -= consumption;
+		log.info("Budget after current request (consumed {}): {}", consumption, budget);
 		
-		return spec;
+		descriptor.setLastUpdateTime(now);
+		descriptor.setCurrentBudget(budget);
+		
+		return descriptor;
 	}
 	
 	@Override
 	public RateLimitDescriptor get(HttpServletRequest request) {
-		RateLimitRecovery recovery = computeRateLimitRecovery(request);
-		if (recovery == null) {
+		RateLimitDescriptor descriptor = computeRateLimitRecovery(request);
+		descriptor = specs.computeIfAbsent(descriptor.getLimitationUnitName(), p -> computeRateLimitRecovery(request));
+		if (descriptor == null) {
 			return null;
 		}
-		String limitationUnitName = recovery.getLimitationUnitName();
-		long fillRate = recovery.getFillRate();
-		long maxBudget = recovery.getMaxBudget();
+		long now = Clock.now().toEpochMillisec();
 		
-		long now = Clock.now().toEpochSec();
-		RateLimitSpec spec = specs.computeIfAbsent(limitationUnitName,
-				p -> new RateLimitSpec(limitationUnitName, fillRate, maxBudget, maxBudget, now));
-		long secSinceLastUpdate = now - spec.getLastUpdateTime();
-		logger.info("Time (sec) since last update = {}", secSinceLastUpdate);
-		long fill = secSinceLastUpdate * spec.getFillRate();
-		long budget = Math.min(spec.getMaxBudget(), spec.getCurrentBudget() + fill);
-		spec.lastUpdateTime = now;
+		long secSinceLastUpdate = now - descriptor.getLastUpdateTime();
+		log.debug("Time (sec) since last update = {}", secSinceLastUpdate);
+		long fill = secSinceLastUpdate * descriptor.getFillRate();
+		long budget = Math.min(descriptor.getMaxBudget(), descriptor.getCurrentBudget() + fill);
+		descriptor.setLastUpdateTime(now);
 		
-		spec.setCurrentBudget(budget);
-		logger.info("Current budget: (filled {}) and {}", fill, spec.getCurrentBudget());
-		return spec;
-	}
-	
-	
-	private static class RateLimitSpec extends RateLimitDescriptor {
-		
-		@Getter
-		private long lastUpdateTime;
-		
-		
-		public RateLimitSpec(String limitationUnit, long fillRate, long maxBudget, long currentBudget,
-				long lastUpdateTime) {
-			super(limitationUnit, fillRate, maxBudget, currentBudget);
-			this.lastUpdateTime = lastUpdateTime;
-		}
+		descriptor.setCurrentBudget(budget);
+		log.info("Current budget: (filled {}) and {}", fill, descriptor.getCurrentBudget());
+		return descriptor;
 	}
 }

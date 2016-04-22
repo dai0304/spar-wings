@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Wither;
 
 /**
  * TODO for daisuke
@@ -28,6 +29,7 @@ import lombok.ToString;
  * @author daisuke
  */
 @ToString
+@Wither
 @AllArgsConstructor
 public class RateLimitDescriptor {
 	
@@ -47,6 +49,16 @@ public class RateLimitDescriptor {
 	@Setter(AccessLevel.PACKAGE)
 	private long currentBudget;
 	
+	@Getter
+	@Setter(AccessLevel.PACKAGE)
+	private long lastUpdateTime;
+	
+	
+	public RateLimitDescriptor(String limitationUnitName, long fillRate, long maxBudget) {
+		this.limitationUnitName = limitationUnitName;
+		this.fillRate = fillRate;
+		this.maxBudget = maxBudget;
+	}
 	
 	public long computeWaitMillisecsToConsume(long cost) {
 		return (cost - currentBudget) / fillRate;

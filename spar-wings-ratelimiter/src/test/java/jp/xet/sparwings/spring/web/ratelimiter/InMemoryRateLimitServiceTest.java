@@ -17,7 +17,8 @@ package jp.xet.sparwings.spring.web.ratelimiter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -33,11 +34,18 @@ import jp.xet.baseunits.timeutil.SystemClock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * TODO for daisuke
  */
+@RunWith(MockitoJUnitRunner.class)
 public class InMemoryRateLimitServiceTest {
+	
+	@Mock
+	HttpServletRequest request;
 	
 	InMemoryRateLimitService sut;
 	
@@ -45,95 +53,75 @@ public class InMemoryRateLimitServiceTest {
 	@Before
 	public void setUp() {
 		sut = new InMemoryRateLimitService();
-		sut.setRecoveryStrategy(req -> new RateLimitRecovery("user1", 10, 1000000));
+		sut.setRecoveryStrategy(req -> new RateLimitDescriptor("user1", 2, 1000L).withCurrentBudget(1000L));
+		when(request.getRemoteAddr()).thenReturn("192.0.2.123");
 	}
 	
 	@After
 	public void tearDown() throws Exception {
 		Clock.setTimeSource(SystemClock.timeSource());
+		reset(request);
 	}
 	
 	@Test
-	public void consume1000() {
-		// setup
-		HttpServletRequest request = mock(HttpServletRequest.class);
+	public void consume100() {
 		// exercise
-		RateLimitDescriptor actual = sut.consume(request, 1000);
+		RateLimitDescriptor actual = sut.consume(request, 100);
 		// verify
-		assertThat(actual.getMaxBudget(), is(1000000L));
-		assertThat(actual.getFillRate(), is(10L));
-		assertThat(actual.getCurrentBudget(), is(999000L));
+		assertThat(actual.getMaxBudget(), is(1000L));
+		assertThat(actual.getFillRate(), is(2L));
+		assertThat(actual.getCurrentBudget(), is(900L));
 	}
 	
 	@Test
-	public void consume1000_consume2000() {
+	public void consume100_consume200() {
 		// setup
-		HttpServletRequest request = mock(HttpServletRequest.class);
 		Clock.setTimeSource(new FixedTimeSource(TimePoint.EPOCH));
-		sut.consume(request, 1000);
+		sut.consume(request, 100);
 		// exercise
-		RateLimitDescriptor actual = sut.consume(request, 2000);
+		RateLimitDescriptor actual = sut.consume(request, 200);
 		// verify
-		assertThat(actual.getMaxBudget(), is(1000000L));
-		assertThat(actual.getFillRate(), is(10L));
-		assertThat(actual.getCurrentBudget(), is(997000L));
+		assertThat(actual.getMaxBudget(), is(1000L));
+		assertThat(actual.getFillRate(), is(2L));
+		assertThat(actual.getCurrentBudget(), is(700L));
 	}
 	
 	@Test
-	public void consume1000_50000recover500_consume2000() {
+	public void consume100_recover20_consume200() {
 		// setup
-		HttpServletRequest request = mock(HttpServletRequest.class);
 		Clock.setTimeSource(new FixedTimeSource(TimePoint.EPOCH));
-		sut.consume(request, 1000);
-		Clock.setTimeSource(new FixedTimeSource(TimePoint.from(50000)));
+		sut.consume(request, 100);
+		Clock.setTimeSource(new FixedTimeSource(TimePoint.from(10L))); // recover 20
 		// exercise
-		RateLimitDescriptor actual = sut.consume(request, 2000);
+		RateLimitDescriptor actual = sut.consume(request, 200);
 		// verify
-		assertThat(actual.getMaxBudget(), is(1000000L));
-		assertThat(actual.getFillRate(), is(10L));
-		assertThat(actual.getCurrentBudget(), is(997500L));
+		assertThat(actual.getMaxBudget(), is(1000L));
+		assertThat(actual.getFillRate(), is(2L));
+		assertThat(actual.getCurrentBudget(), is(720L));
 	}
 	
 	@Test
-	public void consume1000_100000recover1000_consume2000() {
+	public void consume100_recover400_consume200() {
 		// setup
-		HttpServletRequest request = mock(HttpServletRequest.class);
 		Clock.setTimeSource(new FixedTimeSource(TimePoint.EPOCH));
-		sut.consume(request, 1000);
-		Clock.setTimeSource(new FixedTimeSource(TimePoint.from(100000)));
+		sut.consume(request, 100);
+		Clock.setTimeSource(new FixedTimeSource(TimePoint.from(200L))); // recover 400
 		// exercise
-		RateLimitDescriptor actual = sut.consume(request, 2000);
+		RateLimitDescriptor actual = sut.consume(request, 200);
 		// verify
-		assertThat(actual.getMaxBudget(), is(1000000L));
-		assertThat(actual.getFillRate(), is(10L));
-		assertThat(actual.getCurrentBudget(), is(998000L));
+		assertThat(actual.getMaxBudget(), is(1000L));
+		assertThat(actual.getFillRate(), is(2L));
+		assertThat(actual.getCurrentBudget(), is(800L));
 	}
 	
 	@Test
-	public void consume1000_200000recover1000_consume2000() {
+	public void consume10_50threads() throws InterruptedException {
 		// setup
-		HttpServletRequest request = mock(HttpServletRequest.class);
-		Clock.setTimeSource(new FixedTimeSource(TimePoint.EPOCH));
-		sut.consume(request, 1000);
-		Clock.setTimeSource(new FixedTimeSource(TimePoint.from(200000)));
-		// exercise
-		RateLimitDescriptor actual = sut.consume(request, 2000);
-		// verify
-		assertThat(actual.getMaxBudget(), is(1000000L));
-		assertThat(actual.getFillRate(), is(10L));
-		assertThat(actual.getCurrentBudget(), is(998000L));
-	}
-	
-	@Test
-	public void consume100_100threads() throws InterruptedException {
-		// setup
-		HttpServletRequest request = mock(HttpServletRequest.class);
-		int threadCount = 100;
+		int threadCount = 50;
 		final CountDownLatch startLatch = new CountDownLatch(1);
 		final CountDownLatch endLatch = new CountDownLatch(threadCount);
 		ExecutorService ex = Executors.newFixedThreadPool(threadCount);
-		long past = 10;
-		long consume = 100;
+		long consume = 10;
 		for (int i = 0; i < threadCount; i++) {
 			ex.submit(() -> {
 				try {
@@ -143,21 +131,17 @@ public class InMemoryRateLimitServiceTest {
 				}
 				// exercise
 				sut.consume(request, consume);
-				
 				endLatch.countDown();
 			});
 		}
-		long start = System.currentTimeMillis();
 		// exercise
-		startLatch.countDown(); // start
+		Clock.setTimeSource(new FixedTimeSource(TimePoint.EPOCH));
+		startLatch.countDown();
 		endLatch.await();
-		Clock.setTimeSource(new FixedTimeSource(TimePoint.from(start + (past * 1000))));
 		RateLimitDescriptor actual = sut.get(request);
 		// verify
-		assertThat(actual.getMaxBudget(), is(1000000L));
-		assertThat(actual.getFillRate(), is(10L));
-		assertThat(actual.getCurrentBudget(), is(actual.getMaxBudget()
-				- (consume * threadCount)
-				+ (past * actual.getFillRate())));
+		assertThat(actual.getMaxBudget(), is(1000L));
+		assertThat(actual.getFillRate(), is(2L));
+		assertThat(actual.getCurrentBudget(), is(500L));
 	}
 }

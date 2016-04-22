@@ -13,23 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.xet.sparwings.spring.web.ratelimiter;
-
-import lombok.Data;
+package jp.xet.sparwings.event;
 
 /**
- * TODO for daisuke
+ * Exception to indicate fault injection is occured.
  * 
- * @since 0.9
- * @version $Id$
+ * @since 0.18
  * @author daisuke
  */
-@Data
-public class RateLimitRecovery {
+@SuppressWarnings("serial")
+public class FaultInjectionException extends RuntimeException {
 	
-	final String limitationUnitName;
+	/**
+	 * Create instance.
+	 */
+	public FaultInjectionException() {
+	}
 	
-	final long fillRate;
-	
-	final long maxBudget;
+	/**
+	* Create instance.
+	* 
+	* @param message The exception message
+	*/
+	public FaultInjectionException(String message) {
+		super(message);
+	}
 }

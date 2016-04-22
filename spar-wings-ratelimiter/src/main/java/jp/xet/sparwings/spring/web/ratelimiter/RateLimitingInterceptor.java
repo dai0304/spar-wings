@@ -84,17 +84,18 @@ public class RateLimitingInterceptor extends HandlerInterceptorAdapter {
 		}
 		
 		if (responseHeader) {
-//			response.setHeader("RateLimit-Unit", desc.getLimitationUnitName());
+			response.setHeader("RateLimit-Unit", desc.getLimitationUnitName());
 			response.setHeader("RateLimit-Cost", String.valueOf(cost));
-			response.setHeader("RateLimit-FillRate", String.valueOf(desc.getFillRate()));
-			response.setHeader("RateLimit-MaximumBudget", String.valueOf(desc.getMaxBudget()));
 			response.setHeader("RateLimit-CurrentBudget", String.valueOf(desc.getCurrentBudget()));
+			response.setHeader("RateLimit-MaximumBudget", String.valueOf(desc.getMaxBudget()));
+			response.setHeader("RateLimit-FillRate", String.valueOf(desc.getFillRate()));
 		}
 		
 		if (desc.getCurrentBudget() < 0) {
 			long millisecsToWait = desc.computeWaitMillisecsToConsume(cost);
 			if (responseHeader) {
-				response.setHeader("Retry-After", String.valueOf(millisecsToWait));
+				long secsToWait = Math.floorDiv(millisecsToWait, 1000L);
+				response.setHeader("Retry-After", String.valueOf(secsToWait));
 			}
 			throw new HttpTooManyRequestsException(millisecsToWait);
 		}

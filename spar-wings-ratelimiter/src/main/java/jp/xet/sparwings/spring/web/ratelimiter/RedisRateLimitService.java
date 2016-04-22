@@ -22,9 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import jp.xet.baseunits.timeutil.Clock;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
 /**
@@ -33,10 +32,9 @@ import org.springframework.data.redis.core.RedisTemplate;
  * @since 0.8
  * @author daisuke
  */
+@Slf4j
 @RequiredArgsConstructor
 public class RedisRateLimitService extends AbstractRateLimitService {
-	
-	private static Logger logger = LoggerFactory.getLogger(RedisRateLimitService.class);
 	
 	@Getter
 	private final RedisTemplate<String, Long> redisTemplate;
@@ -44,15 +42,15 @@ public class RedisRateLimitService extends AbstractRateLimitService {
 	
 	@Override
 	public RateLimitDescriptor consume(HttpServletRequest request, long consumption) {
-		RateLimitRecovery recovery = computeRateLimitRecovery(request);
-		if (recovery == null) {
+		RateLimitDescriptor descriptor = computeRateLimitRecovery(request);
+		if (descriptor == null) {
 			return null;
 		}
-		String limitationUnitName = recovery.getLimitationUnitName();
-		long fillRate = recovery.getFillRate();
-		long maxBudget = recovery.getMaxBudget();
+		String limitationUnitName = descriptor.getLimitationUnitName();
+		long fillRate = descriptor.getFillRate();
+		long maxBudget = descriptor.getMaxBudget();
+		long now = Clock.now().toEpochMillisec();
 		
-		long now = Clock.now().toEpochSec();
 		String tKey = "ratelimit:t:" + limitationUnitName;
 		String cKey = "ratelimit:c:" + limitationUnitName;
 		
@@ -60,7 +58,7 @@ public class RedisRateLimitService extends AbstractRateLimitService {
 		Long ts = redisTemplate.opsForValue().getAndSet(tKey, now);
 		if (ts != null) {
 			long secSinceLastUpdate = now - ts;
-			logger.debug("Time (sec) since last update = {}", secSinceLastUpdate);
+			log.debug("Time (sec) since last update = {}", secSinceLastUpdate);
 			delta -= secSinceLastUpdate * fillRate;
 		}
 		Long carma = redisTemplate.opsForValue().increment(cKey, delta);
@@ -69,26 +67,31 @@ public class RedisRateLimitService extends AbstractRateLimitService {
 			redisTemplate.opsForValue().set(cKey, consumption);
 			carma = consumption;
 		}
-		logger.debug("Current budget and consumption: {} - {}", maxBudget - carma + consumption, consumption);
+		
+		log.info("Budget before current request (filled {}): {}",
+				ts == null ? "<unknown>" : (now - ts) * fillRate,
+				ts == null ? maxBudget : maxBudget - carma + consumption);
+		log.info("Budget after current request (consumed {}): {}", consumption, maxBudget - carma);
 		
 		long expire = carma / fillRate;
 		redisTemplate.expire(tKey, expire, TimeUnit.SECONDS);
 		redisTemplate.expire(cKey, expire, TimeUnit.SECONDS);
 		
-		return new RateLimitDescriptor(limitationUnitName, fillRate, maxBudget, maxBudget - carma);
+		descriptor.setCurrentBudget(maxBudget - carma);
+		return descriptor;
 	}
 	
 	@Override
 	public RateLimitDescriptor get(HttpServletRequest request) {
-		RateLimitRecovery recovery = computeRateLimitRecovery(request);
-		if (recovery == null) {
+		RateLimitDescriptor descriptor = computeRateLimitRecovery(request);
+		if (descriptor == null) {
 			return null;
 		}
-		String limitationUnitName = recovery.getLimitationUnitName();
-		long fillRate = recovery.getFillRate();
-		long maxBudget = recovery.getMaxBudget();
+		String limitationUnitName = descriptor.getLimitationUnitName();
+		long fillRate = descriptor.getFillRate();
+		long maxBudget = descriptor.getMaxBudget();
 		
-		long now = Clock.now().toEpochSec();
+		long now = Clock.now().toEpochMillisec();
 		String tKey = "ratelimit:t:" + limitationUnitName;
 		String cKey = "ratelimit:c:" + limitationUnitName;
 		
@@ -96,7 +99,7 @@ public class RedisRateLimitService extends AbstractRateLimitService {
 		Long ts = redisTemplate.opsForValue().getAndSet(tKey, now);
 		if (ts != null) {
 			long msSinceLastUpdate = now - ts;
-			logger.debug("Time (ms) since last update = {}", msSinceLastUpdate);
+			log.debug("Time (ms) since last update = {}", msSinceLastUpdate);
 			delta -= msSinceLastUpdate * fillRate;
 		}
 		Long carma = redisTemplate.opsForValue().increment(cKey, delta);
@@ -105,6 +108,8 @@ public class RedisRateLimitService extends AbstractRateLimitService {
 		redisTemplate.expire(tKey, expire, TimeUnit.SECONDS);
 		redisTemplate.expire(cKey, expire, TimeUnit.SECONDS);
 		
-		return new RateLimitDescriptor(limitationUnitName, fillRate, maxBudget, maxBudget - carma);
+		descriptor.setCurrentBudget(maxBudget - carma);
+		log.info("Current budget: (filled {}) and {}", delta, descriptor.getCurrentBudget());
+		return descriptor;
 	}
 }
