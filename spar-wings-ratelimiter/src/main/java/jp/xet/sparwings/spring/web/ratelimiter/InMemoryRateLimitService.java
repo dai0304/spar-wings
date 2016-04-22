@@ -38,6 +38,9 @@ public class InMemoryRateLimitService extends AbstractRateLimitService {
 	@Override
 	public synchronized RateLimitDescriptor consume(HttpServletRequest request, long consumption) {
 		RateLimitDescriptor descriptor = computeRateLimitRecovery(request);
+		if (descriptor == null) {
+			return null;
+		}
 		descriptor = specs.computeIfAbsent(descriptor.getLimitationUnitName(), p -> computeRateLimitRecovery(request));
 		if (descriptor == null) {
 			return null;
@@ -62,6 +65,9 @@ public class InMemoryRateLimitService extends AbstractRateLimitService {
 	@Override
 	public RateLimitDescriptor get(HttpServletRequest request) {
 		RateLimitDescriptor descriptor = computeRateLimitRecovery(request);
+		if (descriptor == null) {
+			return null;
+		}
 		descriptor = specs.computeIfAbsent(descriptor.getLimitationUnitName(), p -> computeRateLimitRecovery(request));
 		if (descriptor == null) {
 			return null;
