@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @since 0.18
  * @author daisuke
  */
+@Slf4j
 @Aspect
 public class ControllerFaultInjectionAspect extends AbstractFaultInjectionAspect {
 	
@@ -69,6 +72,14 @@ public class ControllerFaultInjectionAspect extends AbstractFaultInjectionAspect
 	 */
 	@Around("controller(requestMapping)")
 	public Object faultInjectionAdvice(ProceedingJoinPoint joinPoint, RequestMapping requestMapping) throws Throwable {
+		getFaultInjectonValue().filter(v -> v.startsWith("deferred:")).ifPresent(v -> {
+			try {
+				Integer sleep = Integer.valueOf(v.split(":", 2)[1]);
+				Thread.sleep(sleep);
+			} catch (Exception e) {
+				log.warn("Unexpected exception", e);
+			}
+		});
 		return super.faultInjectionAdvice(joinPoint);
 	}
 }
