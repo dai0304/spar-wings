@@ -38,7 +38,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * methods. Request properties to be parsed can be configured. Default configuration uses request parameters beginning
  * with {@link #DEFAULT_ESK_PARAMETER}{@link #DEFAULT_QUALIFIER_DELIMITER}.
  * 
- * @since #version#
+ * @since 0.19
  * @author daisuke
  */
 public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
@@ -119,7 +119,7 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 	 * Returns whether the given {@link Chunkable} is the fallback one.
 	 * 
 	 * @param chunkable
-	 * @since #version#
+	 * @since 0.19
 	 * @return
 	 */
 	public boolean isFallbackChunkable(Chunkable chunkable) {
