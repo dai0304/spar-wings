@@ -13,32 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.xet.sparwings.event;
+package jp.xet.sparwings.faultinjection;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughputExceededException;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Aspect for fault injection to Spring MVC controllers.
+ * Aspect for fault injection to AWS DynamoDB cluent.
  * 
  * @since 0.18
  * @author daisuke
  */
 @Aspect
-public class ControllerFaultInjectionAspect extends AbstractFaultInjectionAspect {
+public class DynamoDBFaultInjectionAspect extends AbstractFaultInjectionAspect {
 	
 	private static final Map<String, Supplier<RuntimeException>> SUPPLIERS;
 	static {
 		Map<String, Supplier<RuntimeException>> supplisers = new HashMap<>();
-		supplisers.put("controller:FaultInjectionException", () -> new FaultInjectionException("fault injected"));
+		supplisers.put("dynamodb:ProvisionedThroughputExceededException",
+				() -> new ProvisionedThroughputExceededException("fault injected"));
 		SUPPLIERS = Collections.unmodifiableMap(supplisers);
 	}
 	
@@ -46,29 +47,20 @@ public class ControllerFaultInjectionAspect extends AbstractFaultInjectionAspect
 	/**
 	 * インスタンスを生成する。
 	 */
-	public ControllerFaultInjectionAspect() {
+	public DynamoDBFaultInjectionAspect() {
 		super(SUPPLIERS);
-	}
-	
-	@Pointcut("("
-			+ "  within(@org.springframework.stereotype.Controller *)"
-			+ "  || within(@org.springframework.web.bind.annotation.RestController *)"
-			+ ")"
-			+ " && @annotation(requestMapping)"
-			+ " && !execution(* org.springframework.boot.autoconfigure.web.BasicErrorController.*(..))")
-	public void controller(RequestMapping requestMapping) {
 	}
 	
 	/**
 	 * TODO for daisuke
 	 * 
 	 * @param joinPoint
-	 * @param requestMapping
 	 * @return
 	 * @throws Throwable
 	 */
-	@Around("controller(requestMapping)")
-	public Object faultInjectionAdvice(ProceedingJoinPoint joinPoint, RequestMapping requestMapping) throws Throwable {
+	@Override
+	@Around("execution(* com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient.*(..))")
+	public Object faultInjectionAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
 		return super.faultInjectionAdvice(joinPoint);
 	}
 }

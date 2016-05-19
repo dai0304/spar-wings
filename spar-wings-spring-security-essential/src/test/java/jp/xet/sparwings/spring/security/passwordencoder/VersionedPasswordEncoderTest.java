@@ -24,6 +24,8 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -49,8 +51,18 @@ public class VersionedPasswordEncoderTest {
 		.put("bar", new StandardPasswordEncoder())
 		.build();
 	
-	VersionedPasswordEncoder sut = new VersionedPasswordEncoder("foo", "baz", legalMap);
+	VersionedPasswordEncoder sut;
 	
+	
+	@Before
+	public void setUp() throws Exception {
+		sut = new VersionedPasswordEncoder("foo", "baz", legalMap);
+	}
+	
+	@After
+	public void tearDown() throws Exception {
+		sut = null;
+	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstruct_primaryEncoder_notFound() {
@@ -115,6 +127,17 @@ public class VersionedPasswordEncoderTest {
 		// setup
 		String rawPassword = "p@ssW0rd";
 		String encodedPassword = "p@ssW0rd";
+		// exercise
+		boolean actual = sut.matches(rawPassword, encodedPassword);
+		// verify
+		assertTrue(actual);
+	}
+	
+	@Test
+	public void testMatchesAutoDetection_NOOP() throws Exception {
+		// setup
+		String rawPassword = "";
+		String encodedPassword = "";
 		// exercise
 		boolean actual = sut.matches(rawPassword, encodedPassword);
 		// verify

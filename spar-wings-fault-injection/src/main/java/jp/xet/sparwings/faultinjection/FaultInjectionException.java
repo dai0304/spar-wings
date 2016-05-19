@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.xet.sparwings.event;
+package jp.xet.sparwings.faultinjection;
 
 /**
  * Exception to indicate fault injection is occured.

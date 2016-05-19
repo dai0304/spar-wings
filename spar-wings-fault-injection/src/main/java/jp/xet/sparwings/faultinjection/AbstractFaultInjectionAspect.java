@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.xet.sparwings.event;
+package jp.xet.sparwings.faultinjection;
 
 import java.util.Map;
 import java.util.Optional;
@@ -55,16 +55,17 @@ public abstract class AbstractFaultInjectionAspect {
 	 */
 	public Object faultInjectionAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
 		log.trace("Start faultInjectionAdvice");
-		getFaultInjectonValue().map(suppliers::get).map(Supplier::get).ifPresent(t -> {
+		Optional<Exception> e = getFaultInjectonValue().map(suppliers::get).map(Supplier::get);
+		if (e.isPresent()) {
 			log.info("Fault injected!");
-			throw t;
-		});
+			throw e.get();
+		}
 		Object result = joinPoint.proceed();
 		log.trace("End faultInjectionAdvice");
 		return result;
 	}
 	
-	private Optional<String> getFaultInjectonValue() {
+	protected Optional<String> getFaultInjectonValue() {
 		try {
 			RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
 			if (requestAttributes instanceof ServletRequestAttributes) {
