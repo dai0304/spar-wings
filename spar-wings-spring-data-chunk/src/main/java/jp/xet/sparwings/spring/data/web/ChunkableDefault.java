@@ -21,7 +21,7 @@ import org.springframework.data.domain.Sort.Direction;
  * Annotation to set defaults when injecting a {@link jp.xet.sparwings.spring.data.chunk.Chunkable} into a controller
  * method.
  * 
- * @since #version#
+ * @since 0.19
  * @author daisuke
  */
 public @interface ChunkableDefault {
