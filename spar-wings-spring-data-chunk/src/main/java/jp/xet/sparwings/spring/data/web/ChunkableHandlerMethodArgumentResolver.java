@@ -51,6 +51,8 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 	
 	private static final String DEFAULT_SIZE_PARAMETER = "size";
 	
+	private static final String DEFAULT_DIRECTION_PARAMETER = "direction";
+	
 	private static final String DEFAULT_PREFIX = "";
 	
 	private static final String DEFAULT_QUALIFIER_DELIMITER = "_";
@@ -96,6 +98,11 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 	@Getter(AccessLevel.PROTECTED)
 	@Setter
 	private String sizeParameterName = DEFAULT_SIZE_PARAMETER;
+	
+	@NonNull
+	@Getter(AccessLevel.PROTECTED)
+	@Setter
+	private String directionParameterName = DEFAULT_DIRECTION_PARAMETER;
 	
 	@Getter(AccessLevel.PROTECTED)
 	private String prefix = DEFAULT_PREFIX;
@@ -144,7 +151,12 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 		
 		String esk = webRequest.getParameter(getParameterNameToUse(eskParameterName, methodParameter));
 		String pageSizeString = webRequest.getParameter(getParameterNameToUse(sizeParameterName, methodParameter));
-		if (StringUtils.hasText(esk) == false && StringUtils.hasText(pageSizeString) == false) {
+		String directionString =
+				webRequest.getParameter(getParameterNameToUse(directionParameterName, methodParameter));
+		
+		if (StringUtils.hasText(esk) == false
+				&& StringUtils.hasText(pageSizeString) == false
+				&& StringUtils.hasText(directionString) == false) {
 			return defaultOrFallback;
 		}
 		
@@ -154,20 +166,23 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 				int parsed = Integer.parseInt(pageSizeString);
 				pageSize = parsed < 0 ? 0 : parsed > maxPageSize ? maxPageSize : parsed;
 			} catch (NumberFormatException e) {
-				pageSize = 0;
+				pageSize = null;
 			}
 		} else {
 			pageSize = defaultOrFallback.getMaxPageSize();
 		}
-		
 		if (pageSize != null) {
 			// Limit lower bound
-			pageSize = pageSize < 1 ? defaultOrFallback.getMaxPageSize() : pageSize;
+			pageSize = pageSize < 1 ? 1 : pageSize;
+		}
+		if (pageSize != null) {
 			// Limit upper bound
 			pageSize = pageSize > maxPageSize ? maxPageSize : pageSize;
 		}
 		
-		return new ChunkRequest(esk, pageSize, defaultOrFallback.getDirection());
+		Direction direction = Direction.fromStringOrNull(directionString);
+		
+		return new ChunkRequest(esk, pageSize, direction);
 	}
 	
 	private Chunkable getDefaultFromAnnotationOrFallback(MethodParameter methodParameter) {
