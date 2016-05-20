@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.xet.sparwings.spring.data.chunk;
+package jp.xet.sparwings.spring.hateoas;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +22,9 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+import jp.xet.sparwings.spring.data.chunk.Chunk;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -31,6 +33,7 @@ import lombok.ToString;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
+import org.springframework.hateoas.ResourceSupport;
 import org.springframework.util.Assert;
 
 /**
@@ -41,7 +44,8 @@ import org.springframework.util.Assert;
  * @author daisuke
  */
 @ToString
-public class ChunkedResources<T> {
+@XmlRootElement(name = "chunkedEntities")
+public class ChunkedResources<T> extends ResourceSupport {
 	
 	private final Map<String, Object> content;
 	
