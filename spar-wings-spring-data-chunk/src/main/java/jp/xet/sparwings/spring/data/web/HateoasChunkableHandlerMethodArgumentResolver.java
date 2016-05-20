@@ -83,8 +83,13 @@ public class HateoasChunkableHandlerMethodArgumentResolver
 		String sizePropertyName = getParameterNameToUse(getSizeParameterName(), parameter);
 		
 		builder.replaceQueryParam(eskPropertyName, chunkable.getExclusiveStartKey());
-		builder.replaceQueryParam(sizePropertyName, chunkable.getMaxPageSize() <= getMaxPageSize()
-				? chunkable.getMaxPageSize()
-				: getMaxPageSize());
+		if (chunkable.getMaxPageSize() != null) {
+			builder.replaceQueryParam(sizePropertyName,
+					chunkable.getMaxPageSize() <= getMaxPageSize()
+							? chunkable.getMaxPageSize()
+							: getMaxPageSize());
+		} else {
+			builder.replaceQueryParam(sizePropertyName, getMaxPageSize());
+		}
 	}
 }
