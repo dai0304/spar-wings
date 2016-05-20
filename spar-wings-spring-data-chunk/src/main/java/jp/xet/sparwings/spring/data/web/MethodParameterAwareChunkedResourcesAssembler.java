@@ -23,7 +23,7 @@ import org.springframework.web.util.UriComponents;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.20
  * @author daisuke
  */
 class MethodParameterAwareChunkedResourcesAssembler<T> extends ChunkedResourcesAssembler<T> {
