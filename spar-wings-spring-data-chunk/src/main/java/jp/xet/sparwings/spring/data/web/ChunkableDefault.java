@@ -15,6 +15,12 @@
  */
 package jp.xet.sparwings.spring.data.web;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import org.springframework.data.domain.Sort.Direction;
 
 /**
@@ -24,6 +30,9 @@ import org.springframework.data.domain.Sort.Direction;
  * @since 0.19
  * @author daisuke
  */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
 public @interface ChunkableDefault {
 	
 	String DEFAULT = "**default**";
@@ -31,9 +40,7 @@ public @interface ChunkableDefault {
 	
 	/**
 	 * Alias for {@link #size()}. Prefer to use the {@link #size()} method as it makes the annotation declaration more
-	 * expressive and you'll probably want to configure the {@link #page()} anyway.
-	 * 
-	 * @return
+	 * expressive.
 	 */
 	int value() default 10;
 	
@@ -44,17 +51,19 @@ public @interface ChunkableDefault {
 	int size() default 10;
 	
 	/**
-	 * The default-pagenumber the injected {@link jp.xet.sparwings.spring.data.chunk.Chunkable} should get if no corresponding
-	 * parameter defined in request (default is "").
+	 * The default-after value the injected {@link jp.xet.sparwings.spring.data.chunk.Chunkable} should get
+	 * if no corresponding parameter defined in request (default is "").
 	 */
 	String after() default DEFAULT;
 	
+	/**
+	 * The default-before value the injected {@link jp.xet.sparwings.spring.data.chunk.Chunkable} should get
+	 * if no corresponding parameter defined in request (default is "").
+	 */
 	String before() default DEFAULT;
 	
 	/**
 	 * The direction to sort by. Defaults to {@link Direction#ASC}.
-	 * 
-	 * @return
 	 */
 	Direction direction() default Direction.ASC;
 	
