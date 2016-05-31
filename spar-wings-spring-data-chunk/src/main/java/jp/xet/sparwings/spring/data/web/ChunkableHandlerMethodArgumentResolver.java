@@ -36,7 +36,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 /**
  * Extracts paging information from web requests and thus allows injecting {@link Chunkable} instances into controller
  * methods. Request properties to be parsed can be configured. Default configuration uses request parameters beginning
- * with {@link #DEFAULT_ESK_PARAMETER}{@link #DEFAULT_QUALIFIER_DELIMITER}.
+ * with {@link #DEFAULT_AFTER_PARAMETER}, {@link #DEFAULT_BEFORE_PARAMETER}, {@link #DEFAULT_SIZE_PARAMETER},
+ * {@link #DEFAULT_DIRECTION_PARAMETER}, {@link #DEFAULT_QUALIFIER_DELIMITER}.
  * 
  * @since 0.19
  * @author daisuke
@@ -74,7 +75,10 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 		if (defaultBefore == ChunkableDefault.DEFAULT) {
 			defaultBefore = null;
 		}
-		Integer defaultPageSize = defaults.size();
+		int defaultPageSize = defaults.size();
+		if (defaultPageSize == 10) {
+			defaultPageSize = defaults.value();
+		}
 		
 		if (defaultPageSize < 1) {
 			Method annotatedMethod = parameter.getMethod();

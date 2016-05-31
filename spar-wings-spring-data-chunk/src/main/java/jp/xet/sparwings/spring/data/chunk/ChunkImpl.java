@@ -101,22 +101,22 @@ public class ChunkImpl<T> implements Chunk<T> {
 	
 	@Override
 	public boolean hasNext() {
-		return lastKey != null;
+		return lastKey != null && isLast() == false;
 	}
 	
 	@Override
 	public boolean hasPrev() {
-		return firstKey != null;
+		return firstKey != null && isFirst() == false;
 	}
 	
 	@Override
 	public boolean isLast() {
-		return hasNext() == false;
+		return content.size() < chunkable.getMaxPageSize();
 	}
 	
 	@Override
 	public boolean isFirst() {
-		return hasPrev() == false;
+		return chunkable.getAfterKey() == null;
 	}
 	
 	@Override
@@ -157,5 +157,4 @@ public class ChunkImpl<T> implements Chunk<T> {
 		
 		return String.format("Chunk containing %s instances", contentType);
 	}
-	
 }

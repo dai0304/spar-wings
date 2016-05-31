@@ -47,13 +47,11 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 public class ChunkedResourcesAssembler<T> implements ResourceAssembler<Chunk<T>, ChunkedResources<Resource<T>>> {
 	
-//	private final HateoasChunkableHandlerMethodArgumentResolver chunkableResolver;
+	private final HateoasChunkableHandlerMethodArgumentResolver chunkableResolver;
 	
 	private final UriComponents baseUri;
 	
 	private final EmbeddedWrappers wrappers = new EmbeddedWrappers(false);
-	
-	private HateoasChunkableHandlerMethodArgumentResolver chunkableResolver;
 	
 	
 	/**
