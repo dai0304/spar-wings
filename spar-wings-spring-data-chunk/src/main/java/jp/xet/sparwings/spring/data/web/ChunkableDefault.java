@@ -26,7 +26,7 @@ import org.springframework.data.domain.Sort.Direction;
  */
 public @interface ChunkableDefault {
 	
-	String DEFAULT_ESK = "**default**";
+	String DEFAULT = "**default**";
 	
 	
 	/**
@@ -47,7 +47,9 @@ public @interface ChunkableDefault {
 	 * The default-pagenumber the injected {@link jp.xet.sparwings.spring.data.chunk.Chunkable} should get if no corresponding
 	 * parameter defined in request (default is "").
 	 */
-	String esk() default DEFAULT_ESK;
+	String after() default DEFAULT;
+	
+	String before() default DEFAULT;
 	
 	/**
 	 * The direction to sort by. Defaults to {@link Direction#ASC}.

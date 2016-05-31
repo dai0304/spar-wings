@@ -32,7 +32,7 @@ public class Chunks {
 	 * Empty chunk shared instance.
 	 */
 	@SuppressWarnings("rawtypes")
-	public static final Chunk EMPTY_CHUNK = new ChunkImpl<>(Collections.emptyList(), null, null);
+	public static final Chunk EMPTY_CHUNK = new ChunkImpl<>(Collections.emptyList(), null, null, null);
 	
 	
 	/**

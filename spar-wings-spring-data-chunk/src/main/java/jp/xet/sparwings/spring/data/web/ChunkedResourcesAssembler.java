@@ -156,9 +156,12 @@ public class ChunkedResourcesAssembler<T> implements ResourceAssembler<Chunk<T>,
 	private <R>ChunkedResources<R> addPaginationLinks(ChunkedResources<R> resources, Chunk<?> chunk, Link link) {
 		UriTemplate base = getUriTemplate(link);
 		
-		resources.add(createLink(base, null, Link.REL_SELF));
+		resources.add(createLink(base, chunk.getChunkable(), Link.REL_SELF));
 		if (chunk.hasNext()) {
 			resources.add(createLink(base, chunk.nextChunkable(), Link.REL_NEXT));
+		}
+		if (chunk.hasPrev()) {
+			resources.add(createLink(base, chunk.prevChunkable(), Link.REL_PREVIOUS));
 		}
 		
 		return resources;
@@ -214,7 +217,7 @@ public class ChunkedResourcesAssembler<T> implements ResourceAssembler<Chunk<T>,
 	 */
 	private static <T>ChunkMetadata asChunkMetadata(Chunk<T> chunk) {
 		Assert.notNull(chunk, "Chunk must not be null!");
-		return new ChunkMetadata(chunk.getContent().size(), chunk.getLastEvaluatedKey());
+		return new ChunkMetadata(chunk.getContent().size(), chunk.getLastKey(), chunk.getFirstKey());
 	}
 	
 	

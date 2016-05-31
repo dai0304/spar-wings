@@ -34,7 +34,10 @@ import org.springframework.data.domain.Sort.Direction;
 public class ChunkRequest implements Chunkable {
 	
 	@Getter
-	private Object exclusiveStartKey;
+	private String afterKey;
+	
+	@Getter
+	private String beforeKey;
 	
 	@Getter
 	private Integer maxPageSize;
@@ -49,7 +52,7 @@ public class ChunkRequest implements Chunkable {
 	 * @param exclusiveStartKey
 	 */
 	public ChunkRequest(String exclusiveStartKey) {
-		this(exclusiveStartKey, null, null);
+		this(exclusiveStartKey, null, null, null);
 	}
 	
 	/**
@@ -58,7 +61,7 @@ public class ChunkRequest implements Chunkable {
 	 * @param maxPageSize
 	 */
 	public ChunkRequest(Integer maxPageSize) {
-		this(null, maxPageSize, null);
+		this(null, null, maxPageSize, null);
 	}
 	
 	/**
@@ -68,7 +71,7 @@ public class ChunkRequest implements Chunkable {
 	 * @param maxPageSize
 	 */
 	public ChunkRequest(String exclusiveStartKey, Integer maxPageSize) {
-		this(exclusiveStartKey, maxPageSize, null);
+		this(exclusiveStartKey, null, maxPageSize, null);
 	}
 	
 	/**
@@ -77,7 +80,7 @@ public class ChunkRequest implements Chunkable {
 	 * @param direction
 	 */
 	public ChunkRequest(Direction direction) {
-		this(null, null, direction);
+		this(null, null, null, direction);
 	}
 	
 	/**
@@ -87,7 +90,7 @@ public class ChunkRequest implements Chunkable {
 	 * @param direction
 	 */
 	public ChunkRequest(String exclusiveStartKey, Direction direction) {
-		this(exclusiveStartKey, null, direction);
+		this(exclusiveStartKey, null, null, direction);
 	}
 	
 	/**
@@ -97,11 +100,16 @@ public class ChunkRequest implements Chunkable {
 	 * @param direction
 	 */
 	public ChunkRequest(Integer maxPageSize, Direction direction) {
-		this(null, maxPageSize, direction);
+		this(null, null, maxPageSize, direction);
 	}
 	
 	@Override
-	public Chunkable next(Object lastEvaluatedKey) {
-		return new ChunkRequest(lastEvaluatedKey, maxPageSize, direction);
+	public Chunkable next(String previousLastKey) {
+		return new ChunkRequest(previousLastKey, null, maxPageSize, direction);
+	}
+	
+	@Override
+	public Chunkable prev(String nextFirstKey) {
+		return new ChunkRequest(null, nextFirstKey, maxPageSize, direction);
 	}
 }
