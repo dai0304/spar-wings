@@ -46,7 +46,9 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 	private static final String INVALID_DEFAULT_PAGE_SIZE =
 			"Invalid default page size configured for method %s! Must not be less than one!";
 	
-	private static final String DEFAULT_ESK_PARAMETER = "esk";
+	private static final String DEFAULT_AFTER_PARAMETER = "after";
+	
+	private static final String DEFAULT_BEFORE_PARAMETER = "before";
 	
 	private static final String DEFAULT_SIZE_PARAMETER = "size";
 	
@@ -58,15 +60,19 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 	
 	private static final int DEFAULT_MAX_PAGE_SIZE = 2000;
 	
-	static final Chunkable DEFAULT_CHUNK_REQUEST = new ChunkRequest(null, null, null);
+	static final Chunkable DEFAULT_CHUNK_REQUEST = new ChunkRequest(null, null, null, null);
 	
 	
 	private static Chunkable getDefaultChunkRequestFrom(MethodParameter parameter) {
 		ChunkableDefault defaults = parameter.getParameterAnnotation(ChunkableDefault.class);
 		
-		String defaultESK = defaults.esk();
-		if (defaultESK == ChunkableDefault.DEFAULT_ESK) {
-			defaultESK = null;
+		String defaultAfter = defaults.after();
+		if (defaultAfter == ChunkableDefault.DEFAULT) {
+			defaultAfter = null;
+		}
+		String defaultBefore = defaults.before();
+		if (defaultBefore == ChunkableDefault.DEFAULT) {
+			defaultBefore = null;
 		}
 		Integer defaultPageSize = defaults.size();
 		
@@ -76,10 +82,10 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 		}
 		
 		if (defaults.direction() == Direction.ASC) {
-			return new ChunkRequest(defaultESK, defaultPageSize);
+			return new ChunkRequest(defaultAfter, defaultPageSize);
 		}
 		
-		return new ChunkRequest(defaultESK, defaultPageSize, defaults.direction());
+		return new ChunkRequest(defaultAfter, defaultBefore, defaultPageSize, defaults.direction());
 	}
 	
 	
@@ -91,7 +97,12 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 	@NonNull
 	@Getter(AccessLevel.PROTECTED)
 	@Setter
-	private String eskParameterName = DEFAULT_ESK_PARAMETER;
+	private String afterParameterName = DEFAULT_AFTER_PARAMETER;
+	
+	@NonNull
+	@Getter(AccessLevel.PROTECTED)
+	@Setter
+	private String beforeParameterName = DEFAULT_BEFORE_PARAMETER;
 	
 	@NonNull
 	@Getter(AccessLevel.PROTECTED)
@@ -148,12 +159,14 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 		
 		Chunkable defaultOrFallback = getDefaultFromAnnotationOrFallback(methodParameter);
 		
-		String esk = webRequest.getParameter(getParameterNameToUse(eskParameterName, methodParameter));
+		String after = webRequest.getParameter(getParameterNameToUse(afterParameterName, methodParameter));
+		String before = webRequest.getParameter(getParameterNameToUse(beforeParameterName, methodParameter));
 		String pageSizeString = webRequest.getParameter(getParameterNameToUse(sizeParameterName, methodParameter));
 		String directionString =
 				webRequest.getParameter(getParameterNameToUse(directionParameterName, methodParameter));
 		
-		if (StringUtils.hasText(esk) == false
+		if (StringUtils.hasText(after) == false
+				&& StringUtils.hasText(before) == false
 				&& StringUtils.hasText(pageSizeString) == false
 				&& StringUtils.hasText(directionString) == false) {
 			return defaultOrFallback;
@@ -181,7 +194,7 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 		
 		Direction direction = Direction.fromStringOrNull(directionString);
 		
-		return new ChunkRequest(esk, pageSize, direction);
+		return new ChunkRequest(after, before, pageSize, direction);
 	}
 	
 	private Chunkable getDefaultFromAnnotationOrFallback(MethodParameter methodParameter) {

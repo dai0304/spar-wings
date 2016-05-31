@@ -31,7 +31,15 @@ public interface Chunkable {
 	 * @return
 	 * @since 0.11
 	 */
-	Object getExclusiveStartKey();
+	String getAfterKey();
+	
+	/**
+	 * TODO for daisuke
+	 * 
+	 * @return
+	 * @since 0.11
+	 */
+	String getBeforeKey();
 	
 	/**
 	 * TODO for daisuke
@@ -52,9 +60,17 @@ public interface Chunkable {
 	/**
 	 * TODO for daisuke
 	 * 
-	 * @param lastEvaluatedKey
+	 * @param previousLastKey
 	 * @return
 	 */
-	Chunkable next(Object lastEvaluatedKey);
+	Chunkable next(String previousLastKey);
+	
+	/**
+	 * TODO for daisuke
+	 * 
+	 * @param nextFirstKey
+	 * @return
+	 */
+	Chunkable prev(String nextFirstKey);
 	
 }

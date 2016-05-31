@@ -52,14 +52,15 @@ public class HateoasChunkableHandlerMethodArgumentResolver
 	 */
 	public TemplateVariables getPaginationTemplateVariables(MethodParameter parameter, UriComponents template) {
 		
-		String eskPropertyName = getParameterNameToUse(getEskParameterName(), parameter);
+		String afterPropertyName = getParameterNameToUse(getAfterParameterName(), parameter);
+		String beforePropertyName = getParameterNameToUse(getBeforeParameterName(), parameter);
 		String sizePropertyName = getParameterNameToUse(getSizeParameterName(), parameter);
 		
 		List<TemplateVariable> names = new ArrayList<>();
 		MultiValueMap<String, String> queryParameters = template.getQueryParams();
 		boolean append = !queryParameters.isEmpty();
 		
-		for (String propertyName : Arrays.asList(eskPropertyName, sizePropertyName)) {
+		for (String propertyName : Arrays.asList(afterPropertyName, beforePropertyName, sizePropertyName)) {
 			if (queryParameters.containsKey(propertyName) == false) {
 				VariableType type = append ? REQUEST_PARAM_CONTINUED : REQUEST_PARAM;
 				String description = String.format("pagination.%s.description", propertyName);
@@ -79,17 +80,22 @@ public class HateoasChunkableHandlerMethodArgumentResolver
 		
 		Chunkable chunkable = (Chunkable) value;
 		
-		String eskPropertyName = getParameterNameToUse(getEskParameterName(), parameter);
 		String sizePropertyName = getParameterNameToUse(getSizeParameterName(), parameter);
+		String afterPropertyName = getParameterNameToUse(getAfterParameterName(), parameter);
+		String beforePropertyName = getParameterNameToUse(getBeforeParameterName(), parameter);
+		String directionPropertyName = getParameterNameToUse(getDirectionParameterName(), parameter);
 		
-		builder.replaceQueryParam(eskPropertyName, chunkable.getExclusiveStartKey());
 		if (chunkable.getMaxPageSize() != null) {
-			builder.replaceQueryParam(sizePropertyName,
-					chunkable.getMaxPageSize() <= getMaxPageSize()
-							? chunkable.getMaxPageSize()
-							: getMaxPageSize());
-		} else {
-			builder.replaceQueryParam(sizePropertyName, getMaxPageSize());
+			builder.replaceQueryParam(sizePropertyName, Math.min(chunkable.getMaxPageSize(), getMaxPageSize()));
+		}
+		if (chunkable.getAfterKey() != null) {
+			builder.replaceQueryParam(afterPropertyName, chunkable.getAfterKey());
+		}
+		if (chunkable.getBeforeKey() != null) {
+			builder.replaceQueryParam(beforePropertyName, chunkable.getBeforeKey());
+		}
+		if (chunkable.getDirection() != null) {
+			builder.replaceQueryParam(directionPropertyName, chunkable.getDirection());
 		}
 	}
 }

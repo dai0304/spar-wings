@@ -60,7 +60,8 @@ public class ChunkedResources<T> extends ResourceSupport {
 	 * @since 0.11
 	 */
 	public ChunkedResources(String key, Chunk<T> chunk) {
-		this(key, chunk.getContent(), new ChunkMetadata(chunk.getContent().size(), chunk.getLastEvaluatedKey()));
+		this(key, chunk.getContent(),
+				new ChunkMetadata(chunk.getContent().size(), chunk.getLastKey(), chunk.getFirstKey()));
 	}
 	
 	/**
@@ -71,7 +72,7 @@ public class ChunkedResources<T> extends ResourceSupport {
 	 * @since 0.11
 	 */
 	public ChunkedResources(String key, Collection<T> content) {
-		this(key, content, new ChunkMetadata(content.size(), null));
+		this(key, content, new ChunkMetadata(content.size(), null, null));
 	}
 	
 	/**
@@ -139,9 +140,15 @@ public class ChunkedResources<T> extends ResourceSupport {
 		private long size;
 		
 		@XmlAttribute
-		@com.fasterxml.jackson.annotation.JsonProperty("last_evaluated_key")
+		@com.fasterxml.jackson.annotation.JsonProperty("last_key")
 		@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 		@Getter
-		private Object lastEvaluatedKey;
+		private String lastKey;
+		
+		@XmlAttribute
+		@com.fasterxml.jackson.annotation.JsonProperty("first_key")
+		@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+		@Getter
+		private String firstKey;
 	}
 }

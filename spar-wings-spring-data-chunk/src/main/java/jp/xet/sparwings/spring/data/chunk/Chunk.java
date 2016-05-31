@@ -42,7 +42,15 @@ public interface Chunk<T> extends Iterable<T> {
 	 * @return
 	 * @since 0.11
 	 */
-	Object getLastEvaluatedKey();
+	String getLastKey();
+	
+	/**
+	 * TODO for daisuke
+	 * 
+	 * @return
+	 * @since 0.11
+	 */
+	String getFirstKey();
 	
 	/**
 	 * Returns the sorting direction for the {@link Chunk}.
@@ -69,12 +77,28 @@ public interface Chunk<T> extends Iterable<T> {
 	boolean hasNext();
 	
 	/**
+	 * Returns if there is a previous {@link Chunk}.
+	 * 
+	 * @return if there is a previous {@link Chunk}.
+	 * @since 0.11
+	 */
+	boolean hasPrev();
+	
+	/**
 	 * Returns whether the current {@link Chunk} is the last one.
 	 * 
 	 * @return
 	 * @since 0.11
 	 */
 	boolean isLast();
+	
+	/**
+	 * Returns whether the current {@link Chunk} is the first one.
+	 * 
+	 * @return
+	 * @since 0.11
+	 */
+	boolean isFirst();
 	
 	/**
 	 * Returns the {@link Chunkable} to request the next {@link Chunk}. Can be {@literal null} in case the current
@@ -87,6 +111,16 @@ public interface Chunk<T> extends Iterable<T> {
 	Chunkable nextChunkable();
 	
 	/**
+	 * Returns the {@link Chunkable} to request the previous {@link Chunk}. Can be {@literal null} in case the current
+	 * {@link Chunk} is already the first one. Clients should check {@link #hasNext()} before calling this method to make
+	 * sure they receive a non-{@literal null} value.
+	 * 
+	 * @return
+	 * @since 0.11
+	 */
+	Chunkable prevChunkable();
+	
+	/**
 	 * Returns a new {@link Chunk} with the content of the current one mapped by the given {@link Converter}.
 	 * 
 	 * @param converter must not be {@literal null}.
@@ -94,4 +128,12 @@ public interface Chunk<T> extends Iterable<T> {
 	 * @since 0.11
 	 */
 	<S>Chunk<S> map(Converter<? super T, ? extends S> converter);
+	
+	/**
+	 * TODO for daisuke
+	 * 
+	 * @return
+	 * @since #version#
+	 */
+	Chunkable getChunkable();
 }

@@ -37,7 +37,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
- * TODO for daisuke
+ * Test for {@link ChunkableHandlerMethodArgumentResolver}.
  * 
  * @since 0.19
  * @version $Id$
@@ -68,7 +68,8 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		Chunkable actualChunkable = (Chunkable) actual;
 		
 		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
-		assertThat(actualChunkable.getExclusiveStartKey(), is(nullValue()));
+		assertThat(actualChunkable.getAfterKey(), is(nullValue()));
+		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -84,7 +85,9 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		NativeWebRequest webRequest = mock(NativeWebRequest.class);
 		WebDataBinderFactory binderFactory = mock(WebDataBinderFactory.class);
 		// exercise
+		@SuppressWarnings("unused")
 		Object actual = sut.resolveArgument(methodParametere, mavContainer, webRequest, binderFactory);
+		// assert exception
 	}
 	
 	@Test
@@ -104,7 +107,8 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		Chunkable actualChunkable = (Chunkable) actual;
 		
 		assertThat(actualChunkable.getMaxPageSize(), is(123));
-		assertThat(actualChunkable.getExclusiveStartKey(), is(nullValue()));
+		assertThat(actualChunkable.getAfterKey(), is(nullValue()));
+		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -125,7 +129,8 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		Chunkable actualChunkable = (Chunkable) actual;
 		
 		assertThat(actualChunkable.getMaxPageSize(), is(2000));
-		assertThat(actualChunkable.getExclusiveStartKey(), is(nullValue()));
+		assertThat(actualChunkable.getAfterKey(), is(nullValue()));
+		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -146,7 +151,8 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		Chunkable actualChunkable = (Chunkable) actual;
 		
 		assertThat(actualChunkable.getMaxPageSize(), is(1));
-		assertThat(actualChunkable.getExclusiveStartKey(), is(nullValue()));
+		assertThat(actualChunkable.getAfterKey(), is(nullValue()));
+		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -167,18 +173,19 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		Chunkable actualChunkable = (Chunkable) actual;
 		
 		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
-		assertThat(actualChunkable.getExclusiveStartKey(), is(nullValue()));
+		assertThat(actualChunkable.getAfterKey(), is(nullValue()));
+		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
 	@Test
-	public void testEsk() throws Exception {
+	public void testAfter() throws Exception {
 		// setup
 		Method method = getClass().getMethod("simpleHandler", Chunkable.class);
 		MethodParameter methodParametere = new MethodParameter(method, 0);
 		ModelAndViewContainer mavContainer = mock(ModelAndViewContainer.class);
 		NativeWebRequest webRequest = mock(NativeWebRequest.class);
-		when(webRequest.getParameter(eq("esk"))).thenReturn("101");
+		when(webRequest.getParameter(eq("after"))).thenReturn("100");
 		WebDataBinderFactory binderFactory = mock(WebDataBinderFactory.class);
 		// exercise
 		Object actual = sut.resolveArgument(methodParametere, mavContainer, webRequest, binderFactory);
@@ -188,19 +195,42 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		Chunkable actualChunkable = (Chunkable) actual;
 		
 		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
-		assertThat(actualChunkable.getExclusiveStartKey(), is("101"));
+		assertThat(actualChunkable.getAfterKey(), is("100"));
+		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
 	@Test
-	public void testEskAndSize() throws Exception {
+	public void testBefore() throws Exception {
+		// setup
+		Method method = getClass().getMethod("simpleHandler", Chunkable.class);
+		MethodParameter methodParametere = new MethodParameter(method, 0);
+		ModelAndViewContainer mavContainer = mock(ModelAndViewContainer.class);
+		NativeWebRequest webRequest = mock(NativeWebRequest.class);
+		when(webRequest.getParameter(eq("before"))).thenReturn("89");
+		WebDataBinderFactory binderFactory = mock(WebDataBinderFactory.class);
+		// exercise
+		Object actual = sut.resolveArgument(methodParametere, mavContainer, webRequest, binderFactory);
+		// verify
+		assertThat(actual, is(notNullValue()));
+		assertThat(actual, is(instanceOf(Chunkable.class)));
+		Chunkable actualChunkable = (Chunkable) actual;
+		
+		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
+		assertThat(actualChunkable.getAfterKey(), is(nullValue()));
+		assertThat(actualChunkable.getBeforeKey(), is("89"));
+		assertThat(actualChunkable.getDirection(), is(nullValue()));
+	}
+	
+	@Test
+	public void testAfterAndSize() throws Exception {
 		// setup
 		Method method = getClass().getMethod("simpleHandler", Chunkable.class);
 		MethodParameter methodParametere = new MethodParameter(method, 0);
 		ModelAndViewContainer mavContainer = mock(ModelAndViewContainer.class);
 		NativeWebRequest webRequest = mock(NativeWebRequest.class);
 		when(webRequest.getParameter(eq("size"))).thenReturn("10");
-		when(webRequest.getParameter(eq("esk"))).thenReturn("101");
+		when(webRequest.getParameter(eq("after"))).thenReturn("100");
 		WebDataBinderFactory binderFactory = mock(WebDataBinderFactory.class);
 		// exercise
 		Object actual = sut.resolveArgument(methodParametere, mavContainer, webRequest, binderFactory);
@@ -210,7 +240,8 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		Chunkable actualChunkable = (Chunkable) actual;
 		
 		assertThat(actualChunkable.getMaxPageSize(), is(10));
-		assertThat(actualChunkable.getExclusiveStartKey(), is("101"));
+		assertThat(actualChunkable.getAfterKey(), is("100"));
+		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -230,7 +261,8 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		Chunkable actualChunkable = (Chunkable) actual;
 		
 		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
-		assertThat(actualChunkable.getExclusiveStartKey(), is(nullValue()));
+		assertThat(actualChunkable.getAfterKey(), is(nullValue()));
+		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(Direction.DESC));
 	}
 	
@@ -251,7 +283,8 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		Chunkable actualChunkable = (Chunkable) actual;
 		
 		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
-		assertThat(actualChunkable.getExclusiveStartKey(), is(nullValue()));
+		assertThat(actualChunkable.getAfterKey(), is(nullValue()));
+		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -263,7 +296,8 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		ModelAndViewContainer mavContainer = mock(ModelAndViewContainer.class);
 		NativeWebRequest webRequest = mock(NativeWebRequest.class);
 		when(webRequest.getParameter(eq("size"))).thenReturn("10");
-		when(webRequest.getParameter(eq("esk"))).thenReturn("101");
+		when(webRequest.getParameter(eq("after"))).thenReturn("89");
+		when(webRequest.getParameter(eq("before"))).thenReturn("100");
 		when(webRequest.getParameter(eq("direction"))).thenReturn("DESC");
 		WebDataBinderFactory binderFactory = mock(WebDataBinderFactory.class);
 		// exercise
@@ -274,7 +308,8 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		Chunkable actualChunkable = (Chunkable) actual;
 		
 		assertThat(actualChunkable.getMaxPageSize(), is(10));
-		assertThat(actualChunkable.getExclusiveStartKey(), is("101"));
+		assertThat(actualChunkable.getAfterKey(), is("89"));
+		assertThat(actualChunkable.getBeforeKey(), is("100"));
 		assertThat(actualChunkable.getDirection(), is(Direction.DESC));
 	}
 }

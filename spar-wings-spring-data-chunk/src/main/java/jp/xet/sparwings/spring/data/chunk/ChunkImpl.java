@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -38,6 +39,11 @@ import org.springframework.util.Assert;
  * @since 0.11
  * @author daisuke
  */
+@EqualsAndHashCode(of = {
+	"content",
+	"lastKey",
+	"firstKey"
+})
 public class ChunkImpl<T> implements Chunk<T> {
 	
 	@JsonProperty
@@ -45,9 +51,14 @@ public class ChunkImpl<T> implements Chunk<T> {
 	
 	@JsonProperty
 	@Getter
-	private final Object lastEvaluatedKey;
+	private final String lastKey;
+	
+	@JsonProperty
+	@Getter
+	private final String firstKey;
 	
 	@JsonIgnore
+	@Getter
 	private final Chunkable chunkable;
 	
 	
@@ -55,14 +66,16 @@ public class ChunkImpl<T> implements Chunk<T> {
 	 * Creates a new {@link Chunk} with the given content and the given governing {@link Pageable}.
 	 * 
 	 * @param content must not be {@literal null}.
-	 * @param lastEvaluatedKey
+	 * @param lastKey
+	 * @param firstKey
 	 * @param chunkable can be {@literal null}.
 	 * @since 0.11
 	 */
-	public ChunkImpl(List<T> content, Object lastEvaluatedKey, Chunkable chunkable) {
+	public ChunkImpl(List<T> content, String lastKey, String firstKey, Chunkable chunkable) {
 		Assert.notNull(content, "Content must not be null!");
 		this.content.addAll(content);
-		this.lastEvaluatedKey = lastEvaluatedKey;
+		this.lastKey = lastKey;
+		this.firstKey = firstKey;
 		this.chunkable = chunkable;
 	}
 	
@@ -88,7 +101,12 @@ public class ChunkImpl<T> implements Chunk<T> {
 	
 	@Override
 	public boolean hasNext() {
-		return lastEvaluatedKey != null;
+		return lastKey != null;
+	}
+	
+	@Override
+	public boolean hasPrev() {
+		return firstKey != null;
 	}
 	
 	@Override
@@ -97,13 +115,23 @@ public class ChunkImpl<T> implements Chunk<T> {
 	}
 	
 	@Override
+	public boolean isFirst() {
+		return hasPrev() == false;
+	}
+	
+	@Override
 	public Chunkable nextChunkable() {
-		return hasNext() ? chunkable.next(lastEvaluatedKey) : null;
+		return hasNext() ? chunkable.next(lastKey) : null;
+	}
+	
+	@Override
+	public Chunkable prevChunkable() {
+		return hasPrev() ? chunkable.prev(firstKey) : null;
 	}
 	
 	@Override
 	public <S>Chunk<S> map(Converter<? super T, ? extends S> converter) {
-		return new ChunkImpl<>(getConvertedContent(converter), lastEvaluatedKey, chunkable);
+		return new ChunkImpl<>(getConvertedContent(converter), lastKey, firstKey, chunkable);
 	}
 	
 	/**
@@ -128,44 +156,6 @@ public class ChunkImpl<T> implements Chunk<T> {
 		}
 		
 		return String.format("Chunk containing %s instances", contentType);
-	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((content == null) ? 0 : content.hashCode());
-		result = prime * result + ((lastEvaluatedKey == null) ? 0 : lastEvaluatedKey.hashCode());
-		return result;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		ChunkImpl<?> other = (ChunkImpl<?>) obj;
-		if (content == null) {
-			if (other.content != null) {
-				return false;
-			}
-		} else if (!content.equals(other.content)) {
-			return false;
-		}
-		if (lastEvaluatedKey == null) {
-			if (other.lastEvaluatedKey != null) {
-				return false;
-			}
-		} else if (!lastEvaluatedKey.equals(other.lastEvaluatedKey)) {
-			return false;
-		}
-		return true;
 	}
 	
 }
