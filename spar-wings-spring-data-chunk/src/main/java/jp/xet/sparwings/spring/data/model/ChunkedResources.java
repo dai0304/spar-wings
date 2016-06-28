@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.xet.sparwings.spring.hateoas;
+package jp.xet.sparwings.spring.data.model;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -30,10 +30,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-import org.springframework.hateoas.ResourceSupport;
 import org.springframework.util.Assert;
 
 /**
@@ -45,7 +45,7 @@ import org.springframework.util.Assert;
  */
 @ToString
 @XmlRootElement(name = "chunkedEntities")
-public class ChunkedResources<T> extends ResourceSupport {
+public class ChunkedResources<T> {
 	
 	private final Map<String, Object> content;
 	
@@ -60,8 +60,7 @@ public class ChunkedResources<T> extends ResourceSupport {
 	 * @since 0.11
 	 */
 	public ChunkedResources(String key, Chunk<T> chunk) {
-		this(key, chunk.getContent(),
-				new ChunkMetadata(chunk.getContent().size(), chunk.getLastKey(), chunk.getFirstKey()));
+		this(key, chunk.getContent(), new ChunkMetadata(chunk));
 	}
 	
 	/**
@@ -136,19 +135,30 @@ public class ChunkedResources<T> extends ResourceSupport {
 		
 		@XmlAttribute
 		@com.fasterxml.jackson.annotation.JsonProperty("size")
-		@Getter
+		@Getter(onMethod = @__({
+			@JsonIgnore
+		}))
 		private long size;
 		
 		@XmlAttribute
 		@com.fasterxml.jackson.annotation.JsonProperty("last_key")
 		@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-		@Getter
+		@Getter(onMethod = @__({
+			@JsonIgnore
+		}))
 		private String lastKey;
 		
 		@XmlAttribute
 		@com.fasterxml.jackson.annotation.JsonProperty("first_key")
 		@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-		@Getter
+		@Getter(onMethod = @__({
+			@JsonIgnore
+		}))
 		private String firstKey;
+		
+		
+		public ChunkMetadata(Chunk<?> chunk) {
+			this(chunk.getContent().size(), chunk.getLastKey(), chunk.getFirstKey());
+		}
 	}
 }

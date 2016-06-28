@@ -16,6 +16,7 @@
 package jp.xet.sparwings.spring.data.chunk;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Sort.Direction;
@@ -35,6 +36,8 @@ public interface Chunk<T> extends Iterable<T> {
 	 * @since 0.11
 	 */
 	List<T> getContent();
+	
+	Stream<T> stream();
 	
 	/**
 	 * TODO for daisuke
