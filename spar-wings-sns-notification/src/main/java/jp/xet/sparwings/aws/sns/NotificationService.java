@@ -180,8 +180,11 @@ public class NotificationService implements InitializingBean {
 	
 	private String createMessage(Map<String, String> messageMap) {
 		StringBuilder sb = new StringBuilder();
-		for (Map.Entry<String, String> e : MDC.getCopyOfContextMap().entrySet()) {
-			sb.append("MDC-").append(e.getKey()).append(": ").append(e.getValue()).append("\n");
+		Map<String, String> contextMap = MDC.getCopyOfContextMap();
+		if (contextMap != null) {
+			for (Map.Entry<String, String> e : contextMap.entrySet()) {
+				sb.append("MDC-").append(e.getKey()).append(": ").append(e.getValue()).append("\n");
+			}
 		}
 		for (Map.Entry<String, String> e : messageMap.entrySet()) {
 			sb.append(e.getKey()).append(": ").append(e.getValue()).append("\n");
