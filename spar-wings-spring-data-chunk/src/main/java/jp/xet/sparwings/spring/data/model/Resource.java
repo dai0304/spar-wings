@@ -128,7 +128,7 @@ public class Resource<T> {
 	 * Returns HAL embedded resource map.
 	 * 
 	 * @return HAL embedded resource map.
-	 * @since #version#
+	 * @since 0.22
 	 */
 	@JsonInclude(Include.NON_EMPTY)
 	@JsonProperty("_embedded")
@@ -141,7 +141,7 @@ public class Resource<T> {
 	 * 
 	 * @param relationship 関係
 	 * @param resource 埋め込みリソース
-	 * @since #version#
+	 * @since 0.22
 	 */
 	public void embedResource(String relationship, Object resource) {
 		embeddedResources.put(relationship, resource);
