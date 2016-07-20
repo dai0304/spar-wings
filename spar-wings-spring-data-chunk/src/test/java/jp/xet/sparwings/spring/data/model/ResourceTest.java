@@ -23,6 +23,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.Test;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 /**
  * TODO for daisuke
  * 
@@ -49,4 +52,22 @@ public class ResourceTest {
 		assertThat(actual, hasJsonPath("$.value", is(123)));
 	}
 	
+	@Test
+	public void testBean() throws Exception {
+		Resource<SampleBean> fooResource = new Resource<>(new SampleBean("aaa", "bbb"));
+		String actual = OM.writeValueAsString(fooResource);
+		assertThat(actual, hasJsonPath("$.foo", is("aaa")));
+		assertThat(actual, hasJsonPath("$.bar", is("bbb")));
+	}
+	
+	
+	@Data
+	@AllArgsConstructor
+	@SuppressWarnings("javadoc")
+	public static class SampleBean {
+		
+		private String foo;
+		
+		private String bar;
+	}
 }

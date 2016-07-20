@@ -19,15 +19,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import org.springframework.util.Assert;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * TODO for daisuke
@@ -37,6 +38,7 @@ import org.springframework.util.Assert;
 public class Resource<T> {
 	
 	@Getter
+	@JsonUnwrapped
 	private final T value;
 	
 	private final Map<String, Link> links = new HashMap<>();

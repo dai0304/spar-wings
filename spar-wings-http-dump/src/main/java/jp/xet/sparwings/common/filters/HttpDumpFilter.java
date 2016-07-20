@@ -40,25 +40,36 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+import org.springframework.http.HttpStatus;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Delegate;
 import lombok.extern.slf4j.Slf4j;
 
-import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
-import org.springframework.http.HttpStatus;
-
 /**
  * TODO for daisuke
+ * 
+ * <pre><code>
+ * &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+ *   &lt;evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+ *     &lt;marker>HTTP_DUMP&lt;/marker>
+ *   &lt;/evaluator>
+ *   &lt;onMismatch>NEUTRAL&lt;/onMismatch>
+ *   &lt;onMatch>DENY&lt;/onMatch>
+ * &lt;/filter>
+ * </code></pre>
  */
 @Slf4j
 public class HttpDumpFilter implements Filter {
 	
-	private static final Encoder ENCODER = Base64.getEncoder();
+	/** SLF4J {@link Marker} for HTTP dump */
+	public static final Marker MARKER = MarkerFactory.getMarker("HTTP_DUMP");
 	
-	private static final Marker HTTP_DUMP = MarkerFactory.getMarker("HTTP-Dump");
+	private static final Encoder ENCODER = Base64.getEncoder();
 	
 	private static final String NL = System.getProperty("line.separator");
 	
@@ -146,7 +157,9 @@ public class HttpDumpFilter implements Filter {
 		if (dumpResponse) {
 			dumpResponse(wrappedResp, bytes, sb);
 		}
-		log.info(HTTP_DUMP, sb.toString());
+		if (dumpRequest || dumpResponse) {
+			log.trace(MARKER, sb.toString());
+		}
 	}
 	
 	private void dumpRequest(BufferedRequestWrapper bufferedRequest, StringBuilder sb) {
