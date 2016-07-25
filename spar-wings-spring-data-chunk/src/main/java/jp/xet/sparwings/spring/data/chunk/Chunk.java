@@ -42,7 +42,7 @@ public interface Chunk<T>extends Iterable<T> {
 	 * Returns stream of content.
 	 * 
 	 * @return stream
-	 * @since #version#
+	 * @since 0.24
 	 */
 	Stream<T> stream();
 	
@@ -50,7 +50,7 @@ public interface Chunk<T>extends Iterable<T> {
 	 * Returns pagination token.
 	 * 
 	 * @return token
-	 * @since #version#
+	 * @since 0.24
 	 */
 	String getPaginationToken();
 	

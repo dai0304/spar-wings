@@ -36,7 +36,7 @@ import jp.xet.sparwings.spring.data.chunk.Chunkable.PaginationRelation;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.24
  * @version $Id$
  * @author daisuke
  */

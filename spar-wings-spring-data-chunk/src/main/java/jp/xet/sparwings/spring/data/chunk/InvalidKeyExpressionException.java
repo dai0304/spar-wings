@@ -18,7 +18,7 @@ package jp.xet.sparwings.spring.data.chunk;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.24
  * @author daisuke
  */
 @SuppressWarnings("serial")
