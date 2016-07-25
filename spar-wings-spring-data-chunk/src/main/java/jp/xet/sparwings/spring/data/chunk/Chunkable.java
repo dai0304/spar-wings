@@ -29,7 +29,7 @@ public interface Chunkable {
 	 * TODO for daisuke
 	 * 
 	 * @return
-	 * @since #version#
+	 * @since 0.24
 	 */
 	String getPaginationToken();
 	
@@ -37,7 +37,7 @@ public interface Chunkable {
 	 * Returns the relation of current chunk to retrieve.
 	 * 
 	 * @return the relation
-	 * @since #version#
+	 * @since 0.24
 	 */
 	PaginationRelation getPaginationRelation();
 	

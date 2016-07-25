@@ -20,7 +20,7 @@ import java.util.Optional;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.24
  * @version $Id$
  * @author daisuke
  */
@@ -31,7 +31,7 @@ public interface PaginationTokenEncoder {
 	 * 
 	 * @param paginationToken token
 	 * @return
-	 * @since #version#
+	 * @since 0.24
 	 */
 	Optional<String> extractFirstKey(String paginationToken);
 	
@@ -40,7 +40,7 @@ public interface PaginationTokenEncoder {
 	 * 
 	 * @param paginationToken token
 	 * @return
-	 * @since #version#
+	 * @since 0.24
 	 */
 	Optional<String> extractLastKey(String paginationToken);
 	
@@ -51,7 +51,7 @@ public interface PaginationTokenEncoder {
 	 * @param lastKey
 	 * @return token
 	 * @throws InvalidKeyExpressionException
-	 * @since #version#
+	 * @since 0.24
 	 */
 	String encode(Object firstKey, Object lastKey);
 	
