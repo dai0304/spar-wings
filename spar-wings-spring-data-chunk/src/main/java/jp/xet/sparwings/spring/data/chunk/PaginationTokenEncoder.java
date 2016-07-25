@@ -15,34 +15,44 @@
  */
 package jp.xet.sparwings.spring.data.chunk;
 
-import java.util.Collections;
-
-import lombok.experimental.UtilityClass;
+import java.util.Optional;
 
 /**
- * Utilities about {@link Chunk}.
+ * TODO for daisuke
  * 
- * @since 0.11
+ * @since 0.24
+ * @version $Id$
  * @author daisuke
  */
-@UtilityClass
-public class Chunks {
+public interface PaginationTokenEncoder {
 	
 	/**
-	 * Empty chunk shared instance.
-	 */
-	@SuppressWarnings("rawtypes")
-	public static final Chunk EMPTY_CHUNK = new ChunkImpl<>(Collections.emptyList(), null, null);
-	
-	
-	/**
-	 * Returns a empty chunk.
+	 * TODO for daisuke
 	 * 
-	 * @return Empty chunk
-	 * @since 0.11
+	 * @param paginationToken token
+	 * @return
+	 * @since 0.24
 	 */
-	@SuppressWarnings("unchecked")
-	public static final <T> Chunk<T> emptyChunk() {
-		return EMPTY_CHUNK;
-	}
+	Optional<String> extractFirstKey(String paginationToken);
+	
+	/**
+	 * TODO for daisuke
+	 * 
+	 * @param paginationToken token
+	 * @return
+	 * @since 0.24
+	 */
+	Optional<String> extractLastKey(String paginationToken);
+	
+	/**
+	 * TODO for daisuke
+	 * 
+	 * @param firstKey
+	 * @param lastKey
+	 * @return token
+	 * @throws InvalidKeyExpressionException
+	 * @since 0.24
+	 */
+	String encode(Object firstKey, Object lastKey);
+	
 }

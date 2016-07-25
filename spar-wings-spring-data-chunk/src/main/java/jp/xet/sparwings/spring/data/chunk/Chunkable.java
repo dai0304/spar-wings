@@ -18,9 +18,9 @@ package jp.xet.sparwings.spring.data.chunk;
 import org.springframework.data.domain.Sort.Direction;
 
 /**
- * TODO for daisuke
+ * Abstract interface for value-based pagination information.
  * 
-	 * @since 0.11
+ * @since 0.11
  * @author daisuke
  */
 public interface Chunkable {
@@ -29,48 +29,37 @@ public interface Chunkable {
 	 * TODO for daisuke
 	 * 
 	 * @return
-	 * @since 0.11
+	 * @since 0.24
 	 */
-	String getAfterKey();
+	String getPaginationToken();
 	
 	/**
-	 * TODO for daisuke
+	 * Returns the relation of current chunk to retrieve.
 	 * 
-	 * @return
-	 * @since 0.11
+	 * @return the relation
+	 * @since 0.24
 	 */
-	String getBeforeKey();
+	PaginationRelation getPaginationRelation();
 	
 	/**
-	 * TODO for daisuke
+	 * Returns the number of items to be returned.
 	 * 
-	 * @return
+	 * @return the number of items of that chunk
 	 * @since 0.11
 	 */
 	Integer getMaxPageSize();
 	
 	/**
-	 * TODO for daisuke
+	 * Returns the direction the items sorted.
 	 * 
-	 * @return
+	 * @return the directio
 	 * @since 0.11
 	 */
 	Direction getDirection();
 	
-	/**
-	 * TODO for daisuke
-	 * 
-	 * @param previousLastKey
-	 * @return
-	 */
-	Chunkable next(String previousLastKey);
 	
-	/**
-	 * TODO for daisuke
-	 * 
-	 * @param nextFirstKey
-	 * @return
-	 */
-	Chunkable prev(String nextFirstKey);
-	
+	public enum PaginationRelation {
+		NEXT,
+		PREV
+	}
 }

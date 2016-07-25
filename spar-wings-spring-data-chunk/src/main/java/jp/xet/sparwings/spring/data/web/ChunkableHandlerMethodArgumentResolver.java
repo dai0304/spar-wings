@@ -17,13 +17,6 @@ package jp.xet.sparwings.spring.data.web;
 
 import java.lang.reflect.Method;
 
-import jp.xet.sparwings.spring.data.chunk.ChunkRequest;
-import jp.xet.sparwings.spring.data.chunk.Chunkable;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.Sort.Direction;
@@ -33,10 +26,18 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import jp.xet.sparwings.spring.data.chunk.ChunkRequest;
+import jp.xet.sparwings.spring.data.chunk.Chunkable;
+import jp.xet.sparwings.spring.data.chunk.Chunkable.PaginationRelation;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+
 /**
  * Extracts paging information from web requests and thus allows injecting {@link Chunkable} instances into controller
  * methods. Request properties to be parsed can be configured. Default configuration uses request parameters beginning
- * with {@link #DEFAULT_AFTER_PARAMETER}, {@link #DEFAULT_BEFORE_PARAMETER}, {@link #DEFAULT_SIZE_PARAMETER},
+ * with {@link #DEFAULT_NEXT_PARAMETER}, {@link #DEFAULT_PREV_PARAMETER}, {@link #DEFAULT_SIZE_PARAMETER},
  * {@link #DEFAULT_DIRECTION_PARAMETER}, {@link #DEFAULT_QUALIFIER_DELIMITER}.
  * 
  * @since 0.19
@@ -47,9 +48,9 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 	private static final String INVALID_DEFAULT_PAGE_SIZE =
 			"Invalid default page size configured for method %s! Must not be less than one!";
 	
-	private static final String DEFAULT_AFTER_PARAMETER = "after";
+	private static final String DEFAULT_NEXT_PARAMETER = "next";
 	
-	private static final String DEFAULT_BEFORE_PARAMETER = "before";
+	private static final String DEFAULT_PREV_PARAMETER = "prev";
 	
 	private static final String DEFAULT_SIZE_PARAMETER = "size";
 	
@@ -67,14 +68,6 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 	private static Chunkable getDefaultChunkRequestFrom(MethodParameter parameter) {
 		ChunkableDefault defaults = parameter.getParameterAnnotation(ChunkableDefault.class);
 		
-		String defaultAfter = defaults.after();
-		if (defaultAfter == ChunkableDefault.DEFAULT) {
-			defaultAfter = null;
-		}
-		String defaultBefore = defaults.before();
-		if (defaultBefore == ChunkableDefault.DEFAULT) {
-			defaultBefore = null;
-		}
 		int defaultPageSize = defaults.size();
 		if (defaultPageSize == 10) {
 			defaultPageSize = defaults.value();
@@ -85,11 +78,7 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 			throw new IllegalStateException(String.format(INVALID_DEFAULT_PAGE_SIZE, annotatedMethod));
 		}
 		
-		if (defaults.direction() == Direction.ASC) {
-			return new ChunkRequest(defaultAfter, defaultPageSize);
-		}
-		
-		return new ChunkRequest(defaultAfter, defaultBefore, defaultPageSize, defaults.direction());
+		return new ChunkRequest(defaultPageSize, defaults.direction());
 	}
 	
 	
@@ -101,12 +90,12 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 	@NonNull
 	@Getter(AccessLevel.PROTECTED)
 	@Setter
-	private String afterParameterName = DEFAULT_AFTER_PARAMETER;
+	private String nextParameterName = DEFAULT_NEXT_PARAMETER;
 	
 	@NonNull
 	@Getter(AccessLevel.PROTECTED)
 	@Setter
-	private String beforeParameterName = DEFAULT_BEFORE_PARAMETER;
+	private String prevParameterName = DEFAULT_PREV_PARAMETER;
 	
 	@NonNull
 	@Getter(AccessLevel.PROTECTED)
@@ -161,16 +150,15 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 		SpringDataChunkableAnnotationUtils.assertChunkableUniqueness(methodParameter);
 		
-		Chunkable defaultOrFallback = getDefaultFromAnnotationOrFallback(methodParameter);
-		
-		String after = webRequest.getParameter(getParameterNameToUse(afterParameterName, methodParameter));
-		String before = webRequest.getParameter(getParameterNameToUse(beforeParameterName, methodParameter));
+		String next = webRequest.getParameter(getParameterNameToUse(nextParameterName, methodParameter));
+		String prev = webRequest.getParameter(getParameterNameToUse(prevParameterName, methodParameter));
 		String pageSizeString = webRequest.getParameter(getParameterNameToUse(sizeParameterName, methodParameter));
 		String directionString =
 				webRequest.getParameter(getParameterNameToUse(directionParameterName, methodParameter));
 		
-		if (StringUtils.hasText(after) == false
-				&& StringUtils.hasText(before) == false
+		Chunkable defaultOrFallback = getDefaultFromAnnotationOrFallback(methodParameter);
+		if (StringUtils.hasText(next) == false
+				&& StringUtils.hasText(prev) == false
 				&& StringUtils.hasText(pageSizeString) == false
 				&& StringUtils.hasText(directionString) == false) {
 			return defaultOrFallback;
@@ -198,7 +186,14 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 		
 		Direction direction = Direction.fromStringOrNull(directionString);
 		
-		return new ChunkRequest(after, before, pageSize, direction);
+		if (StringUtils.hasText(next)) {
+			return new ChunkRequest(next, PaginationRelation.NEXT, pageSize, direction);
+		} else if (StringUtils.hasText(prev)) {
+			return new ChunkRequest(prev, PaginationRelation.PREV, pageSize, direction);
+		} else {
+			return new ChunkRequest(pageSize, direction);
+		}
+		
 	}
 	
 	private Chunkable getDefaultFromAnnotationOrFallback(MethodParameter methodParameter) {

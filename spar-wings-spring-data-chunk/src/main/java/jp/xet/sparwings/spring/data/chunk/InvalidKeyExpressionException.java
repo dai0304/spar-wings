@@ -15,34 +15,16 @@
  */
 package jp.xet.sparwings.spring.data.chunk;
 
-import java.util.Collections;
-
-import lombok.experimental.UtilityClass;
-
 /**
- * Utilities about {@link Chunk}.
+ * TODO for daisuke
  * 
- * @since 0.11
+ * @since 0.24
  * @author daisuke
  */
-@UtilityClass
-public class Chunks {
+@SuppressWarnings("serial")
+public class InvalidKeyExpressionException extends RuntimeException {
 	
-	/**
-	 * Empty chunk shared instance.
-	 */
-	@SuppressWarnings("rawtypes")
-	public static final Chunk EMPTY_CHUNK = new ChunkImpl<>(Collections.emptyList(), null, null);
-	
-	
-	/**
-	 * Returns a empty chunk.
-	 * 
-	 * @return Empty chunk
-	 * @since 0.11
-	 */
-	@SuppressWarnings("unchecked")
-	public static final <T> Chunk<T> emptyChunk() {
-		return EMPTY_CHUNK;
+	InvalidKeyExpressionException(Throwable cause) {
+		super(cause);
 	}
 }

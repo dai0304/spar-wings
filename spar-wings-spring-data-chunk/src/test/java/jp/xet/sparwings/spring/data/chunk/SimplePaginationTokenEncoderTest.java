@@ -15,34 +15,33 @@
  */
 package jp.xet.sparwings.spring.data.chunk;
 
-import java.util.Collections;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
-import lombok.experimental.UtilityClass;
+import org.junit.Test;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * Utilities about {@link Chunk}.
+ * TODO for daisuke
  * 
- * @since 0.11
+ * @since 0.24
+ * @version $Id$
  * @author daisuke
  */
-@UtilityClass
-public class Chunks {
+@Slf4j
+public class SimplePaginationTokenEncoderTest {
 	
-	/**
-	 * Empty chunk shared instance.
-	 */
-	@SuppressWarnings("rawtypes")
-	public static final Chunk EMPTY_CHUNK = new ChunkImpl<>(Collections.emptyList(), null, null);
+	SimplePaginationTokenEncoder sut = new SimplePaginationTokenEncoder();
 	
 	
-	/**
-	 * Returns a empty chunk.
-	 * 
-	 * @return Empty chunk
-	 * @since 0.11
-	 */
-	@SuppressWarnings("unchecked")
-	public static final <T> Chunk<T> emptyChunk() {
-		return EMPTY_CHUNK;
+	@Test
+	public void test() {
+		String encoded = sut.encode("123", "234");
+		log.info(encoded);
+		String first = sut.extractFirstKey(encoded).get();
+		String last = sut.extractLastKey(encoded).get();
+		assertThat(first, is("123"));
+		assertThat(last, is("234"));
 	}
 }

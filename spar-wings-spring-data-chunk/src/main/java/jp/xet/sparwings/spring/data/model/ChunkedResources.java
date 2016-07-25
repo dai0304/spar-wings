@@ -24,17 +24,15 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.springframework.util.Assert;
+
 import jp.xet.sparwings.spring.data.chunk.Chunk;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-
-import org.springframework.util.Assert;
 
 /**
  * TODO for daisuke
@@ -71,24 +69,24 @@ public class ChunkedResources<T> {
 	 * @since 0.11
 	 */
 	public ChunkedResources(String key, Collection<T> content) {
-		this(key, content, new ChunkMetadata(content.size(), null, null));
+		this(key, content, new ChunkMetadata(content.size(), null));
 	}
 	
 	/**
 	 * Creates a {@link ChunkedResources} instance with iterable and metadata.
 	 * 
 	 * @param key must not be {@code null}.
-	 * @param iterable must not be {@code null}.
+	 * @param content must not be {@code null}.
 	 * @param metadata must not be {@code null}.
 	 * @since 0.11
 	 */
-	public ChunkedResources(String key, Iterable<T> iterable, ChunkMetadata metadata) {
+	public ChunkedResources(String key, Collection<T> content, ChunkMetadata metadata) {
 		Assert.notNull(key);
-		Assert.notNull(iterable);
+		Assert.notNull(content);
 		Assert.notNull(metadata);
 		this.content = new LinkedHashMap<>();
-		if (Iterables.isEmpty(iterable) == false) {
-			this.content.put(key, Lists.newArrayList(iterable));
+		if (content.isEmpty() == false) {
+			this.content.put(key, content);
 		}
 		this.metadata = metadata;
 	}
@@ -141,24 +139,16 @@ public class ChunkedResources<T> {
 		private long size;
 		
 		@XmlAttribute
-		@com.fasterxml.jackson.annotation.JsonProperty("last_key")
+		@com.fasterxml.jackson.annotation.JsonProperty("pagination_token")
 		@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 		@Getter(onMethod = @__({
 			@JsonIgnore
 		}))
-		private String lastKey;
-		
-		@XmlAttribute
-		@com.fasterxml.jackson.annotation.JsonProperty("first_key")
-		@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-		@Getter(onMethod = @__({
-			@JsonIgnore
-		}))
-		private String firstKey;
+		private String paginationToken;
 		
 		
 		public ChunkMetadata(Chunk<?> chunk) {
-			this(chunk.getContent().size(), chunk.getLastKey(), chunk.getFirstKey());
+			this(chunk.getContent().size(), chunk.getPaginationToken());
 		}
 	}
 }

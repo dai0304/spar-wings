@@ -22,9 +22,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -33,30 +30,37 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.util.Assert;
 
+import jp.xet.sparwings.spring.data.chunk.Chunkable.PaginationRelation;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * TODO for daisuke
  * 
- * @param <T>
+ * @param <T> entity type
  * @since 0.11
  * @author daisuke
  */
 @EqualsAndHashCode(of = {
 	"content",
-	"lastKey",
-	"firstKey"
+	"paginationToken"
 })
 public class ChunkImpl<T> implements Chunk<T> {
+	
+	private static final PaginationTokenEncoder DEFAULT_ENCODER = new SimplePaginationTokenEncoder();
+	
+	@JsonIgnore
+	@Getter
+	@Setter
+	private PaginationTokenEncoder encoder = DEFAULT_ENCODER;
 	
 	@JsonProperty
 	private final List<T> content = new ArrayList<>();
 	
 	@JsonProperty
 	@Getter
-	private final String lastKey;
-	
-	@JsonProperty
-	@Getter
-	private final String firstKey;
+	private final String paginationToken;
 	
 	@JsonIgnore
 	@Getter
@@ -66,17 +70,15 @@ public class ChunkImpl<T> implements Chunk<T> {
 	/**
 	 * Creates a new {@link Chunk} with the given content and the given governing {@link Pageable}.
 	 * 
-	 * @param content must not be {@literal null}.
-	 * @param lastKey
-	 * @param firstKey
+	 * @param content content, must not be {@literal null}.
+	 * @param paginationToken token, can be {@literal null}.
 	 * @param chunkable can be {@literal null}.
 	 * @since 0.11
 	 */
-	public ChunkImpl(List<T> content, String lastKey, String firstKey, Chunkable chunkable) {
+	public ChunkImpl(List<T> content, String paginationToken, Chunkable chunkable) {
 		Assert.notNull(content, "Content must not be null!");
 		this.content.addAll(content);
-		this.lastKey = lastKey;
-		this.firstKey = firstKey;
+		this.paginationToken = paginationToken;
 		this.chunkable = chunkable;
 	}
 	
@@ -107,12 +109,12 @@ public class ChunkImpl<T> implements Chunk<T> {
 	
 	@Override
 	public boolean hasNext() {
-		return lastKey != null && isLast() == false;
+		return getLastKey() != null && isLast() == false;
 	}
 	
 	@Override
 	public boolean hasPrev() {
-		return firstKey != null && isFirst() == false;
+		return getFirstKey() != null && isFirst() == false;
 	}
 	
 	@Override
@@ -122,32 +124,48 @@ public class ChunkImpl<T> implements Chunk<T> {
 	
 	@Override
 	public boolean isFirst() {
-		return chunkable.getAfterKey() == null;
+		return getFirstKey() == null;
 	}
 	
 	@Override
 	public Chunkable nextChunkable() {
-		return hasNext() ? chunkable.next(lastKey) : null;
+		if (hasNext() == false) {
+			return null;
+		}
+		return new ChunkRequest(paginationToken, PaginationRelation.NEXT,
+				chunkable.getMaxPageSize(), chunkable.getDirection());
 	}
 	
 	@Override
 	public Chunkable prevChunkable() {
-		return hasPrev() ? chunkable.prev(firstKey) : null;
+		if (hasPrev() == false) {
+			return null;
+		}
+		return new ChunkRequest(paginationToken, PaginationRelation.PREV,
+				chunkable.getMaxPageSize(), chunkable.getDirection());
 	}
 	
 	@Override
-	public <S>Chunk<S> map(Converter<? super T, ? extends S> converter) {
-		return new ChunkImpl<>(getConvertedContent(converter), lastKey, firstKey, chunkable);
+	public <S> Chunk<S> map(Converter<? super T, ? extends S> converter) {
+		return new ChunkImpl<>(getConvertedContent(converter), paginationToken, chunkable);
+	}
+	
+	private String getLastKey() {
+		return encoder.extractLastKey(paginationToken).orElse(null);
+	}
+	
+	private String getFirstKey() {
+		return encoder.extractFirstKey(paginationToken).orElse(null);
 	}
 	
 	/**
 	 * Applies the given {@link Converter} to the content of the {@link Chunk}.
 	 * 
 	 * @param converter must not be {@literal null}.
-	 * @return
+	 * @return mapped content list
 	 * @since 0.11
 	 */
-	protected <S>List<S> getConvertedContent(Converter<? super T, ? extends S> converter) {
+	protected <S> List<S> getConvertedContent(Converter<? super T, ? extends S> converter) {
 		Assert.notNull(converter, "Converter must not be null!");
 		return content.stream().map(converter::convert).collect(Collectors.toList());
 	}
