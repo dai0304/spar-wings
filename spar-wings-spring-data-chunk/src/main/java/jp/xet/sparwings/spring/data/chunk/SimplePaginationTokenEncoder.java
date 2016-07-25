@@ -46,6 +46,9 @@ public class SimplePaginationTokenEncoder implements PaginationTokenEncoder {
 	
 	@Override
 	public Optional<String> extractFirstKey(String paginationToken) {
+		if (paginationToken == null) {
+			return Optional.empty();
+		}
 		byte[] json = Base64.getUrlDecoder().decode(paginationToken);
 		try {
 			JsonNode tree = OM.readTree(json);
@@ -58,6 +61,9 @@ public class SimplePaginationTokenEncoder implements PaginationTokenEncoder {
 	
 	@Override
 	public Optional<String> extractLastKey(String paginationToken) {
+		if (paginationToken == null) {
+			return Optional.empty();
+		}
 		byte[] json = Base64.getUrlDecoder().decode(paginationToken);
 		try {
 			JsonNode tree = OM.readTree(json);
