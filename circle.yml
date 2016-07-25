@@ -1,3 +1,21 @@
+checkout:  
+  post:
+    - chmod +x ./gradlew
+
+dependencies:  
+  override:
+    - ./gradlew -v
+    - ./gradlew testClasses
+
 machine:
+  environment:
+    GRADLE_OPTS: -Xmx4G -Dorg.gradle.daemon=true
   java:
     version: oraclejdk8
+  post:
+    - sudo service mysql stop
+    - sudo service postgresql stop
+
+test:  
+  override:
+    - ./gradlew --full-stacktrace check
