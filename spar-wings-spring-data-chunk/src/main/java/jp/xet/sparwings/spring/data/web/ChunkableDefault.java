@@ -35,9 +35,6 @@ import org.springframework.data.domain.Sort.Direction;
 @Target(ElementType.PARAMETER)
 public @interface ChunkableDefault {
 	
-	String DEFAULT = "**default**";
-	
-	
 	/**
 	 * Alias for {@link #size()}. Prefer to use the {@link #size()} method as it makes the annotation declaration more
 	 * expressive.
@@ -49,18 +46,6 @@ public @interface ChunkableDefault {
 	 * parameter defined in request (default is 10).
 	 */
 	int size() default 10;
-	
-	/**
-	 * The default-after value the injected {@link jp.xet.sparwings.spring.data.chunk.Chunkable} should get
-	 * if no corresponding parameter defined in request (default is "").
-	 */
-	String after() default DEFAULT;
-	
-	/**
-	 * The default-before value the injected {@link jp.xet.sparwings.spring.data.chunk.Chunkable} should get
-	 * if no corresponding parameter defined in request (default is "").
-	 */
-	String before() default DEFAULT;
 	
 	/**
 	 * The direction to sort by. Defaults to {@link Direction#ASC}.

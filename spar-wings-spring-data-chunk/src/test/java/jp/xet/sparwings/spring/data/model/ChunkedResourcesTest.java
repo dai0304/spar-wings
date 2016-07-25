@@ -20,14 +20,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.util.Arrays;
-
-import jp.xet.sparwings.spring.data.chunk.Chunk;
-import jp.xet.sparwings.spring.data.chunk.ChunkImpl;
-import jp.xet.sparwings.spring.data.chunk.ChunkRequest;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.Test;
+
+import jp.xet.sparwings.spring.data.chunk.Chunk;
+import jp.xet.sparwings.spring.data.chunk.ChunkImpl;
+import jp.xet.sparwings.spring.data.chunk.ChunkRequest;
+import jp.xet.sparwings.spring.data.chunk.PaginationTokenEncoder;
+import jp.xet.sparwings.spring.data.chunk.SimplePaginationTokenEncoder;
 
 /**
  * TODO for daisuke
@@ -40,18 +43,21 @@ public class ChunkedResourcesTest {
 	
 	private static final ObjectMapper OM = new ObjectMapper();
 	
+	private static final PaginationTokenEncoder ENCODER = new SimplePaginationTokenEncoder();
+	
 	
 	@Test
 	public void testStrings() throws Exception {
-		Chunk<String> chunk = new ChunkImpl<>(Arrays.asList("aaa", "bbb", "ccc"), "aaa", "ccc", new ChunkRequest(10));
+		String paginationToken = ENCODER.encode("aaa", "ccc");
+		List<String> content = Arrays.asList("aaa", "bbb", "ccc");
+		Chunk<String> chunk = new ChunkImpl<>(content, paginationToken, new ChunkRequest(10));
 		ChunkedResources<String> stringsChunkResource = new ChunkedResources<>("strings", chunk);
 		String actual = OM.writeValueAsString(stringsChunkResource);
 		assertThat(actual, hasJsonPath("$._embedded.strings[0]", is("aaa")));
 		assertThat(actual, hasJsonPath("$._embedded.strings[1]", is("bbb")));
 		assertThat(actual, hasJsonPath("$._embedded.strings[2]", is("ccc")));
 		assertThat(actual, hasJsonPath("$.chunk.size", is(chunk.getContent().size())));
-		assertThat(actual, hasJsonPath("$.chunk.first_key", is(chunk.getFirstKey())));
-		assertThat(actual, hasJsonPath("$.chunk.last_key", is(chunk.getLastKey())));
+		assertThat(actual, hasJsonPath("$.chunk.pagination_token", is(chunk.getPaginationToken())));
 	}
 	
 }

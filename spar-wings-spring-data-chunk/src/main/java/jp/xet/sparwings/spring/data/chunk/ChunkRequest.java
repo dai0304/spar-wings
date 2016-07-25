@@ -15,12 +15,13 @@
  */
 package jp.xet.sparwings.spring.data.chunk;
 
+import org.springframework.data.domain.Sort.Direction;
+
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import org.springframework.data.domain.Sort.Direction;
 
 /**
  * TODO for daisuke
@@ -28,16 +29,17 @@ import org.springframework.data.domain.Sort.Direction;
  * @since 0.11
  * @author daisuke
  */
+@ToString
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class ChunkRequest implements Chunkable {
 	
 	@Getter
-	private String afterKey;
+	private String paginationToken;
 	
 	@Getter
-	private String beforeKey;
+	private PaginationRelation paginationRelation;
 	
 	@Getter
 	private Integer maxPageSize;
@@ -49,35 +51,35 @@ public class ChunkRequest implements Chunkable {
 	/**
 	 * インスタンスを生成する。
 	 * 
-	 * @param exclusiveStartKey
+	 * @param paginationToken the token
 	 */
-	public ChunkRequest(String exclusiveStartKey) {
-		this(exclusiveStartKey, null, null, null);
+	public ChunkRequest(String paginationToken) {
+		this(paginationToken, PaginationRelation.NEXT, null, Direction.ASC);
 	}
 	
 	/**
 	 * インスタンスを生成する。
 	 * 
-	 * @param maxPageSize
+	 * @param maxPageSize max size
 	 */
 	public ChunkRequest(Integer maxPageSize) {
-		this(null, null, maxPageSize, null);
+		this(null, null, maxPageSize, Direction.ASC);
 	}
 	
 	/**
 	 * インスタンスを生成する。
 	 * 
-	 * @param exclusiveStartKey
-	 * @param maxPageSize
+	 * @param paginationToken the token
+	 * @param maxPageSize max size
 	 */
-	public ChunkRequest(String exclusiveStartKey, Integer maxPageSize) {
-		this(exclusiveStartKey, null, maxPageSize, null);
+	public ChunkRequest(String paginationToken, Integer maxPageSize) {
+		this(paginationToken, PaginationRelation.NEXT, maxPageSize, Direction.ASC);
 	}
 	
 	/**
 	 * インスタンスを生成する。
 	 * 
-	 * @param direction
+	 * @param direction the sort direction
 	 */
 	public ChunkRequest(Direction direction) {
 		this(null, null, null, direction);
@@ -86,30 +88,20 @@ public class ChunkRequest implements Chunkable {
 	/**
 	 * インスタンスを生成する。
 	 * 
-	 * @param exclusiveStartKey
-	 * @param direction
+	 * @param paginationToken the token
+	 * @param direction the sort direction
 	 */
-	public ChunkRequest(String exclusiveStartKey, Direction direction) {
-		this(exclusiveStartKey, null, null, direction);
+	public ChunkRequest(String paginationToken, Direction direction) {
+		this(paginationToken, PaginationRelation.NEXT, null, direction);
 	}
 	
 	/**
 	 * インスタンスを生成する。
 	 * 
-	 * @param maxPageSize
-	 * @param direction
+	 * @param maxPageSize max size
+	 * @param direction the sort direction
 	 */
 	public ChunkRequest(Integer maxPageSize, Direction direction) {
 		this(null, null, maxPageSize, direction);
-	}
-	
-	@Override
-	public Chunkable next(String previousLastKey) {
-		return new ChunkRequest(previousLastKey, null, maxPageSize, direction);
-	}
-	
-	@Override
-	public Chunkable prev(String nextFirstKey) {
-		return new ChunkRequest(null, nextFirstKey, maxPageSize, direction);
 	}
 }

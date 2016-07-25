@@ -27,14 +27,15 @@ import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 
-import jp.xet.sparwings.spring.data.chunk.Chunkable;
-
 import org.junit.Test;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+import jp.xet.sparwings.spring.data.chunk.Chunkable;
+import jp.xet.sparwings.spring.data.chunk.Chunkable.PaginationRelation;
 
 /**
  * Test for {@link ChunkableHandlerMethodArgumentResolver}.
@@ -67,9 +68,9 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		assertThat(actual, is(sameInstance(sut.getFallbackChunkable())));
 		Chunkable actualChunkable = (Chunkable) actual;
 		
+		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
+		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
 		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
-		assertThat(actualChunkable.getAfterKey(), is(nullValue()));
-		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -106,9 +107,9 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		assertThat(actual, is(instanceOf(Chunkable.class)));
 		Chunkable actualChunkable = (Chunkable) actual;
 		
+		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
+		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
 		assertThat(actualChunkable.getMaxPageSize(), is(123));
-		assertThat(actualChunkable.getAfterKey(), is(nullValue()));
-		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -128,9 +129,9 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		assertThat(actual, is(instanceOf(Chunkable.class)));
 		Chunkable actualChunkable = (Chunkable) actual;
 		
+		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
+		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
 		assertThat(actualChunkable.getMaxPageSize(), is(2000));
-		assertThat(actualChunkable.getAfterKey(), is(nullValue()));
-		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -150,9 +151,9 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		assertThat(actual, is(instanceOf(Chunkable.class)));
 		Chunkable actualChunkable = (Chunkable) actual;
 		
+		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
+		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
 		assertThat(actualChunkable.getMaxPageSize(), is(1));
-		assertThat(actualChunkable.getAfterKey(), is(nullValue()));
-		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -172,9 +173,9 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		assertThat(actual, is(instanceOf(Chunkable.class)));
 		Chunkable actualChunkable = (Chunkable) actual;
 		
+		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
+		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
 		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
-		assertThat(actualChunkable.getAfterKey(), is(nullValue()));
-		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -185,7 +186,7 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		MethodParameter methodParametere = new MethodParameter(method, 0);
 		ModelAndViewContainer mavContainer = mock(ModelAndViewContainer.class);
 		NativeWebRequest webRequest = mock(NativeWebRequest.class);
-		when(webRequest.getParameter(eq("after"))).thenReturn("100");
+		when(webRequest.getParameter(eq("next"))).thenReturn("100");
 		WebDataBinderFactory binderFactory = mock(WebDataBinderFactory.class);
 		// exercise
 		Object actual = sut.resolveArgument(methodParametere, mavContainer, webRequest, binderFactory);
@@ -194,9 +195,9 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		assertThat(actual, is(instanceOf(Chunkable.class)));
 		Chunkable actualChunkable = (Chunkable) actual;
 		
+		assertThat(actualChunkable.getPaginationRelation(), is(PaginationRelation.NEXT));
+		assertThat(actualChunkable.getPaginationToken(), is(notNullValue())); // TODO assert last=100
 		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
-		assertThat(actualChunkable.getAfterKey(), is("100"));
-		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -207,7 +208,7 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		MethodParameter methodParametere = new MethodParameter(method, 0);
 		ModelAndViewContainer mavContainer = mock(ModelAndViewContainer.class);
 		NativeWebRequest webRequest = mock(NativeWebRequest.class);
-		when(webRequest.getParameter(eq("before"))).thenReturn("89");
+		when(webRequest.getParameter(eq("prev"))).thenReturn("89");
 		WebDataBinderFactory binderFactory = mock(WebDataBinderFactory.class);
 		// exercise
 		Object actual = sut.resolveArgument(methodParametere, mavContainer, webRequest, binderFactory);
@@ -216,9 +217,9 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		assertThat(actual, is(instanceOf(Chunkable.class)));
 		Chunkable actualChunkable = (Chunkable) actual;
 		
+		assertThat(actualChunkable.getPaginationRelation(), is(PaginationRelation.PREV));
+		assertThat(actualChunkable.getPaginationToken(), is(notNullValue())); // TODO assert first=89
 		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
-		assertThat(actualChunkable.getAfterKey(), is(nullValue()));
-		assertThat(actualChunkable.getBeforeKey(), is("89"));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -230,7 +231,7 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		ModelAndViewContainer mavContainer = mock(ModelAndViewContainer.class);
 		NativeWebRequest webRequest = mock(NativeWebRequest.class);
 		when(webRequest.getParameter(eq("size"))).thenReturn("10");
-		when(webRequest.getParameter(eq("after"))).thenReturn("100");
+		when(webRequest.getParameter(eq("next"))).thenReturn("100");
 		WebDataBinderFactory binderFactory = mock(WebDataBinderFactory.class);
 		// exercise
 		Object actual = sut.resolveArgument(methodParametere, mavContainer, webRequest, binderFactory);
@@ -239,9 +240,9 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		assertThat(actual, is(instanceOf(Chunkable.class)));
 		Chunkable actualChunkable = (Chunkable) actual;
 		
+		assertThat(actualChunkable.getPaginationRelation(), is(PaginationRelation.NEXT));
+		assertThat(actualChunkable.getPaginationToken(), is(notNullValue())); // TODO assert first=100
 		assertThat(actualChunkable.getMaxPageSize(), is(10));
-		assertThat(actualChunkable.getAfterKey(), is("100"));
-		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -260,9 +261,9 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		assertThat(actual, is(instanceOf(Chunkable.class)));
 		Chunkable actualChunkable = (Chunkable) actual;
 		
+		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
+		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
 		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
-		assertThat(actualChunkable.getAfterKey(), is(nullValue()));
-		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(Direction.DESC));
 	}
 	
@@ -282,9 +283,9 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		assertThat(actual, is(instanceOf(Chunkable.class)));
 		Chunkable actualChunkable = (Chunkable) actual;
 		
+		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
+		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
 		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
-		assertThat(actualChunkable.getAfterKey(), is(nullValue()));
-		assertThat(actualChunkable.getBeforeKey(), is(nullValue()));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -296,8 +297,8 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		ModelAndViewContainer mavContainer = mock(ModelAndViewContainer.class);
 		NativeWebRequest webRequest = mock(NativeWebRequest.class);
 		when(webRequest.getParameter(eq("size"))).thenReturn("10");
-		when(webRequest.getParameter(eq("after"))).thenReturn("89");
-		when(webRequest.getParameter(eq("before"))).thenReturn("100");
+		when(webRequest.getParameter(eq("next"))).thenReturn("89");
+		when(webRequest.getParameter(eq("prev"))).thenReturn("100"); // ignored
 		when(webRequest.getParameter(eq("direction"))).thenReturn("DESC");
 		WebDataBinderFactory binderFactory = mock(WebDataBinderFactory.class);
 		// exercise
@@ -307,9 +308,9 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		assertThat(actual, is(instanceOf(Chunkable.class)));
 		Chunkable actualChunkable = (Chunkable) actual;
 		
+		assertThat(actualChunkable.getPaginationRelation(), is(PaginationRelation.NEXT));
+		assertThat(actualChunkable.getPaginationToken(), is(notNullValue())); // TODO assert first=89
 		assertThat(actualChunkable.getMaxPageSize(), is(10));
-		assertThat(actualChunkable.getAfterKey(), is("89"));
-		assertThat(actualChunkable.getBeforeKey(), is("100"));
 		assertThat(actualChunkable.getDirection(), is(Direction.DESC));
 	}
 }

@@ -24,20 +24,18 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.springframework.data.domain.Page;
+import org.springframework.util.Assert;
+
 import jp.xet.sparwings.spring.data.chunk.Chunk;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-
-import org.springframework.data.domain.Page;
-import org.springframework.util.Assert;
 
 /**
  * TODO for daisuke
@@ -81,17 +79,17 @@ public class PagedResources<T> {
 	 * Creates a {@link PagedResources} instance with iterable and metadata.
 	 * 
 	 * @param key must not be {@code null}.
-	 * @param iterable must not be {@code null}.
+	 * @param content must not be {@code null}.
 	 * @param metadata must not be {@code null}.
 	 * @since 0.11
 	 */
-	public PagedResources(String key, Iterable<T> iterable, PageMetadata metadata) {
+	public PagedResources(String key, Collection<T> content, PageMetadata metadata) {
 		Assert.notNull(key);
-		Assert.notNull(iterable);
+		Assert.notNull(content);
 		Assert.notNull(metadata);
 		this.content = new LinkedHashMap<>();
-		if (Iterables.isEmpty(iterable) == false) {
-			this.content.put(key, Lists.newArrayList(iterable));
+		if (content.isEmpty() == false) {
+			this.content.put(key, content);
 		}
 		this.metadata = metadata;
 	}

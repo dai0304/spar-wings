@@ -1,0 +1,59 @@
+/*
+ * Copyright 2013 Daisuke Miyamoto.
+ * Created on 2016/07/20
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+package jp.xet.sparwings.spring.data.chunk;
+
+import java.util.Optional;
+
+/**
+ * TODO for daisuke
+ * 
+ * @since #version#
+ * @version $Id$
+ * @author daisuke
+ */
+public interface PaginationTokenEncoder {
+	
+	/**
+	 * TODO for daisuke
+	 * 
+	 * @param paginationToken token
+	 * @return
+	 * @since #version#
+	 */
+	Optional<String> extractFirstKey(String paginationToken);
+	
+	/**
+	 * TODO for daisuke
+	 * 
+	 * @param paginationToken token
+	 * @return
+	 * @since #version#
+	 */
+	Optional<String> extractLastKey(String paginationToken);
+	
+	/**
+	 * TODO for daisuke
+	 * 
+	 * @param firstKey
+	 * @param lastKey
+	 * @return token
+	 * @throws InvalidKeyExpressionException
+	 * @since #version#
+	 */
+	String encode(Object firstKey, Object lastKey);
+	
+}

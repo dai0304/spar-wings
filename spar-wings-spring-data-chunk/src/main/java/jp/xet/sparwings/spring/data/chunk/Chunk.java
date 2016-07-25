@@ -22,43 +22,42 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Sort.Direction;
 
 /**
- * TODO for daisuke
+ * A part of item set.
  * 
+ * @param <T> Type of item
  * @since 0.11
  * @author daisuke
  */
-public interface Chunk<T> extends Iterable<T> {
+public interface Chunk<T>extends Iterable<T> {
 	
 	/**
-	 * Returns the page content as {@link List}.
+	 * Returns the chunk content as {@link List}.
 	 * 
-	 * @return
+	 * @return chunk content list
 	 * @since 0.11
 	 */
 	List<T> getContent();
 	
+	/**
+	 * Returns stream of content.
+	 * 
+	 * @return stream
+	 * @since #version#
+	 */
 	Stream<T> stream();
 	
 	/**
-	 * TODO for daisuke
+	 * Returns pagination token.
 	 * 
-	 * @return
-	 * @since 0.11
+	 * @return token
+	 * @since #version#
 	 */
-	String getLastKey();
-	
-	/**
-	 * TODO for daisuke
-	 * 
-	 * @return
-	 * @since 0.11
-	 */
-	String getFirstKey();
+	String getPaginationToken();
 	
 	/**
 	 * Returns the sorting direction for the {@link Chunk}.
 	 * 
-	 * @return
+	 * @return direction
 	 * @since 0.11
 	 */
 	Direction getDirection();
@@ -66,7 +65,7 @@ public interface Chunk<T> extends Iterable<T> {
 	/**
 	 * Returns whether the {@link Chunk} has content at all.
 	 * 
-	 * @return
+	 * @return {@code true} if this chunk contains content
 	 * @since 0.11
 	 */
 	boolean hasContent();
@@ -90,7 +89,7 @@ public interface Chunk<T> extends Iterable<T> {
 	/**
 	 * Returns whether the current {@link Chunk} is the last one.
 	 * 
-	 * @return
+	 * @return {@code true} if this chunk is the last one
 	 * @since 0.11
 	 */
 	boolean isLast();
@@ -98,7 +97,7 @@ public interface Chunk<T> extends Iterable<T> {
 	/**
 	 * Returns whether the current {@link Chunk} is the first one.
 	 * 
-	 * @return
+	 * @return {@code true} if this chunk is the first one
 	 * @since 0.11
 	 */
 	boolean isFirst();
@@ -108,7 +107,7 @@ public interface Chunk<T> extends Iterable<T> {
 	 * {@link Chunk} is already the last one. Clients should check {@link #hasNext()} before calling this method to make
 	 * sure they receive a non-{@literal null} value.
 	 * 
-	 * @return
+	 * @return {@link Chunkable}
 	 * @since 0.11
 	 */
 	Chunkable nextChunkable();
@@ -118,7 +117,7 @@ public interface Chunk<T> extends Iterable<T> {
 	 * {@link Chunk} is already the first one. Clients should check {@link #hasNext()} before calling this method to make
 	 * sure they receive a non-{@literal null} value.
 	 * 
-	 * @return
+	 * @return {@link Chunkable}
 	 * @since 0.11
 	 */
 	Chunkable prevChunkable();
@@ -130,12 +129,12 @@ public interface Chunk<T> extends Iterable<T> {
 	 * @return a new {@link Chunk} with the content of the current one mapped by the given {@link Converter}.
 	 * @since 0.11
 	 */
-	<S>Chunk<S> map(Converter<? super T, ? extends S> converter);
+	<S> Chunk<S> map(Converter<? super T, ? extends S> converter);
 	
 	/**
-	 * TODO for daisuke
+	 * Returns the {@link Chunkable} used to retrieve current{@link Chunk}.
 	 * 
-	 * @return
+	 * @return {@link Chunkable}
 	 * @since 0.21
 	 */
 	Chunkable getChunkable();
