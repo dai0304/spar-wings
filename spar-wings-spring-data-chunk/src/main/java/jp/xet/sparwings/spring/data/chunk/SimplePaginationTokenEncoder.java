@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * TODO for daisuke
+ * Simple JSON and Base64 URL implementation for {@link PaginationTokenEncoder}.
  * 
  * @since 0.24
  * @version $Id$
