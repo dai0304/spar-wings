@@ -25,7 +25,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  * 
  * @param <E> the domain type the repository manages
  * @param <ID> the type of the id of the entity the repository manages
- * @since #version#
+ * @since 0.25
  * @author daisuke
  */
 @NoRepositoryBean
@@ -39,7 +39,7 @@ public interface LockableCrudRepository<E, ID extends Serializable>extends CrudR
 	 * @return true if an entity with the given id exists, {@literal false} otherwise
 	 * @throws IllegalArgumentException if {@code id} is {@literal null}
 	 * @throws DataAccessException データアクセスエラーが発生した場合
-	 * @since #version#
+	 * @since 0.25
 	 */
 	boolean exists(ID id, boolean forUpdate);
 	
@@ -51,7 +51,7 @@ public interface LockableCrudRepository<E, ID extends Serializable>extends CrudR
 	 * @return the entity with the given id or {@literal null} if none found
 	 * @throws IllegalArgumentException if {@code id} is {@literal null}
 	 * @throws DataAccessException データアクセスエラーが発生した場合
-	 * @since #version#
+	 * @since 0.25
 	 */
 	E findOne(ID id, boolean forUpdate);
 }

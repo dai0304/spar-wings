@@ -25,7 +25,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  * 
  * @param <E> the domain type the repository manages
  * @param <ID> the type of the id of the entity the repository manages
- * @since #version#
+ * @since 0.25
  * @author daisuke
  */
 @NoRepositoryBean
@@ -38,7 +38,7 @@ public interface BatchWritableRepository<E, ID extends Serializable>
 	 * @param entities entities to delete
 	 * @throws IllegalArgumentException in case the given {@link Iterable} is {@literal null}.
 	 * @throws DataAccessException データアクセスエラーが発生した場合
-	 * @since #version#
+	 * @since 0.25
 	 */
 	void delete(Iterable<? extends E> entities);
 	
@@ -49,7 +49,7 @@ public interface BatchWritableRepository<E, ID extends Serializable>
 	 * @return the saved entities
 	 * @throws IllegalArgumentException in case the given entity is {@literal null}.
 	 * @throws DataAccessException データアクセスエラーが発生した場合
-	 * @since #version#
+	 * @since 0.25
 	 */
 	<S extends E> Iterable<S> save(Iterable<S> entities);
 	
