@@ -27,7 +27,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  * 
  * @param <E> the domain type the repository manages
  * @param <ID> the type of the id of the entity the repository manages
- * @since #version#
+ * @since 0.25
  * @author daisuke
  */
 @NoRepositoryBean
@@ -42,7 +42,7 @@ public interface WritableRepository<E, ID extends Serializable>extends BaseRepos
 	 * @return updated entity
 	 * @throws DuplicateKeyException 対象エンティティがすでにあった場合
 	 * @throws DataAccessException データアクセスエラーが発生した場合
-	 * @since #version#
+	 * @since 0.25
 	 */
 	<S extends E> S create(S entity);
 	
@@ -55,7 +55,7 @@ public interface WritableRepository<E, ID extends Serializable>extends BaseRepos
 	 * @return updated entity
 	 * @throws IncorrectResultSizeDataAccessException 対象エンティティがなかった場合
 	 * @throws DataAccessException データアクセスエラーが発生した場合
-	 * @since #version#
+	 * @since 0.25
 	 */
 	<S extends E> S update(S entity);
 }

@@ -26,7 +26,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  * 
  * @param <E> the domain type the repository manages
  * @param <ID> the type of the id of the entity the repository manages
- * @since #version#
+ * @since 0.25
  * @author daisuke
  */
 @NoRepositoryBean
@@ -37,7 +37,7 @@ public interface PageableRepository<E, ID extends Serializable>extends ReadableR
 	 * 
 	 * @param pageable paging information
 	 * @return a page of entities
-	 * @since #version#
+	 * @since 0.25
 	 */
 	Page<E> findAll(Pageable pageable);
 	

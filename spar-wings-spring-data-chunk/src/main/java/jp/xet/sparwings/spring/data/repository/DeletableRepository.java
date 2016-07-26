@@ -25,7 +25,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  * 
  * @param <E> the domain type the repository manages
  * @param <ID> the type of the id of the entity the repository manages
- * @since #version#
+ * @since 0.25
  * @author daisuke
  */
 @NoRepositoryBean
@@ -37,7 +37,7 @@ public interface DeletableRepository<E, ID extends Serializable>extends BaseRepo
 	 * @param entity entity to delete
 	 * @throws IllegalArgumentException in case the given entity is {@literal null}.
 	 * @throws DataAccessException データアクセスエラーが発生した場合
-	 * @since #version#
+	 * @since 0.25
 	 */
 	void delete(E entity);
 	
@@ -47,7 +47,7 @@ public interface DeletableRepository<E, ID extends Serializable>extends BaseRepo
 	 * @param id must not be {@literal null}.
 	 * @throws IllegalArgumentException in case the given {@code id} is {@literal null}
 	 * @throws DataAccessException データアクセスエラーが発生した場合
-	 * @since #version#
+	 * @since 0.25
 	 */
 	void delete(ID id);
 }
