@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
- * TODO for daisuke
+ * Basic Java Bean implementation of {@code Chunkable}.
  * 
  * @since 0.11
  * @author daisuke

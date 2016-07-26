@@ -26,9 +26,9 @@ import org.springframework.data.domain.Sort.Direction;
 public interface Chunkable {
 	
 	/**
-	 * TODO for daisuke
+	 * Returns token for pagination.
 	 * 
-	 * @return
+	 * @return the token
 	 * @since 0.24
 	 */
 	String getPaginationToken();

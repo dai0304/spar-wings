@@ -28,7 +28,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
 /**
- * TODO for daisuke
+ * Test for {@link PagedResources} serialization.
  * 
  * @since 0.22
  * @version $Id$

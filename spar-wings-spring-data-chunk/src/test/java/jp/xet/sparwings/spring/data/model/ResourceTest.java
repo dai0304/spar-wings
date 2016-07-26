@@ -27,7 +27,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * TODO for daisuke
+ * Test for {@link Resource} serialization.
  * 
  * @since 0.22
  * @version $Id$
