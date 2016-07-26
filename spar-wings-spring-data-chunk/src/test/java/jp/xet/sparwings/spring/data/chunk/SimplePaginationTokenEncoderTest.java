@@ -23,7 +23,7 @@ import org.junit.Test;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * TODO for daisuke
+ * Test for {@link SimplePaginationTokenEncoder}.
  * 
  * @since 0.24
  * @version $Id$

@@ -36,7 +36,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * TODO for daisuke
+ * Default information of {@link Chunk}.
  * 
  * @param <T> entity type
  * @since 0.11

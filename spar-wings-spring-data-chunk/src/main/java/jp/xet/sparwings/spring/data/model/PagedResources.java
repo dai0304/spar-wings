@@ -112,9 +112,9 @@ public class PagedResources<T> {
 	}
 	
 	/**
-	 * TODO for daisuke
+	 * Metadata of this page.
 	 * 
-	 * @return
+	 * @return the metadata
 	 * @since 0.11
 	 */
 	@XmlElement(name = "page")

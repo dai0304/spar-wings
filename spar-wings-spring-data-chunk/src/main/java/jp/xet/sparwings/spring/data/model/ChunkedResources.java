@@ -109,9 +109,9 @@ public class ChunkedResources<T> {
 	}
 	
 	/**
-	 * TODO for daisuke
+	 * Metadata of this chunk.
 	 * 
-	 * @return
+	 * @return the metadata
 	 * @since 0.11
 	 */
 	@XmlElement(name = "chunk")

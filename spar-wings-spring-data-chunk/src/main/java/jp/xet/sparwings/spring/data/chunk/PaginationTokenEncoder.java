@@ -18,7 +18,7 @@ package jp.xet.sparwings.spring.data.chunk;
 import java.util.Optional;
 
 /**
- * TODO for daisuke
+ * Encoder for pagination token.
  * 
  * @since 0.24
  * @version $Id$
@@ -49,7 +49,7 @@ public interface PaginationTokenEncoder {
 	 * 
 	 * @param firstKey
 	 * @param lastKey
-	 * @return token
+	 * @return token pagination token
 	 * @throws InvalidKeyExpressionException
 	 * @since 0.24
 	 */
