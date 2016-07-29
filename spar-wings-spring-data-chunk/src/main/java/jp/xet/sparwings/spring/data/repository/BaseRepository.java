@@ -21,7 +21,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
 
 /**
- * Base repository interface for Spring Data Mirage.
+ * Base repository interface for Spring Data Chunk.
  * 
  * @param <E> the domain type the repository manages
  * @param <ID> the type of the id of the entity the repository manages

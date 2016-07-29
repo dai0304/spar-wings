@@ -19,7 +19,7 @@ import java.util.concurrent.Semaphore;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.profile.ProfilesConfigFile;
+import com.amazonaws.auth.profile.internal.AwsProfileNameLoader;
 import com.amazonaws.util.StringUtils;
 
 /**
@@ -114,17 +114,17 @@ public class AwsCliConfigProfileCredentialsProvider implements AWSCredentialsPro
 			lastRefreshed = System.nanoTime();
 		}
 		if (profileName == null) {
-			String profileEnvVarOverride = System.getenv(ProfilesConfigFile.AWS_PROFILE_ENVIRONMENT_VARIABLE);
+			String profileEnvVarOverride = System.getenv(AwsProfileNameLoader.AWS_PROFILE_ENVIRONMENT_VARIABLE);
 			profileEnvVarOverride = StringUtils.trim(profileEnvVarOverride);
 			if (!StringUtils.isNullOrEmpty(profileEnvVarOverride)) {
 				this.profileName = profileEnvVarOverride;
 			} else {
-				String profileSysPropOverride = System.getProperty(ProfilesConfigFile.AWS_PROFILE_SYSTEM_PROPERTY);
+				String profileSysPropOverride = System.getProperty(AwsProfileNameLoader.AWS_PROFILE_SYSTEM_PROPERTY);
 				profileSysPropOverride = StringUtils.trim(profileSysPropOverride);
 				if (!StringUtils.isNullOrEmpty(profileSysPropOverride)) {
 					this.profileName = profileSysPropOverride;
 				} else {
-					this.profileName = ProfilesConfigFile.DEFAULT_PROFILE_NAME;
+					this.profileName = AwsProfileNameLoader.DEFAULT_PROFILE_NAME;
 				}
 			}
 		} else {
