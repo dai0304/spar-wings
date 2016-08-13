@@ -15,6 +15,7 @@
  */
 package jp.xet.sparwings.dynamodb.patch.operations;
 
+import java.lang.reflect.Field;
 import java.util.function.Function;
 
 import jp.xet.sparwings.dynamodb.patch.JsonPathToAttributePath;
@@ -69,4 +70,27 @@ public abstract class JsonPatchOperation implements JsonSerializable {
 	
 	
 	public abstract void applyToBuilder(ExpressionSpecBuilder builder);
+
+	/**
+	 * creates a sparwings json patch operation from a github json patch operation
+	 * @param jpo the path value operation to convert
+	 */
+	protected JsonPatchOperation(com.github.fge.jsonpatch.JsonPatchOperation jpo) {
+		path = getProtected(com.github.fge.jsonpatch.JsonPatchOperation.class, "path", jpo);
+		op = getProtected(com.github.fge.jsonpatch.JsonPatchOperation.class, "op", jpo);
+	}
+
+	public static <T, E> T getProtected(Class<E> clazz, String fieldName, E object) {
+		final Field field;
+		try {
+			field = clazz.getDeclaredField(fieldName);
+		} catch (NoSuchFieldException e) {
+			throw new IllegalStateException(String.format("unable to field %s field", fieldName), e);
+		}
+		try {
+			return (T) field.get(object);
+		} catch (IllegalAccessException e) {
+			throw new IllegalStateException(String.format("unable to get %s field from object", fieldName), e);
+		}
+	}
 }

@@ -16,9 +16,20 @@
 package jp.xet.sparwings.dynamodb.patch;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.amazonaws.services.kms.model.UnsupportedOperationException;
+import com.github.fge.jackson.jsonpointer.JsonPointer;
+import jp.xet.sparwings.dynamodb.patch.operations.AddOperation;
+import jp.xet.sparwings.dynamodb.patch.operations.CopyOperation;
 import jp.xet.sparwings.dynamodb.patch.operations.JsonPatchOperation;
+import jp.xet.sparwings.dynamodb.patch.operations.MoveOperation;
+import jp.xet.sparwings.dynamodb.patch.operations.RemoveOperation;
+import jp.xet.sparwings.dynamodb.patch.operations.ReplaceOperation;
+import jp.xet.sparwings.dynamodb.patch.operations.TestOperation;
 import lombok.Getter;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -36,6 +47,7 @@ import com.google.common.collect.ImmutableList;
  * @since 0.13
  * @version $Id$
  * @author daisuke
+ * @author Alexander Patrikalakis
  */
 public class JsonPatch implements JsonSerializable {
 	
@@ -44,6 +56,28 @@ public class JsonPatch implements JsonSerializable {
 	 */
 	@Getter
 	private List<JsonPatchOperation> operations;
+
+	public JsonPatch(com.github.fge.jsonpatch.JsonPatch patch) {
+		final List<com.github.fge.jsonpatch.JsonPatchOperation> githubOperations =
+				JsonPatchOperation.getProtected(com.github.fge.jsonpatch.JsonPatch.class, "operations", patch);
+		operations = githubOperations.stream().map(jpo -> {
+			if(jpo instanceof com.github.fge.jsonpatch.AddOperation) {
+				return new AddOperation((com.github.fge.jsonpatch.AddOperation) jpo);
+			} else if(jpo instanceof com.github.fge.jsonpatch.CopyOperation) {
+				return new CopyOperation((com.github.fge.jsonpatch.CopyOperation) jpo);
+			} else if(jpo instanceof com.github.fge.jsonpatch.MoveOperation) {
+				return new MoveOperation((com.github.fge.jsonpatch.MoveOperation) jpo);
+			} else if(jpo instanceof com.github.fge.jsonpatch.RemoveOperation) {
+				return new RemoveOperation((com.github.fge.jsonpatch.RemoveOperation) jpo);
+			} else if(jpo instanceof com.github.fge.jsonpatch.ReplaceOperation) {
+				return new ReplaceOperation((com.github.fge.jsonpatch.ReplaceOperation) jpo);
+			} else if(jpo instanceof com.github.fge.jsonpatch.TestOperation) {
+				return new TestOperation((com.github.fge.jsonpatch.TestOperation) jpo);
+			} else {
+				throw new UnsupportedOperationException("unknown type");
+			}
+		}).collect(Collectors.toList());
+	}
 	
 	
 	/**

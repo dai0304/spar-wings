@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -52,6 +53,7 @@ import com.github.fge.jackson.jsonpointer.JsonPointer;
  * @since 0.13
  * @version $Id$
  * @author daisuke
+ * @author Alexander Patrikalakis
  */
 public class ReplaceOperation extends PathValueOperation {
 	
@@ -59,95 +61,8 @@ public class ReplaceOperation extends PathValueOperation {
 	public ReplaceOperation(@JsonProperty("path") JsonPointer path, @JsonProperty("value") JsonNode value) {
 		super("replace", path, value);
 	}
-	
-	@Override
-	public void applyToBuilder(ExpressionSpecBuilder builder) {
-		String attributePath = pathGenerator.apply(getPath());
-		JsonNode value = getValue();
-		JsonNodeType type = value.getNodeType();
-		switch (type) {
-			case NUMBER:
-				builder.addUpdate(N(attributePath).set(value.numberValue()));
-				break;
-			
-			case STRING:
-				builder.addUpdate(S(attributePath).set(value.textValue()));
-				break;
-			
-			case BOOLEAN:
-				builder.addUpdate(BOOL(attributePath).set(value.booleanValue()));
-				break;
-			
-			case NULL:
-				builder.addUpdate(NULL(attributePath).set());
-				break;
-			
-			case ARRAY:
-				if (value.iterator().hasNext() == false) {
-					builder.addUpdate(L(attributePath).set(Collections.emptyList()));
-				} else {
-					JsonNode repNode = value.iterator().next();
-					if (repNode.isNumber()) {
-						Set<Number> ns = StreamSupport.stream(value.spliterator(), false)
-							.map(JsonNode::numberValue)
-							.collect(Collectors.toSet());
-						builder.addUpdate(NS(attributePath).set(ns));
-					} else if (repNode.isTextual()) {
-						Set<String> ss = StreamSupport.stream(value.spliterator(), false)
-							.map(JsonNode::textValue)
-							.collect(Collectors.toSet());
-						builder.addUpdate(SS(attributePath).set(ss));
-					} else {
-						throw new UnsupportedOperationException("Not implemented yet: " + repNode.getNodeType());
-					}
-				}
-				break;
-			
-			case OBJECT:
-				Map<String, ?> m = toMap(value);
-				builder.addUpdate(M(attributePath).set(m));
-				break;
-			
-			default:
-				// TODO Auto-generated method stub
-				throw new UnsupportedOperationException("Not implemented yet: " + type);
-		}
-	}
-	
-	private Map<String, ?> toMap(JsonNode value) {
-		Map<String, Object> m = new LinkedHashMap<>();
-		for (Iterator<Entry<String, JsonNode>> iterator = value.fields(); iterator.hasNext();) {
-			Entry<String, JsonNode> e = iterator.next();
-			JsonNodeType nodeType = e.getValue().getNodeType();
-			if (nodeType.equals(JsonNodeType.OBJECT)) {
-				m.put(e.getKey(), toMap(e.getValue()));
-			} else if (nodeType.equals(JsonNodeType.BOOLEAN)) {
-				m.put(e.getKey(), e.getValue().booleanValue());
-			} else if (nodeType.equals(JsonNodeType.NUMBER)) {
-				m.put(e.getKey(), e.getValue().numberValue());
-			} else if (nodeType.equals(JsonNodeType.STRING)) {
-				m.put(e.getKey(), e.getValue().textValue());
-			} else if (nodeType.equals(JsonNodeType.ARRAY)) {
-				if (e.getValue().iterator().hasNext() == false) {
-					m.put(e.getKey(), Collections.emptyList());
-				} else {
-					JsonNode repNode = e.getValue().iterator().next();
-					if (repNode.isNumber()) {
-						Set<Number> ns = StreamSupport.stream(e.getValue().spliterator(), false)
-							.map(JsonNode::numberValue)
-							.collect(Collectors.toSet());
-						m.put(e.getKey(), ns);
-					} else if (repNode.isTextual()) {
-						Set<String> ss = StreamSupport.stream(e.getValue().spliterator(), false)
-							.map(JsonNode::textValue)
-							.collect(Collectors.toSet());
-						m.put(e.getKey(), ss);
-					} else {
-						throw new UnsupportedOperationException("Not implemented yet: " + repNode.getNodeType());
-					}
-				}
-			}
-		}
-		return m;
+
+	public ReplaceOperation(com.github.fge.jsonpatch.ReplaceOperation o) {
+		super(o);
 	}
 }

@@ -23,6 +23,7 @@ package jp.xet.sparwings.dynamodb.patch.operations;
  * @author daisuke
  */
 import com.amazonaws.services.dynamodbv2.xspec.ExpressionSpecBuilder;
+import com.amazonaws.services.dynamodbv2.xspec.PathSetAction;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.fge.jackson.jsonpointer.JsonPointer;
@@ -49,10 +50,17 @@ public class CopyOperation extends DualPathOperation {
 	public CopyOperation(@JsonProperty("from") JsonPointer from, @JsonProperty("path") JsonPointer path) {
 		super("copy", from, path);
 	}
+
+	public CopyOperation(com.github.fge.jsonpatch.CopyOperation o) {
+		super(o);
+	}
 	
 	@Override
 	public void applyToBuilder(ExpressionSpecBuilder builder) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("JSON patch 'copy' operation is not implemented yet.");
+		String copyPath = pathGenerator.apply(from);
+		String setPath = pathGenerator.apply(path);
+		//set the attribute in the path location
+		builder.addUpdate(new PathSetAction(ExpressionSpecBuilder.attribute(setPath),
+				ExpressionSpecBuilder.attribute(copyPath)));
 	}
 }

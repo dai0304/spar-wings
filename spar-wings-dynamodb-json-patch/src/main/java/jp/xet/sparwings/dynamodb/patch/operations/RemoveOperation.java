@@ -17,6 +17,7 @@ package jp.xet.sparwings.dynamodb.patch.operations;
 
 import static com.amazonaws.services.dynamodbv2.xspec.ExpressionSpecBuilder.NULL;
 
+import java.beans.Expression;
 import java.io.IOException;
 
 import lombok.ToString;
@@ -56,6 +57,10 @@ public class RemoveOperation extends JsonPatchOperation {
 		jgen.writeStringField("path", path.toString());
 		jgen.writeEndObject();
 	}
+
+	public RemoveOperation(com.github.fge.jsonpatch.RemoveOperation o) {
+		super(o);
+	}
 	
 	@Override
 	public void serializeWithType(JsonGenerator jgen, SerializerProvider provider, TypeSerializer typeSer)
@@ -66,6 +71,6 @@ public class RemoveOperation extends JsonPatchOperation {
 	@Override
 	public void applyToBuilder(ExpressionSpecBuilder builder) {
 		String attributePath = pathGenerator.apply(getPath());
-		builder.addUpdate(NULL(attributePath).remove());
+		builder.addUpdate(ExpressionSpecBuilder.remove(attributePath));
 	}
 }
