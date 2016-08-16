@@ -36,7 +36,7 @@ import ch.qos.logback.core.Appender;
 /**
  * Test for {@link InitializationUtil}.
  * 
- * @since #version#
+ * @since 0.26
  * @version $Id$
  * @author daisuke
  */
