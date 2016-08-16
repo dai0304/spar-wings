@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @SuppressWarnings("serial")
 @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
-public class HttpTooManyRequestsException extends Exception {
+public class HttpTooManyRequestsException extends HttpResponseException {
 	
 	/**
 	 * Create instance with milleseconds to wait.
