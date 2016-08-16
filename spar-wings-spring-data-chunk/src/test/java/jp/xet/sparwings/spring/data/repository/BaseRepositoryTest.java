@@ -21,7 +21,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 /**
  * Test for {@link BaseRepository}.
  * 
- * @since #version#
+ * @since 0.26
  * @version $Id$
  * @author daisuke
  */

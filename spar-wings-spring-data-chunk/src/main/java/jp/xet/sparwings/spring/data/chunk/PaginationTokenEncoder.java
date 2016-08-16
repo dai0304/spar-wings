@@ -43,7 +43,7 @@ public interface PaginationTokenEncoder {
 	 * @param paginationToken token
 	 * @param clazz
 	 * @return
-	 * @since #version#
+	 * @since 0.26
 	 */
 	<T> Optional<T> extractFirstKey(String paginationToken, Class<T> clazz);
 	
@@ -53,7 +53,7 @@ public interface PaginationTokenEncoder {
 	 * @param paginationToken token
 	 * @param clazz
 	 * @return
-	 * @since #version#
+	 * @since 0.26
 	 */
 	<T> Optional<T> extractLastKey(String paginationToken, Class<T> clazz);
 	

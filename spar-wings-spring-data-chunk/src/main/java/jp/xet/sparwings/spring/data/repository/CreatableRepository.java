@@ -26,7 +26,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  * 
  * @param <E> the domain type the repository manages
  * @param <ID> the type of the id of the entity the repository manages
- * @since #version#
+ * @since 0.26
  * @author daisuke
  */
 @NoRepositoryBean
