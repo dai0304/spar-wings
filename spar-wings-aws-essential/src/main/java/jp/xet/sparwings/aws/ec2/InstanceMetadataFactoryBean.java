@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import com.amazonaws.util.EC2MetadataUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.slf4j.Logger;
@@ -34,7 +35,9 @@ import org.springframework.beans.factory.FactoryBean;
  *
  * @since 0.3
  * @author daisuke
+ * @deprecated use {@link EC2MetadataUtils#getInstanceInfo()}
  */
+@Deprecated
 public class InstanceMetadataFactoryBean implements FactoryBean<InstanceMetadata> {
 	
 	private static Logger logger = LoggerFactory.getLogger(InstanceMetadataFactoryBean.class);

@@ -15,10 +15,7 @@
  */
 package jp.xet.sparwings.aws;
 
-import jp.xet.sparwings.aws.ec2.InstanceMetadata;
-import lombok.Getter;
-import lombok.Setter;
-
+import com.amazonaws.regions.AwsRegionProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 
@@ -27,12 +24,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import jp.xet.sparwings.aws.ec2.InstanceMetadata;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Spring factyory bean for {@link Region}.
  *
  * @since 0.3
  * @author daisuke
+ * @deprecated use {@link AwsRegionProvider}
  */
+@Deprecated
 public class RegionFactoryBean implements FactoryBean<Region> {
 	
 	private static Logger logger = LoggerFactory.getLogger(RegionFactoryBean.class);

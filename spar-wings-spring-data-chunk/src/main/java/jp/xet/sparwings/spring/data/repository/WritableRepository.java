@@ -17,9 +17,6 @@ package jp.xet.sparwings.spring.data.repository;
 
 import java.io.Serializable;
 
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.repository.NoRepositoryBean;
 
 /**
@@ -31,31 +28,6 @@ import org.springframework.data.repository.NoRepositoryBean;
  * @author daisuke
  */
 @NoRepositoryBean
-public interface WritableRepository<E, ID extends Serializable>extends BaseRepository<E, ID> {
-	
-	/**
-	 * Create entity.
-	 * 
-	 * <p>{@code entity}として{@code null}を渡した場合、何もせずに{@code null}を返す。</p>
-	 * 
-	 * @param entity entity to update
-	 * @return updated entity
-	 * @throws DuplicateKeyException 対象エンティティがすでにあった場合
-	 * @throws DataAccessException データアクセスエラーが発生した場合
-	 * @since 0.25
-	 */
-	<S extends E> S create(S entity);
-	
-	/**
-	 * Update entity.
-	 * 
-	 * <p>{@code entity}として{@code null}を渡した場合、何もせずに{@code null}を返す。</p>
-	 * 
-	 * @param entity entity to update
-	 * @return updated entity
-	 * @throws IncorrectResultSizeDataAccessException 対象エンティティがなかった場合
-	 * @throws DataAccessException データアクセスエラーが発生した場合
-	 * @since 0.25
-	 */
-	<S extends E> S update(S entity);
+public interface WritableRepository<E, ID extends Serializable>
+		extends CreatableRepository<E, ID>, UpdatableRepository<E, ID>, DeletableRepository<E, ID> {
 }

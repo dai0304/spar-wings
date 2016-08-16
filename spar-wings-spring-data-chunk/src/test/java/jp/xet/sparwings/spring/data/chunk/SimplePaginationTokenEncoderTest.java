@@ -20,6 +20,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -30,18 +31,53 @@ import lombok.extern.slf4j.Slf4j;
  * @author daisuke
  */
 @Slf4j
+@SuppressWarnings("javadoc")
 public class SimplePaginationTokenEncoderTest {
 	
 	SimplePaginationTokenEncoder sut = new SimplePaginationTokenEncoder();
 	
 	
 	@Test
-	public void test() {
-		String encoded = sut.encode("123", "234");
+	public void testString() {
+		String encoded = sut.encode("abc", "def");
+		log.info(encoded);
+		String first = sut.extractFirstKey(encoded).get();
+		String last = sut.extractLastKey(encoded).get();
+		assertThat(first, is("abc"));
+		assertThat(last, is("def"));
+	}
+	
+	@Test
+	public void testInteger() {
+		String encoded = sut.encode(123, 234);
 		log.info(encoded);
 		String first = sut.extractFirstKey(encoded).get();
 		String last = sut.extractLastKey(encoded).get();
 		assertThat(first, is("123"));
 		assertThat(last, is("234"));
+	}
+	
+	@Test
+	public void testCompositeKey() {
+		// setup
+		CompositeKey first = new CompositeKey("a", 123L);
+		CompositeKey last = new CompositeKey("z", 789L);
+		// exercise
+		String encoded = sut.encode(first, last);
+		log.info(encoded);
+		CompositeKey actualFirst = sut.extractFirstKey(encoded, CompositeKey.class).get();
+		CompositeKey actualLast = sut.extractLastKey(encoded, CompositeKey.class).get();
+		// verify
+		assertThat(actualFirst, is(first));
+		assertThat(actualLast, is(last));
+	}
+	
+	
+	@Data
+	private static class CompositeKey {
+		
+		private final String key1;
+		
+		private final long key2;
 	}
 }

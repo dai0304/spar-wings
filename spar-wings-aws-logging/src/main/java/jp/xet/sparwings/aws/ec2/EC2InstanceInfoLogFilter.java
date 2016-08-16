@@ -16,6 +16,7 @@
 package jp.xet.sparwings.aws.ec2;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -23,22 +24,23 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.amazonaws.util.EC2MetadataUtils;
+import com.amazonaws.util.EC2MetadataUtils.InstanceInfo;
+
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * {@link Filter ServletFilter} implementation that put {@link InstanceMetadata} to {@link MDC}.
+ * {@link Filter ServletFilter} implementation that put {@link InstanceInfo} to {@link MDC}.
  * 
  * @since 0.3
  * @author daisuke
- * @deprecated use {@link EC2InstanceInfoLogFilter}
  */
-@Deprecated
-public class InstanceMetadataLogFilter extends OncePerRequestFilter {
+public class EC2InstanceInfoLogFilter extends OncePerRequestFilter {
 	
 	@Autowired
-	InstanceMetadata instanceMetadata;
+	EC2MetadataUtils.InstanceInfo instanceInfo;
 	
 	
 	@Override
@@ -58,20 +60,20 @@ public class InstanceMetadataLogFilter extends OncePerRequestFilter {
 	}
 	
 	private void registerMDCValues() {
-		putIfNotNull("im.instanceId", instanceMetadata.getInstanceId());
-		putIfNotNull("im.billingProducts", instanceMetadata.getBillingProducts());
-		putIfNotNull("im.version", instanceMetadata.getVersion());
-		putIfNotNull("im.imageId", instanceMetadata.getImageId());
-		putIfNotNull("im.accountId", instanceMetadata.getAccountId());
-		putIfNotNull("im.instanceType", instanceMetadata.getInstanceType());
-		putIfNotNull("im.architecture", instanceMetadata.getArchitecture());
-		putIfNotNull("im.kernelId", instanceMetadata.getKernelId());
-		putIfNotNull("im.ramdiskId", instanceMetadata.getRamdiskId());
-		putIfNotNull("im.pendingTime", instanceMetadata.getPendingTime());
-		putIfNotNull("im.availabilityZone", instanceMetadata.getAvailabilityZone());
-		putIfNotNull("im.devpayProductCodes", instanceMetadata.getDevpayProductCodes());
-		putIfNotNull("im.privateIp", instanceMetadata.getPrivateIp());
-		putIfNotNull("im.region", instanceMetadata.getRegion());
+		putIfNotNull("im.instanceId", instanceInfo.getInstanceId());
+		putIfNotNull("im.billingProducts", Arrays.toString(instanceInfo.getBillingProducts()));
+		putIfNotNull("im.version", instanceInfo.getVersion());
+		putIfNotNull("im.imageId", instanceInfo.getImageId());
+		putIfNotNull("im.accountId", instanceInfo.getAccountId());
+		putIfNotNull("im.instanceType", instanceInfo.getInstanceType());
+		putIfNotNull("im.architecture", instanceInfo.getArchitecture());
+		putIfNotNull("im.kernelId", instanceInfo.getKernelId());
+		putIfNotNull("im.ramdiskId", instanceInfo.getRamdiskId());
+		putIfNotNull("im.pendingTime", instanceInfo.getPendingTime());
+		putIfNotNull("im.availabilityZone", instanceInfo.getAvailabilityZone());
+		putIfNotNull("im.devpayProductCodes", Arrays.toString(instanceInfo.getDevpayProductCodes()));
+		putIfNotNull("im.privateIp", instanceInfo.getPrivateIp());
+		putIfNotNull("im.region", instanceInfo.getRegion());
 	}
 	
 	private void deregisterMDCValues() {

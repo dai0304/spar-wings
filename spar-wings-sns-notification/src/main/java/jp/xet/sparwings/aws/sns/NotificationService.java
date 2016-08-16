@@ -20,12 +20,12 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import jp.xet.sparwings.aws.ec2.InstanceMetadata;
-import jp.xet.sparwings.spring.env.EnvironmentService;
+import java.util.Objects;
+import java.util.Optional;
 
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.util.EC2MetadataUtils.InstanceInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +33,8 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+
+import jp.xet.sparwings.spring.env.EnvironmentService;
 
 /**
  * 開発担当者へのイベント通知サービス。
@@ -69,8 +71,12 @@ public class NotificationService implements InitializingBean {
 	@Autowired
 	AmazonSNS sns;
 	
-	@Autowired
-	InstanceMetadata instanceMetadata;
+	@Autowired(required = false)
+	InstanceInfo instanceInfo;
+	
+	@Deprecated
+	@Autowired(required = false)
+	jp.xet.sparwings.aws.ec2.InstanceMetadata instanceMetadata;
 	
 	@Autowired
 	EnvironmentService env;
@@ -170,7 +176,8 @@ public class NotificationService implements InitializingBean {
 	 */
 	public void notifyDev(String subject, Map<String, String> messageMap, Throwable t) {
 		messageMap.put("environment", env.toString());
-		messageMap.put("instanceMetadata", instanceMetadata.toString());
+		messageMap.put("instanceMetadata", Objects.toString(Optional.<Object> ofNullable(instanceInfo)
+			.orElse(instanceMetadata)));
 		if (t != null) {
 			messageMap.put("stackTrace", toString(t));
 		}

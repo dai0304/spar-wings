@@ -15,6 +15,8 @@
  */
 package jp.xet.sparwings.aws.ec2;
 
+import com.amazonaws.util.EC2MetadataUtils.InstanceInfo;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +27,9 @@ import lombok.ToString;
  * 
  * @since 0.3
  * @author daisuke
+ * @deprecated use {@link InstanceInfo}
  */
+@Deprecated
 @ToString
 public class InstanceMetadata {
 	

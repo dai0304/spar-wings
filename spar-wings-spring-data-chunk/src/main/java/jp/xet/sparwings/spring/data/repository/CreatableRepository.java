@@ -17,17 +17,31 @@ package jp.xet.sparwings.spring.data.repository;
 
 import java.io.Serializable;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.repository.NoRepositoryBean;
-import org.springframework.data.repository.Repository;
 
 /**
- * Base repository interface for Spring Data Chunk.
+ * Repository interface to create single entity.
  * 
  * @param <E> the domain type the repository manages
  * @param <ID> the type of the id of the entity the repository manages
- * @since 0.1
+ * @since 0.26
  * @author daisuke
  */
 @NoRepositoryBean
-public interface BaseRepository<E, ID extends Serializable>extends Repository<E, ID> {
+public interface CreatableRepository<E, ID extends Serializable>extends BaseRepository<E, ID> {
+	
+	/**
+	 * Create entity.
+	 * 
+	 * <p>{@code entity}として{@code null}を渡した場合、何もせずに{@code null}を返す。</p>
+	 * 
+	 * @param entity entity to update
+	 * @return updated entity
+	 * @throws DuplicateKeyException 対象エンティティがすでにあった場合
+	 * @throws DataAccessException データアクセスエラーが発生した場合
+	 * @since 0.25
+	 */
+	<S extends E> S create(S entity);
 }
