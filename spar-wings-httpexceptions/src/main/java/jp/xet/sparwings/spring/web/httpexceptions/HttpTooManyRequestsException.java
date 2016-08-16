@@ -29,11 +29,50 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class HttpTooManyRequestsException extends Exception {
 	
 	/**
-	 * インスタンスを生成する。
+	 * Create instance with milleseconds to wait.
 	 * 
 	 * @param millisecsToWait 要待機ミリ秒
 	 */
 	public HttpTooManyRequestsException(long millisecsToWait) {
 		super(String.format("Please wait %d ms before next request", millisecsToWait));
+	}
+	
+	/**
+	 * Create instance.
+	 * 
+	 * @since #version#
+	 */
+	public HttpTooManyRequestsException() {
+	}
+	
+	/**
+	 * Create instance with detailed message and cause.
+	 * 
+	 * @param message exception message
+	 * @param cause cause of exception
+	 * @since #version#
+	 */
+	public HttpTooManyRequestsException(String message, Throwable cause) {
+		super(message, cause);
+	}
+	
+	/**
+	 * Create instance with detailed message.
+	 * 
+	 * @param message exception message
+	 * @since #version#
+	 */
+	public HttpTooManyRequestsException(String message) {
+		super(message);
+	}
+	
+	/**
+	 * Create instance with cause.
+	 * 
+	 * @param cause cause of exception
+	 * @since #version#
+	 */
+	public HttpTooManyRequestsException(Throwable cause) {
+		super(cause);
 	}
 }
