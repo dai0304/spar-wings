@@ -29,6 +29,37 @@ public interface PaginationTokenEncoder {
 	/**
 	 * TODO for daisuke
 	 * 
+	 * @param firstKey
+	 * @param lastKey
+	 * @return token pagination token
+	 * @throws InvalidKeyExpressionException
+	 * @since 0.24
+	 */
+	String encode(Object firstKey, Object lastKey);
+	
+	/**
+	 * TODO for daisuke
+	 * 
+	 * @param paginationToken token
+	 * @param clazz
+	 * @return
+	 * @since #version#
+	 */
+	<T> Optional<T> extractFirstKey(String paginationToken, Class<T> clazz);
+	
+	/**
+	 * TODO for daisuke
+	 * 
+	 * @param paginationToken token
+	 * @param clazz
+	 * @return
+	 * @since #version#
+	 */
+	<T> Optional<T> extractLastKey(String paginationToken, Class<T> clazz);
+	
+	/**
+	 * TODO for daisuke
+	 * 
 	 * @param paginationToken token
 	 * @return
 	 * @since 0.24
@@ -43,16 +74,4 @@ public interface PaginationTokenEncoder {
 	 * @since 0.24
 	 */
 	Optional<String> extractLastKey(String paginationToken);
-	
-	/**
-	 * TODO for daisuke
-	 * 
-	 * @param firstKey
-	 * @param lastKey
-	 * @return token pagination token
-	 * @throws InvalidKeyExpressionException
-	 * @since 0.24
-	 */
-	String encode(Object firstKey, Object lastKey);
-	
 }

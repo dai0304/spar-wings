@@ -17,7 +17,9 @@ package jp.xet.sparwings.spring.data.chunk;
 
 import java.io.IOException;
 import java.util.Base64;
-import java.util.HashMap;
+import java.util.Base64.Decoder;
+import java.util.Base64.Encoder;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,6 +27,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -37,53 +42,71 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SimplePaginationTokenEncoder implements PaginationTokenEncoder {
 	
-	private static final ObjectMapper OM = new ObjectMapper();
-	
 	private static final String FIRST_KEY = "first_key";
 	
 	private static final String LAST_KEY = "last_key";
 	
+	@Getter
+	@Setter
+	@NonNull
+	private ObjectMapper objectMapper = new ObjectMapper();
+	
+	@Getter
+	@Setter
+	@NonNull
+	private Encoder encoder = Base64.getUrlEncoder().withoutPadding();
+	
+	@Getter
+	@Setter
+	@NonNull
+	private Decoder decoder = Base64.getUrlDecoder();
+	
+	
+	@Override
+	public String encode(Object firstKey, Object lastKey) {
+		Map<String, Object> map = new LinkedHashMap<>(2);
+		map.put(FIRST_KEY, firstKey);
+		map.put(LAST_KEY, lastKey);
+		try {
+			String json = objectMapper.writeValueAsString(map);
+			return encoder.encodeToString(json.getBytes());
+		} catch (JsonProcessingException e) {
+			throw new InvalidKeyExpressionException(e);
+		}
+	}
+	
+	@Override
+	public <T> Optional<T> extractFirstKey(String paginationToken, Class<T> clazz) {
+		return extractKey(paginationToken, FIRST_KEY, clazz);
+	}
+	
+	@Override
+	public <T> Optional<T> extractLastKey(String paginationToken, Class<T> clazz) {
+		return extractKey(paginationToken, LAST_KEY, clazz);
+	}
 	
 	@Override
 	public Optional<String> extractFirstKey(String paginationToken) {
-		if (paginationToken == null) {
-			return Optional.empty();
-		}
-		byte[] json = Base64.getUrlDecoder().decode(paginationToken);
-		try {
-			JsonNode tree = OM.readTree(json);
-			return Optional.ofNullable(tree.path(FIRST_KEY).asText(null));
-		} catch (IOException e) {
-			log.warn("Invalid pagination token: {}", paginationToken);
-		}
-		return Optional.empty();
+		return extractKey(paginationToken, FIRST_KEY, String.class);
 	}
 	
 	@Override
 	public Optional<String> extractLastKey(String paginationToken) {
+		return extractKey(paginationToken, LAST_KEY, String.class);
+	}
+	
+	<T> Optional<T> extractKey(String paginationToken, String key, Class<T> clazz) {
 		if (paginationToken == null) {
 			return Optional.empty();
 		}
-		byte[] json = Base64.getUrlDecoder().decode(paginationToken);
+		byte[] json = decoder.decode(paginationToken);
 		try {
-			JsonNode tree = OM.readTree(json);
-			return Optional.ofNullable(tree.path(LAST_KEY).asText(null));
+			JsonNode keyNode = objectMapper.readTree(json).path(key);
+			T object = objectMapper.treeToValue(keyNode, clazz);
+			return Optional.ofNullable(object);
 		} catch (IOException e) {
 			log.warn("Invalid pagination token: {}", paginationToken);
 		}
 		return Optional.empty();
-	}
-	
-	@Override
-	public String encode(Object firstKey, Object lastKey) {
-		Map<String, Object> map = new HashMap<>(2);
-		map.put(FIRST_KEY, firstKey);
-		map.put(LAST_KEY, lastKey);
-		try {
-			String json = OM.writeValueAsString(map);
-			return Base64.getUrlEncoder().encodeToString(json.getBytes());
-		} catch (JsonProcessingException e) {
-			throw new InvalidKeyExpressionException(e);
-		}
 	}
 }
