@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * {@link JsonRawValue} annotation alternative to support deserialize feature.
  * 
  * @author daisuke
- * @since #version#
+ * @since 0.27
  */
 @Target({
 	ElementType.ANNOTATION_TYPE,

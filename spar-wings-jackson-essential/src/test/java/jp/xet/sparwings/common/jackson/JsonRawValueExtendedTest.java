@@ -35,7 +35,7 @@ import lombok.EqualsAndHashCode;
 /**
  * Test for {@link JsonRawValueExtended} annotation.
  * 
- * @since #version#
+ * @since 0.27
  * @version $Id$
  * @author daisuke
  */

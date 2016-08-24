@@ -27,7 +27,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  * @param <E> the domain type the repository manages
  * @param <ID> the type of the id of the entity the repository manages
  * @param <C> the condition type to update
- * @since #version#
+ * @since 0.27
  * @author daisuke
  */
 @NoRepositoryBean
@@ -41,7 +41,7 @@ public interface ConditionalDeletableRepository<E, ID extends Serializable, C> e
 	 * @throws IllegalArgumentException in case the given entity is {@literal null}.
 	 * @throws OptimisticLockingFailureException
 	 * @throws DataAccessException データアクセスエラーが発生した場合
-	 * @since #version#
+	 * @since 0.27
 	 */
 	void delete(E entity, C condition);
 	
@@ -53,7 +53,7 @@ public interface ConditionalDeletableRepository<E, ID extends Serializable, C> e
 	 * @throws IllegalArgumentException in case the given {@code id} is {@literal null}
 	 * @throws OptimisticLockingFailureException
 	 * @throws DataAccessException データアクセスエラーが発生した場合
-	 * @since #version#
+	 * @since 0.27
 	 */
 	void delete(ID id, C condition);
 }
