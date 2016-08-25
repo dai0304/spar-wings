@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -26,6 +27,13 @@ import com.github.fge.jsonpatch.diff.JsonDiff;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * TODO for daisuke
+ * 
+ * @since #version#
+ * @version $Id$
+ * @author daisuke
+ */
 @RequiredArgsConstructor
 public class DifferenceSerializer extends JsonSerializer<Difference> {
 	
@@ -35,8 +43,9 @@ public class DifferenceSerializer extends JsonSerializer<Difference> {
 	@Override
 	public void serialize(Difference value, JsonGenerator jgen, SerializerProvider provider)
 			throws IOException, JsonProcessingException {
-		provider.defaultSerializeValue(JsonDiff.asJson(
-				mapper.valueToTree(value.original),
-				mapper.valueToTree(value.updated)), jgen);
+		JsonNode originalNode = mapper.valueToTree(value.original);
+		JsonNode updatedNode = mapper.valueToTree(value.updated);
+		JsonNode diff = JsonDiff.asJson(originalNode, updatedNode);
+		provider.defaultSerializeValue(diff, jgen);
 	}
 }
