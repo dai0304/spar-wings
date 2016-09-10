@@ -83,7 +83,7 @@ public final class InitializationUtil {
 	 * <p>However, if the key string contains {@code secret}, the value will be masked.</p>
 	 * 
 	 * @param env spring {@link Environment}
-	 * @since #version#
+	 * @since 0.28
 	 */
 	public static void logEnvironmentlProperties(Environment env) {
 		log.info("======== Environment Properties ========");

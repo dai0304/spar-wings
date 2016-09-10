@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Utility class to logging in Java 8 stream APIs.
  *
- * @since #version#
+ * @since 0.28
  * @author daisuke
  */
 @Slf4j
@@ -35,7 +35,7 @@ public class LogUtil {
 	 * @param result the target object to log
 	 * @param <T> type of result object
 	 * @return the object passed to
-	 * @since #version#
+	 * @since 0.28
 	 */
 	public static <T> T logResult(T result) {
 		log.debug("Result: {}", result);
@@ -57,7 +57,7 @@ public class LogUtil {
 	 * @param <T> type of target object
 	 * @return the object passed to
 	 * @see #logAfter(Object)
-	 * @since #version#
+	 * @since 0.28
 	 */
 	public static <T> T logBefore(T before) {
 		log.debug("Before apply: {}", before);
@@ -79,7 +79,7 @@ public class LogUtil {
 	 * @param <T> type of target object
 	 * @return the object passed to
 	 * @see #logBefore(Object)
-	 * @since #version#
+	 * @since 0.28
 	 */
 	public static <T> T logAfter(T before) {
 		log.debug("After apply: {}", before);
