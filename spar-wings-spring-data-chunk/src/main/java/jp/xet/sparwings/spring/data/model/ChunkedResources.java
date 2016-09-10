@@ -19,6 +19,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -49,6 +52,19 @@ public class ChunkedResources<T> {
 	
 	private ChunkMetadata metadata;
 	
+	/**
+	 * Creates a {@link ChunkedResources} instance with {@link Chunk}.
+	 * 
+	 * @param key must not be {@code null}.
+	 * @param chunk The {@link Chunk}
+	 * @param wrapperFunction function coverts {@code U} to {@code T}
+	 * @since #version#
+	 */
+	public <U> ChunkedResources(String key, Chunk<U> chunk, Function<U, T> wrapperFunction) {
+		this(key, StreamSupport.stream(chunk.spliterator(), false)
+			.map(wrapperFunction)
+			.collect(Collectors.toList()), new ChunkMetadata(chunk));
+	}
 	
 	/**
 	 * Creates a {@link ChunkedResources} instance with {@link Chunk}.
@@ -120,7 +136,6 @@ public class ChunkedResources<T> {
 		return metadata;
 	}
 	
-	
 	/**
 	 * Value object for pagination metadata.
 	 * 
@@ -133,20 +148,20 @@ public class ChunkedResources<T> {
 		
 		@XmlAttribute
 		@com.fasterxml.jackson.annotation.JsonProperty("size")
-		@Getter(onMethod = @__({
-			@JsonIgnore
-		}))
+		@Getter(onMethod = @__(@JsonIgnore))
 		private long size;
 		
 		@XmlAttribute
 		@com.fasterxml.jackson.annotation.JsonProperty("pagination_token")
 		@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-		@Getter(onMethod = @__({
-			@JsonIgnore
-		}))
+		@Getter(onMethod = @__(@JsonIgnore))
 		private String paginationToken;
 		
-		
+		/**
+		 * インスタンスを生成する。
+		 * 
+		 * @param chunk
+		 */
 		public ChunkMetadata(Chunk<?> chunk) {
 			this(chunk.getContent().size(), chunk.getPaginationToken());
 		}
