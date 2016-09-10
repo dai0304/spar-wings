@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
  * JSON Utility.
  * 
  * @author arikawa.eichi
- * @since #version#
+ * @since 0.28
  */
 @Slf4j
 @UtilityClass
@@ -43,7 +43,7 @@ public class JSON {
 	 * @param value The value to convert to a JSON string.
 	 * @return JSON String
 	 * @throws JsonProcessingException if processing failed.
-	 * @since #version#
+	 * @since 0.28
 	 */
 	public static String stringify(Object value) {
 		try {
@@ -62,7 +62,7 @@ public class JSON {
 	 * @param clazz The clazz to mapping.
 	 * @return Returns the clazz instance corresponding to the given JSON text.
 	 * @throws JsonProcessingException if processing failed.
-	 * @since #version#
+	 * @since 0.28
 	 */
 	public static <T> T parse(String json, Class<T> clazz) {
 		try {
@@ -80,7 +80,7 @@ public class JSON {
 	 * @param json The string to parse as JSON.
 	 * @return JsonNode
 	 * @throws JsonProcessingException if processing failed.
-	 * @since #version#
+	 * @since 0.28
 	 */
 	public static JsonNode parse(String json) {
 		try {
@@ -98,7 +98,7 @@ public class JSON {
 	 * @param json The string to parse as JSON.
 	 * @return Map
 	 * @throws JsonProcessingException if processing failed.
-	 * @since #version#
+	 * @since 0.28
 	 */
 	public static Map<String, Object> parseAsMap(String json) {
 		try {
@@ -115,7 +115,7 @@ public class JSON {
 	/**
 	 * Exception thrown by {@link JSON} if processing failed.
 	 * 
-	 * @since #version#
+	 * @since 0.28
 	 * @version $Id$
 	 * @author daisuke
 	 */

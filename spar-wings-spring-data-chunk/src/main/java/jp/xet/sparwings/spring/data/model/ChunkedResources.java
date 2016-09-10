@@ -58,7 +58,7 @@ public class ChunkedResources<T> {
 	 * @param key must not be {@code null}.
 	 * @param chunk The {@link Chunk}
 	 * @param wrapperFunction function coverts {@code U} to {@code T}
-	 * @since #version#
+	 * @since 0.28
 	 */
 	public <U> ChunkedResources(String key, Chunk<U> chunk, Function<U, T> wrapperFunction) {
 		this(key, StreamSupport.stream(chunk.spliterator(), false)

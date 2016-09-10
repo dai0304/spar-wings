@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * TODO for daisuke
  * 
- * @since #version#
+ * @since 0.28
  * @version $Id$
  * @author daisuke
  */
