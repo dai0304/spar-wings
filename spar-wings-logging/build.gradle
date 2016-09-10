@@ -1,0 +1,7 @@
+// -*- coding: utf-8; mode: groovy -*-
+
+description "Logging support classes"
+
+dependencies {
+//	compile "com.google.guava:guava:18.0"
+}

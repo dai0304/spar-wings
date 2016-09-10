@@ -17,6 +17,7 @@ package jp.xet.sparwings.common.utils;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -24,6 +25,10 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.EnumerablePropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.PropertySource;
 
 /**
  * Utility class for application initialization.
@@ -70,6 +75,49 @@ public final class InitializationUtil {
 		}
 		
 		log.info("===================================");
+	}
+	
+	/**
+	 * Log all kwnown spring environment properties.
+	 * 
+	 * <p>However, if the key string contains {@code secret}, the value will be masked.</p>
+	 * 
+	 * @param env spring {@link Environment}
+	 * @since 0.28
+	 */
+	public static void logEnvironmentlProperties(Environment env) {
+		log.info("======== Environment Properties ========");
+		
+		try {
+			getAllKnownProperties(env).entrySet().stream()
+				.sorted(Comparator.comparing(Map.Entry::getKey))
+				.map(InitializationUtil::toLogMessage)
+				.forEach(log::info);
+		} catch (Exception e) {
+			log.info("unexpected", e);
+		}
+		
+		log.info("===================================");
+	}
+	
+	private static Map<String, Object> getAllKnownProperties(Environment env) {
+		Map<String, Object> result = new HashMap<>();
+		if (env instanceof ConfigurableEnvironment) {
+			ConfigurableEnvironment configurableEnvironment = (ConfigurableEnvironment) env;
+			for (PropertySource<?> propertySource : configurableEnvironment.getPropertySources()) {
+				if (propertySource instanceof EnumerablePropertySource) {
+					EnumerablePropertySource<?> enumerablePropertySource = (EnumerablePropertySource<?>) propertySource;
+					for (String key : enumerablePropertySource.getPropertyNames()) {
+						result.putIfAbsent(key, propertySource.getProperty(key));
+					}
+				} else {
+					log.warn("propertySource is not EnumerablePropertySource: {}", propertySource);
+				}
+			}
+		} else {
+			log.warn("environment is not ConfigurableEnvironment: {}", env);
+		}
+		return result;
 	}
 	
 	private static String toStringKey(Map.Entry<?, ?> e) {

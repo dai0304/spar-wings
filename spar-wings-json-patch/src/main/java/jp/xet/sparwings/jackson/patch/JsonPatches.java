@@ -39,8 +39,10 @@ class JsonPatches<T> implements UpdateRequest<T> {
 	public T apply(T original) throws IllegalPatchException {
 		try {
 			JsonPatch patch = JsonPatch.fromJson(this.node);
-			JsonNode patched = patch.apply(mapper.valueToTree(original));
-			return mapper.treeToValue(patched, (Class<T>) original.getClass());
+			JsonNode originalNode = mapper.valueToTree(original);
+			JsonNode patchedNode = patch.apply(originalNode);
+			T patched = mapper.treeToValue(patchedNode, (Class<T>) original.getClass());
+			return patched;
 		} catch (IllegalArgumentException | JsonPatchException | IOException e) {
 			throw new IllegalPatchException(e);
 		}

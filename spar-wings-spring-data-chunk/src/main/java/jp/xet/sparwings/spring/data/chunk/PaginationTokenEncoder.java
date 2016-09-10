@@ -27,10 +27,10 @@ import java.util.Optional;
 public interface PaginationTokenEncoder {
 	
 	/**
-	 * TODO for daisuke
+	 * Encode first key and last key to string.
 	 * 
-	 * @param firstKey
-	 * @param lastKey
+	 * @param firstKey first element key of current chunk
+	 * @param lastKey last element key of current chunk
 	 * @return token pagination token
 	 * @throws InvalidKeyExpressionException
 	 * @since 0.24
@@ -38,39 +38,39 @@ public interface PaginationTokenEncoder {
 	String encode(Object firstKey, Object lastKey);
 	
 	/**
-	 * TODO for daisuke
+	 * Decode pagination token and extract first element key.
 	 * 
 	 * @param paginationToken token
-	 * @param clazz
-	 * @return
+	 * @param clazz key type
+	 * @return key
 	 * @since 0.26
 	 */
 	<T> Optional<T> extractFirstKey(String paginationToken, Class<T> clazz);
 	
 	/**
-	 * TODO for daisuke
+	 * Decode pagination token and extract last element key.
 	 * 
 	 * @param paginationToken token
-	 * @param clazz
-	 * @return
+	 * @param clazz key type
+	 * @return key
 	 * @since 0.26
 	 */
 	<T> Optional<T> extractLastKey(String paginationToken, Class<T> clazz);
 	
 	/**
-	 * TODO for daisuke
+	 * Decode pagination token and extract first element key as String.
 	 * 
 	 * @param paginationToken token
-	 * @return
+	 * @return key
 	 * @since 0.24
 	 */
 	Optional<String> extractFirstKey(String paginationToken);
 	
 	/**
-	 * TODO for daisuke
+	 * Decode pagination token and extract first element key as String.
 	 * 
 	 * @param paginationToken token
-	 * @return
+	 * @return key
 	 * @since 0.24
 	 */
 	Optional<String> extractLastKey(String paginationToken);
