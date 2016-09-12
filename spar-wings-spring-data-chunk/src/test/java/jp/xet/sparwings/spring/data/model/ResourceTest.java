@@ -19,13 +19,14 @@ import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.Test;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -85,12 +86,17 @@ public class ResourceTest {
 	}
 	
 	@Data
-	@AllArgsConstructor
 	@SuppressWarnings("javadoc")
 	public static class SampleBean {
 		
 		private String foo;
 		
 		private String bar;
+		
+		@JsonCreator
+		public SampleBean(@JsonProperty("foo") String foo, @JsonProperty("bar") String bar) {
+			this.foo = foo;
+			this.bar = bar;
+		}
 	}
 }
