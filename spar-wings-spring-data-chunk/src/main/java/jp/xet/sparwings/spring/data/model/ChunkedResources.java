@@ -32,9 +32,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.util.Assert;
 
 import jp.xet.sparwings.spring.data.chunk.Chunk;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
@@ -46,9 +48,10 @@ import lombok.ToString;
  */
 @ToString
 @XmlRootElement(name = "chunkedEntities")
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class ChunkedResources<T> {
 	
-	private final Map<String, Object> content;
+	private Map<String, Object> content;
 	
 	private ChunkMetadata metadata;
 	
@@ -144,6 +147,7 @@ public class ChunkedResources<T> {
 	@ToString
 	@EqualsAndHashCode
 	@AllArgsConstructor
+	@NoArgsConstructor(access = AccessLevel.PACKAGE)
 	public static class ChunkMetadata {
 		
 		@XmlAttribute
