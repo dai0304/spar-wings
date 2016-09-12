@@ -36,6 +36,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -50,8 +51,17 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class ChunkedResources<T> {
 	
+	@Getter
+	@Setter(AccessLevel.PACKAGE)
+	@XmlElement(name = "embedded")
+	@com.fasterxml.jackson.annotation.JsonProperty("_embedded")
+	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private Map<String, Collection<T>> content;
 	
+	@Getter
+	@Setter(AccessLevel.PACKAGE)
+	@XmlElement(name = "chunk")
+	@com.fasterxml.jackson.annotation.JsonProperty("chunk")
 	private ChunkMetadata metadata;
 	
 	/**
@@ -104,38 +114,6 @@ public class ChunkedResources<T> {
 		Assert.notNull(metadata);
 		this.content = Collections.singletonMap(key, content);
 		this.metadata = metadata;
-	}
-	
-	/**
-	 * Returns the underlying elements.
-	 * 
-	 * @return the content will never be {@literal null}.
-	 * @since 0.11
-	 */
-	@XmlElement(name = "embedded")
-	@com.fasterxml.jackson.annotation.JsonProperty("_embedded")
-	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	public Map<String, Collection<T>> getContent() {
-		return content;
-	}
-	
-	void setContent(Map<String, Collection<T>> content) {
-		String key = this.content != null ? //
-				this.content.keySet().iterator().next() : content.keySet().iterator().next();
-		Collection<T> collection = content.get(key);
-		this.content = Collections.singletonMap(key, collection);
-	}
-	
-	/**
-	 * Metadata of this chunk.
-	 * 
-	 * @return the metadata
-	 * @since 0.11
-	 */
-	@XmlElement(name = "chunk")
-	@com.fasterxml.jackson.annotation.JsonProperty("chunk")
-	public ChunkMetadata getMetadata() {
-		return metadata;
 	}
 	
 	/**
