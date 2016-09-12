@@ -19,6 +19,8 @@ import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.Test;
@@ -36,30 +38,51 @@ import lombok.Data;
 public class ResourceTest {
 	
 	private static final ObjectMapper OM = new ObjectMapper();
-	
+	static {
+		OM.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+	}
 	
 	@Test
-	public void testString() throws Exception {
+	public void testStringSer() throws Exception {
 		Resource<String> fooResource = new Resource<>("foo");
 		String actual = OM.writeValueAsString(fooResource);
 		assertThat(actual, hasJsonPath("$.value", is("foo")));
 	}
 	
 	@Test
-	public void testInteger() throws Exception {
+	public void testIntegerSer() throws Exception {
 		Resource<Integer> fooResource = new Resource<>(123);
 		String actual = OM.writeValueAsString(fooResource);
 		assertThat(actual, hasJsonPath("$.value", is(123)));
 	}
 	
 	@Test
-	public void testBean() throws Exception {
+	public void testBeanSer() throws Exception {
 		Resource<SampleBean> fooResource = new Resource<>(new SampleBean("aaa", "bbb"));
 		String actual = OM.writeValueAsString(fooResource);
 		assertThat(actual, hasJsonPath("$.foo", is("aaa")));
 		assertThat(actual, hasJsonPath("$.bar", is("bbb")));
 	}
 	
+	@Test
+	public void testBeanDeser() throws Exception {
+		Resource<SampleBean> expected = new Resource<>(new SampleBean("aaa", "bbb"));
+		expected.embedResource("rel", "embedded-value");
+		expected.add("self", new Link("http://example.com/self"));
+		String json = "{"
+				+ "  'foo': 'aaa',"
+				+ "  'bar': 'bbb',"
+				+ "  '_embedded': {"
+				+ "    'rel': 'embedded-value'"
+				+ "  },"
+				+ "  '_links': {"
+				+ "    'self': { 'href': 'http://example.com/self' }"
+				+ "  }"
+				+ "}";
+		Resource<SampleBean> actual = OM.readValue(json, new TypeReference<Resource<SampleBean>>() {
+		});
+		assertThat(actual, is(expected));
+	}
 	
 	@Data
 	@AllArgsConstructor

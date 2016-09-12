@@ -15,7 +15,6 @@
  */
 package jp.xet.sparwings.spring.data.model;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,24 +26,30 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import org.springframework.util.Assert;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * TODO for daisuke
  */
 @JsonIgnoreProperties("content")
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@EqualsAndHashCode
+@ToString
 public class Resource<T> {
 	
 	@Getter
 	@JsonUnwrapped
-	private final T value;
+	private T value;
 	
 	private final Map<String, Link> links = new HashMap<>();
 	
 	private final Map<String, Object> embeddedResources = new HashMap<>();
-	
 	
 	/**
 	 * Adds the given link to the resource.
@@ -55,28 +60,6 @@ public class Resource<T> {
 	public void add(String rel, Link link) {
 		Assert.notNull(link, "Link must not be null!");
 		this.links.put(rel, link);
-	}
-	
-	/**
-	 * Adds all given {@link Link}s to the resource.
-	 * 
-	 * @param links
-	 */
-	public void add(Iterable<Link> links) {
-		Assert.notNull(links, "Given links must not be null!");
-		for (Link candidate : links) {
-			add(candidate);
-		}
-	}
-	
-	/**
-	 * Adds all given {@link Link}s to the resource.
-	 *
-	 * @param links must not be {@literal null}.
-	 */
-	public void add(Link... links) {
-		Assert.notNull(links, "Given links must not be null!");
-		add(Arrays.asList(links));
 	}
 	
 	/**

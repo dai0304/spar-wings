@@ -22,8 +22,12 @@ import javax.xml.bind.annotation.XmlType;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * TODO for daisuke
@@ -31,7 +35,10 @@ import lombok.RequiredArgsConstructor;
 @SuppressWarnings("serial")
 @XmlType(name = "link", namespace = Link.ATOM_NAMESPACE)
 @JsonIgnoreProperties("templated")
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@EqualsAndHashCode
+@ToString
 public class Link implements Serializable {
 	
 	public static final String ATOM_NAMESPACE = "http://www.w3.org/2005/Atom";
@@ -51,12 +58,11 @@ public class Link implements Serializable {
 	 */
 	@XmlAttribute
 	@Getter
-	private final String href;
+	private String href;
 	
 	@XmlAttribute
 	@Getter
-	private final boolean templated;
-	
+	private boolean templated;
 	
 	public Link(String href) {
 		this(href, false);
