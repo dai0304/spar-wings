@@ -17,7 +17,6 @@ package jp.xet.sparwings.spring.data.model;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -51,7 +50,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class ChunkedResources<T> {
 	
-	private Map<String, Object> content;
+	private Map<String, Collection<T>> content;
 	
 	private ChunkMetadata metadata;
 	
@@ -103,10 +102,7 @@ public class ChunkedResources<T> {
 		Assert.notNull(key);
 		Assert.notNull(content);
 		Assert.notNull(metadata);
-		this.content = new LinkedHashMap<>();
-		if (content.isEmpty() == false) {
-			this.content.put(key, content);
-		}
+		this.content = Collections.singletonMap(key, content);
 		this.metadata = metadata;
 	}
 	
@@ -119,12 +115,15 @@ public class ChunkedResources<T> {
 	@XmlElement(name = "embedded")
 	@com.fasterxml.jackson.annotation.JsonProperty("_embedded")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	public Map<String, Object> getContent() {
-		if (content == null || content.isEmpty()) {
-			return null;
-		} else {
-			return Collections.unmodifiableMap(content);
-		}
+	public Map<String, Collection<T>> getContent() {
+		return content;
+	}
+	
+	void setContent(Map<String, Collection<T>> content) {
+		String key = this.content != null ? //
+				this.content.keySet().iterator().next() : content.keySet().iterator().next();
+		Collection<T> collection = content.get(key);
+		this.content = Collections.singletonMap(key, collection);
 	}
 	
 	/**
