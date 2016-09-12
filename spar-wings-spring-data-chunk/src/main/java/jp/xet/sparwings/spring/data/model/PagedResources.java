@@ -32,9 +32,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.util.Assert;
 
 import jp.xet.sparwings.spring.data.chunk.Chunk;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
@@ -46,12 +48,12 @@ import lombok.ToString;
  */
 @ToString
 @XmlRootElement(name = "pagedEntities")
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class PagedResources<T> {
 	
-	private final Map<String, Object> content;
+	private Map<String, Object> content;
 	
 	private PageMetadata metadata;
-	
 	
 	/**
 	 * Creates a {@link PagedResources} instance with {@link Chunk}.
@@ -123,7 +125,6 @@ public class PagedResources<T> {
 		return metadata;
 	}
 	
-	
 	/**
 	 * Value object for pagination metadata.
 	 * 
@@ -132,6 +133,7 @@ public class PagedResources<T> {
 	@ToString
 	@EqualsAndHashCode
 	@AllArgsConstructor
+	@NoArgsConstructor(access = AccessLevel.PACKAGE)
 	public static class PageMetadata {
 		
 		/** the requested size of the page */
@@ -168,7 +170,6 @@ public class PagedResources<T> {
 			@JsonIgnore
 		}))
 		private Long number;
-		
 		
 		/**
 		 * Creates a new {@link PageMetadata} from the given size, numer and total elements.
