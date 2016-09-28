@@ -28,7 +28,7 @@ public interface Chunkable {
 	/**
 	 * Returns token for pagination.
 	 * 
-	 * @return the token
+	 * @return the token; may be null
 	 * @since 0.24
 	 */
 	String getPaginationToken();
@@ -36,7 +36,7 @@ public interface Chunkable {
 	/**
 	 * Returns the relation of current chunk to retrieve.
 	 * 
-	 * @return the relation
+	 * @return the relation; may be null
 	 * @since 0.24
 	 */
 	PaginationRelation getPaginationRelation();
@@ -44,7 +44,7 @@ public interface Chunkable {
 	/**
 	 * Returns the number of items to be returned.
 	 * 
-	 * @return the number of items of that chunk
+	 * @return the number of items of that chunk; may be null
 	 * @since 0.11
 	 */
 	Integer getMaxPageSize();
@@ -52,11 +52,10 @@ public interface Chunkable {
 	/**
 	 * Returns the direction the items sorted.
 	 * 
-	 * @return the directio
+	 * @return the directio; may be null
 	 * @since 0.11
 	 */
 	Direction getDirection();
-	
 	
 	public enum PaginationRelation {
 		NEXT,
