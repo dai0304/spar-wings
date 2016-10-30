@@ -24,20 +24,21 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import org.springframework.data.domain.Page;
-import org.springframework.util.Assert;
-
-import jp.xet.sparwings.spring.data.chunk.Chunk;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import org.springframework.data.domain.Page;
+import org.springframework.util.Assert;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jp.xet.sparwings.spring.data.chunk.Chunk;
 
 /**
  * TODO for daisuke
@@ -54,6 +55,7 @@ public class PagedResources<T> {
 	private Map<String, Object> content;
 	
 	private PageMetadata metadata;
+	
 	
 	/**
 	 * Creates a {@link PagedResources} instance with {@link Chunk}.
@@ -103,8 +105,8 @@ public class PagedResources<T> {
 	 * @since 0.11
 	 */
 	@XmlElement(name = "embedded")
-	@com.fasterxml.jackson.annotation.JsonProperty("_embedded")
-	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+	@JsonProperty("_embedded")
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	public Map<String, Object> getContent() {
 		if (content == null || content.isEmpty()) {
 			return null;
@@ -120,10 +122,11 @@ public class PagedResources<T> {
 	 * @since 0.11
 	 */
 	@XmlElement(name = "page")
-	@com.fasterxml.jackson.annotation.JsonProperty("page")
+	@JsonProperty("page")
 	public PageMetadata getMetadata() {
 		return metadata;
 	}
+	
 	
 	/**
 	 * Value object for pagination metadata.
@@ -170,6 +173,7 @@ public class PagedResources<T> {
 			@JsonIgnore
 		}))
 		private Long number;
+		
 		
 		/**
 		 * Creates a new {@link PageMetadata} from the given size, numer and total elements.

@@ -15,21 +15,17 @@
  */
 package jp.xet.sparwings.spring.web.httpexceptions;
 
+import lombok.NoArgsConstructor;
+
 /**
  * TODO for daisuke
  * 
  * @since 0.3
  * @author daisuke
  */
+@NoArgsConstructor
 @SuppressWarnings("serial")
 public abstract class HttpResponseException extends RuntimeException {
-	
-	/**
-	 * インスタンスを生成する。
-	 * @since 0.1
-	 */
-	public HttpResponseException() {
-	}
 	
 	/**
 	 * インスタンスを生成する。

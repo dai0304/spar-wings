@@ -30,7 +30,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  * @author daisuke
  */
 @NoRepositoryBean
-public interface UpdatableRepository<E, ID extends Serializable> extends BaseRepository<E, ID> {
+public interface UpdatableRepository<E, ID extends Serializable>extends BaseRepository<E, ID> {
 	
 	/**
 	 * Update entity.

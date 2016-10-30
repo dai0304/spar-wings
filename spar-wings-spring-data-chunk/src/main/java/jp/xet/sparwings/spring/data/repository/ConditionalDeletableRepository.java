@@ -31,7 +31,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  * @author daisuke
  */
 @NoRepositoryBean
-public interface ConditionalDeletableRepository<E, ID extends Serializable, C> extends DeletableRepository<E, ID> {
+public interface ConditionalDeletableRepository<E, ID extends Serializable, C>extends DeletableRepository<E, ID> {
 	
 	/**
 	 * Deletes a given entity.

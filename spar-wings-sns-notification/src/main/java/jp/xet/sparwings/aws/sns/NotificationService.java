@@ -19,20 +19,22 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.amazonaws.services.sns.AmazonSNS;
-import com.amazonaws.services.sns.model.PublishRequest;
-import com.amazonaws.util.EC2MetadataUtils.InstanceInfo;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.util.EC2MetadataUtils.InstanceInfo;
 
 import jp.xet.sparwings.spring.env.EnvironmentService;
 
@@ -102,7 +104,7 @@ public class NotificationService implements InitializingBean {
 	}
 	
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet() {
 		logger.info("Initialize devTopicArn = {}", devTopicArn);
 		logger.info("Initialize opsTopicArn = {}", opsTopicArn);
 	}
@@ -190,17 +192,18 @@ public class NotificationService implements InitializingBean {
 		Map<String, String> contextMap = MDC.getCopyOfContextMap();
 		if (contextMap != null) {
 			for (Map.Entry<String, String> e : contextMap.entrySet()) {
-				sb.append("MDC-").append(e.getKey()).append(": ").append(e.getValue()).append("\n");
+				sb.append("MDC-").append(e.getKey()).append(": ").append(e.getValue()).append('\n');
 			}
 		}
 		for (Map.Entry<String, String> e : messageMap.entrySet()) {
-			sb.append(e.getKey()).append(": ").append(e.getValue()).append("\n");
+			sb.append(e.getKey()).append(": ").append(e.getValue()).append('\n');
 		}
 		return sb.toString();
 	}
 	
-	private void notifyMessage0(String topicArn, String subject, String message) {
-		subject = String.format("[%s:%s] %s (%s)", appCodeName, stackName, subject, env.getActiveProfilesAsString());
+	private void notifyMessage0(String topicArn, String originalSubject, String message) {
+		String subject = String.format(Locale.ENGLISH, "[%s:%s] %s (%s)",
+				appCodeName, stackName, originalSubject, env.getActiveProfilesAsString());
 		if (subject.length() > 100) {
 			logger.warn("Topic message subject is truncated.  Full subject is: {}", subject);
 			subject = subject.substring(0, 100);
@@ -217,7 +220,7 @@ public class NotificationService implements InitializingBean {
 				.withSubject(subject)
 				.withMessage(message));
 			logger.debug("SNS Notification published: {} - {}", topicArn, subject);
-		} catch (Exception e) {
+		} catch (Exception e) { // NOPMD
 			logger.error("SNS Publish failed: {} - {} - {}", topicArn, subject, message, e);
 		}
 	}

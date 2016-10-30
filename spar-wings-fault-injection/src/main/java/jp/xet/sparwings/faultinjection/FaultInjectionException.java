@@ -15,26 +15,23 @@
  */
 package jp.xet.sparwings.faultinjection;
 
+import lombok.NoArgsConstructor;
+
 /**
  * Exception to indicate fault injection is occured.
  * 
  * @since 0.18
  * @author daisuke
  */
+@NoArgsConstructor
 @SuppressWarnings("serial")
 public class FaultInjectionException extends RuntimeException {
 	
 	/**
 	 * Create instance.
+	 * 
+	 * @param message The exception message
 	 */
-	public FaultInjectionException() {
-	}
-	
-	/**
-	* Create instance.
-	* 
-	* @param message The exception message
-	*/
 	public FaultInjectionException(String message) {
 		super(message);
 	}

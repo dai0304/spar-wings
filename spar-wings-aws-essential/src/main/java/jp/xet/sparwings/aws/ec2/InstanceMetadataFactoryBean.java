@@ -23,12 +23,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
-import com.amazonaws.util.EC2MetadataUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.FactoryBean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.FactoryBean;
+
+import com.amazonaws.util.EC2MetadataUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Spring factory bean for {@link InstanceMetadata}.
@@ -55,10 +56,10 @@ public class InstanceMetadataFactoryBean implements FactoryBean<InstanceMetadata
 			metadata = mapper.readValue(reader, InstanceMetadata.class);
 			return metadata;
 		} catch (MalformedURLException e) {
-			throw new Error(e);
+			throw new AssertionError(e);
 		} catch (IOException e) {
 			logger.warn("IOException {}", e.getMessage());
-		} catch (Exception e) {
+		} catch (Exception e) { // NOPMD
 			logger.error("Exception {}", e.getMessage());
 		}
 		
@@ -76,7 +77,7 @@ public class InstanceMetadataFactoryBean implements FactoryBean<InstanceMetadata
 		conn.setReadTimeout(TIMEOUT);
 		conn.setConnectTimeout(TIMEOUT);
 		conn.connect();
-		return new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		return new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
 	}
 	
 	@Override

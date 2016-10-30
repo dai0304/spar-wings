@@ -17,13 +17,14 @@ package jp.xet.sparwings.dynamodb.patch;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import jp.xet.sparwings.dynamodb.patch.operations.AddOperation;
+
+import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jackson.JsonLoader;
 import com.github.fge.jackson.jsonpointer.JsonPointer;
 
-import org.junit.Test;
+import jp.xet.sparwings.dynamodb.patch.operations.AddOperation;
 
 /**
  * TODO for daisuke

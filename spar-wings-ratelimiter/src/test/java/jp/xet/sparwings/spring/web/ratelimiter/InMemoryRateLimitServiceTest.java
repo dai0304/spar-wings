@@ -26,10 +26,7 @@ import java.util.concurrent.Executors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import jp.xet.baseunits.time.TimePoint;
-import jp.xet.baseunits.timeutil.Clock;
-import jp.xet.baseunits.timeutil.FixedTimeSource;
-import jp.xet.baseunits.timeutil.SystemClock;
+import lombok.extern.slf4j.Slf4j;
 
 import org.junit.After;
 import org.junit.Before;
@@ -38,9 +35,15 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import jp.xet.baseunits.time.TimePoint;
+import jp.xet.baseunits.timeutil.Clock;
+import jp.xet.baseunits.timeutil.FixedTimeSource;
+import jp.xet.baseunits.timeutil.SystemClock;
+
 /**
  * TODO for daisuke
  */
+@Slf4j
 @RunWith(MockitoJUnitRunner.class)
 public class InMemoryRateLimitServiceTest {
 	
@@ -53,7 +56,8 @@ public class InMemoryRateLimitServiceTest {
 	@Before
 	public void setUp() {
 		sut = new InMemoryRateLimitService();
-		sut.setRecoveryStrategy(req -> new RateLimitDescriptor("user1", 2, 1000L).withCurrentBudget(1000L));
+		sut.setRecoveryStrategy(req -> new RateLimitDescriptor("user1", 2, 1000L)
+			.setCurrentBudget(1000L));
 		when(request.getRemoteAddr()).thenReturn("192.0.2.123");
 	}
 	
@@ -127,7 +131,7 @@ public class InMemoryRateLimitServiceTest {
 				try {
 					startLatch.await();
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					log.error("error", e);
 				}
 				// exercise
 				sut.consume(request, consume);

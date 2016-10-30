@@ -15,12 +15,12 @@
  */
 package jp.xet.sparwings.aws.ec2;
 
-import com.amazonaws.util.EC2MetadataUtils.InstanceInfo;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import com.amazonaws.util.EC2MetadataUtils.InstanceInfo;
 
 /**
  * EC2 Instance Metadata.

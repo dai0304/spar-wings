@@ -18,16 +18,17 @@ package jp.xet.sparwings.spring.web.interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jp.xet.baseunits.time.Duration;
 import jp.xet.baseunits.time.TimePoint;
 import jp.xet.baseunits.time.TimeUnit;
 import jp.xet.baseunits.timeutil.Clock;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
  * {@link HandlerInterceptor} implementation to logging request handling time.

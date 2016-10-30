@@ -27,12 +27,13 @@ import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 
-import org.junit.Test;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+import org.junit.Test;
 
 import jp.xet.sparwings.spring.data.chunk.Chunkable;
 import jp.xet.sparwings.spring.data.chunk.Chunkable.PaginationRelation;
@@ -44,12 +45,14 @@ import jp.xet.sparwings.spring.data.chunk.Chunkable.PaginationRelation;
  * @version $Id$
  * @author daisuke
  */
+@SuppressWarnings("javadoc")
 public class ChunkableHandlerMethodArgumentResolverTest {
 	
 	ChunkableHandlerMethodArgumentResolver sut = new ChunkableHandlerMethodArgumentResolver();
 	
 	
 	public void simpleHandler(Chunkable chunkable) {
+		// nothing to do
 	}
 	
 	@Test
@@ -75,6 +78,7 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 	}
 	
 	public void multipleChunkable(Chunkable c1, Chunkable c2) {
+		// nothing to do
 	}
 	
 	@Test(expected = IllegalStateException.class)
@@ -86,8 +90,7 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		NativeWebRequest webRequest = mock(NativeWebRequest.class);
 		WebDataBinderFactory binderFactory = mock(WebDataBinderFactory.class);
 		// exercise
-		@SuppressWarnings("unused")
-		Object actual = sut.resolveArgument(methodParametere, mavContainer, webRequest, binderFactory);
+		sut.resolveArgument(methodParametere, mavContainer, webRequest, binderFactory);
 		// assert exception
 	}
 	

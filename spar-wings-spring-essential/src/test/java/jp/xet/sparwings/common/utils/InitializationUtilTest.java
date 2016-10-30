@@ -24,9 +24,10 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
+
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;

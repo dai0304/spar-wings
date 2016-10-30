@@ -28,8 +28,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
 import org.springframework.data.domain.Sort.Direction;
+
+import org.junit.Test;
 
 import jp.xet.sparwings.spring.data.chunk.Chunkable.PaginationRelation;
 
@@ -175,25 +176,25 @@ public class ChunkingTest {
 	}
 	
 	
-	private static class SampleRepository {
+	private static class SampleRepository { // NOPMD - cc
 		
 		private PaginationTokenEncoder encoder = new SimplePaginationTokenEncoder();
 		
-		static final List<String> data = IntStream.rangeClosed('a', 'z')
+		static final List<String> DATA = IntStream.rangeClosed('a', 'z')
 			.mapToObj(i -> (char) i)
 			.map(String::valueOf)
 			.map(s -> s + s + s)
 			.collect(Collectors.toList());
 		
 		
-		public Chunk<String> findAll(Chunkable chunkable) {
-			List<String> source = data;
+		public Chunk<String> findAll(Chunkable chunkable) { // NOPMD - cc
+			List<String> source = DATA;
 			
 			Direction direction = chunkable.getDirection();
 			PaginationRelation relation = chunkable.getPaginationRelation();
-			if ((direction == Direction.ASC && relation == PaginationRelation.PREV) ||
-					(direction != Direction.ASC && relation != PaginationRelation.PREV)) {
-				source = new ArrayList<>(data); // copy
+			if ((direction == Direction.ASC && relation == PaginationRelation.PREV)
+					|| (direction != Direction.ASC && relation != PaginationRelation.PREV)) {
+				source = new ArrayList<>(DATA); // copy
 				Collections.reverse(source);
 			}
 			
@@ -208,7 +209,7 @@ public class ChunkingTest {
 				} else if (relation == PaginationRelation.PREV) {
 					key = encoder.extractFirstKey(chunkable.getPaginationToken()).get();
 				} else {
-					throw new Error();
+					throw new AssertionError();
 				}
 				content = source.stream()
 					.filter(keyFilter(key, relation, direction))
@@ -227,8 +228,8 @@ public class ChunkingTest {
 		}
 		
 		private Predicate<? super String> keyFilter(String key, PaginationRelation relation, Direction direction) {
-			if ((direction == Direction.ASC && relation == PaginationRelation.NEXT) ||
-					(direction != Direction.ASC && relation != PaginationRelation.NEXT)) {
+			if ((direction == Direction.ASC && relation == PaginationRelation.NEXT)
+					|| (direction != Direction.ASC && relation != PaginationRelation.NEXT)) {
 				return e -> e.compareTo(key) > 0;
 			} else {
 				return e -> e.compareTo(key) < 0;

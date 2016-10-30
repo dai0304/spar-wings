@@ -20,13 +20,14 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
-import jp.xet.sparwings.spring.data.chunk.Chunkable;
 import lombok.experimental.UtilityClass;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ObjectUtils;
+
+import jp.xet.sparwings.spring.data.chunk.Chunkable;
 
 @UtilityClass
 class SpringDataChunkableAnnotationUtils {
@@ -74,7 +75,7 @@ class SpringDataChunkableAnnotationUtils {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T>T getSpecificPropertyOrDefaultFromValue(Annotation annotation, String property) {
+	public static <T> T getSpecificPropertyOrDefaultFromValue(Annotation annotation, String property) {
 		Object propertyDefaultValue = AnnotationUtils.getDefaultValue(annotation, property);
 		Object propertyValue = AnnotationUtils.getValue(annotation, property);
 		
@@ -90,14 +91,15 @@ class SpringDataChunkableAnnotationUtils {
 	 * @param parameterTypes must not be {@literal null}.
 	 * @param annotations must not be {@literal null}.
 	 */
-	public static void assertQualifiersFor(Class<?>[] parameterTypes, Annotation[][] annotations) {
+	public static void assertQualifiersFor(Class<?>[] parameterTypes, Annotation[][] annotations) { // NOPMD
 		Set<String> values = new HashSet<>();
 		for (int i = 0; i < annotations.length; i++) {
 			if (Chunkable.class.equals(parameterTypes[i])) {
 				Qualifier qualifier = findAnnotation(annotations[i]);
 				if (null == qualifier) {
-					throw new IllegalStateException(
-							"Ambiguous Chunkable arguments in handler method. If you use multiple parameters of type Chunkable you need to qualify them with @Qualifier");
+					throw new IllegalStateException("Ambiguous Chunkable arguments in handler method."
+							+ " If you use multiple parameters of type Chunkable"
+							+ " you need to qualify them with @Qualifier");
 				}
 				if (values.contains(qualifier.value())) {
 					throw new IllegalStateException("Values of the user Qualifiers must be unique!");
@@ -114,7 +116,7 @@ class SpringDataChunkableAnnotationUtils {
 	 * @param annotations must not be {@literal null}.
 	 * @return
 	 */
-	public static Qualifier findAnnotation(Annotation[] annotations) {
+	public static Qualifier findAnnotation(Annotation... annotations) {
 		for (Annotation annotation : annotations) {
 			if (annotation instanceof Qualifier) {
 				return (Qualifier) annotation;

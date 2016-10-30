@@ -21,7 +21,8 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import com.amazonaws.services.s3.AmazonS3;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,8 +30,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
+
+import com.amazonaws.services.s3.AmazonS3;
 
 /**
  * Test for {@link S3ObjectResourceLoader}.

@@ -20,14 +20,14 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * TODO for daisuke
@@ -63,6 +63,7 @@ public class Link implements Serializable {
 	@XmlAttribute
 	@Getter
 	private boolean templated;
+	
 	
 	public Link(String href) {
 		this(href, false);

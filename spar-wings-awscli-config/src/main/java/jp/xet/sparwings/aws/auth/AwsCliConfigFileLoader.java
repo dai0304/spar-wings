@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
@@ -42,7 +43,7 @@ import com.amazonaws.internal.StaticCredentialsProvider;
  * @version $Id$
  * @author daisuke
  */
-public class AwsCliConfigFileLoader {
+public class AwsCliConfigFileLoader { // NOPMD - cc
 	
 	public static Map<String, AwsCliProfile> loadProfiles(File file) {
 		if (file == null) {
@@ -69,9 +70,9 @@ public class AwsCliConfigFileLoader {
 	 * @return
 	 * @throws IOException
 	 */
-	private static Map<String, AwsCliProfile> loadProfiles(InputStream is) throws IOException {
+	private static Map<String, AwsCliProfile> loadProfiles(InputStream is) throws IOException { // NOPMD - cc
 		ProfilesConfigFileLoaderHelper helper = new ProfilesConfigFileLoaderHelper();
-		try (Scanner s = new Scanner(is)) {
+		try (Scanner s = new Scanner(is, "UTF-8")) {
 			Map<String, Map<String, String>> allProfileProperties = helper.parseProfileProperties(s);
 			
 			// Convert the loaded property map to credential objects
@@ -104,7 +105,7 @@ public class AwsCliConfigFileLoader {
 						profilesByName.put(profileName, new AwsCliProfile(profileName, cp));
 					} else {
 						if (sessionToken.isEmpty()) {
-							String msg = String.format(
+							String msg = String.format(Locale.ENGLISH,
 									"Unable to load credentials into profile [%s]: AWS Session Token is empty.",
 									profileName);
 							throw new AmazonClientException(msg);

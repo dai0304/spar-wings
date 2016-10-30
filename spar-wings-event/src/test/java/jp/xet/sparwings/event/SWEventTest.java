@@ -28,11 +28,11 @@ import java.util.Arrays;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.junit.Test;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.CharStreams;
-
-import org.junit.Test;
 
 /**
  * TODO for daisuke

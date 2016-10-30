@@ -15,6 +15,7 @@
  */
 package jp.xet.sparwings.aws.sqs;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -27,6 +28,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import org.springframework.retry.support.RetryTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.util.DigestUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.ChangeMessageVisibilityRequest;
 import com.amazonaws.services.sqs.model.DeleteMessageRequest;
@@ -34,12 +42,6 @@ import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.OverLimitException;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.amazonaws.services.sqs.model.ReceiveMessageResult;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.retry.support.RetryTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.util.DigestUtils;
 
 /**
  * TODO for daisuke
@@ -49,7 +51,7 @@ import org.springframework.util.DigestUtils;
  * @author daisuke
  */
 @RequiredArgsConstructor
-public class SqsMessagePoller {
+public class SqsMessagePoller { // NOPMD - cc
 	
 	private static Logger logger = LoggerFactory.getLogger(SqsMessagePoller.class);
 	
@@ -99,8 +101,8 @@ public class SqsMessagePoller {
 	 * 
 	 * @since 0.3
 	 */
-	@Scheduled(fixedDelay = 1)
-	public void loop() {
+	@Scheduled(fixedDelay = 1) // SUPPRESS CHECKSTYLE bug?
+	public void loop() { // NOPMD - cc
 		ReceiveMessageResult receiveMessageResult;
 		try {
 			logger.trace("Start SQS long polling");
@@ -115,13 +117,13 @@ public class SqsMessagePoller {
 				Thread.sleep(60000);
 			} catch (InterruptedException e1) {
 				logger.error("interrupted", e1);
-				throw new Error(e1);
+				throw new AssertionError(e1); // NOPMD - lost OverLimitException's stacktrace
 			}
 			return;
 		}
 		
 		List<Message> messages = receiveMessageResult.getMessages();
-		if (messages.size() == 0) {
+		if (messages.isEmpty()) {
 			logger.trace("No SQS message received");
 			return;
 		}
@@ -131,7 +133,7 @@ public class SqsMessagePoller {
 			logger.debug("Receive SQS:{} C:{} RHD:{}", new Object[] {
 				message.getMessageId(),
 				message.getAttributes().get("ApproximateReceiveCount"),
-				DigestUtils.md5DigestAsHex(message.getReceiptHandle().getBytes())
+				DigestUtils.md5DigestAsHex(message.getReceiptHandle().getBytes(StandardCharsets.UTF_8))
 			});
 			
 			Future<Void> future = executor.submit(() -> messageHandler.handle(message));
@@ -153,7 +155,7 @@ public class SqsMessagePoller {
 					} catch (TimeoutException e) { // we need more time
 						logger.debug("Job for SQS:{} was timeout RHD:{}", new Object[] {
 							message.getMessageId(),
-							DigestUtils.md5DigestAsHex(message.getReceiptHandle().getBytes())
+							DigestUtils.md5DigestAsHex(message.getReceiptHandle().getBytes(StandardCharsets.UTF_8))
 						});
 						sqs.changeMessageVisibility(new ChangeMessageVisibilityRequest(
 								workerQueueUrl, message.getReceiptHandle(), visibilityTimeout));
@@ -166,14 +168,14 @@ public class SqsMessagePoller {
 							logger.trace("Visibility for SQS:{} was updated VT:{} RHD:{}", new Object[] {
 								message.getMessageId(),
 								visibilityTimeout,
-								DigestUtils.md5DigestAsHex(message.getReceiptHandle().getBytes())
+								DigestUtils.md5DigestAsHex(message.getReceiptHandle().getBytes(StandardCharsets.UTF_8))
 							});
 						}
 						throw e;
 					}
 					return null;
 				});
-			} catch (Exception e) {
+			} catch (Exception e) { // NOPMD - cc
 				logger.error("Retry attempt exceeded?", e);
 			}
 			logger.debug("Visibility timeout follow-up task for {} was finished", message.getMessageId());

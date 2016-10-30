@@ -26,11 +26,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import org.springframework.util.Assert;
-
-import jp.xet.sparwings.spring.data.chunk.Chunk;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -38,6 +33,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import org.springframework.util.Assert;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jp.xet.sparwings.spring.data.chunk.Chunk;
 
 /**
  * TODO for daisuke
@@ -63,6 +64,7 @@ public class ChunkedResources<T> {
 	@XmlElement(name = "chunk")
 	@com.fasterxml.jackson.annotation.JsonProperty("chunk")
 	private ChunkMetadata metadata;
+	
 	
 	/**
 	 * Creates a {@link ChunkedResources} instance with {@link Chunk}.
@@ -116,6 +118,7 @@ public class ChunkedResources<T> {
 		this.metadata = metadata;
 	}
 	
+	
 	/**
 	 * Value object for pagination metadata.
 	 * 
@@ -137,6 +140,7 @@ public class ChunkedResources<T> {
 		@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 		@Getter(onMethod = @__(@JsonIgnore))
 		private String paginationToken;
+		
 		
 		/**
 		 * インスタンスを生成する。

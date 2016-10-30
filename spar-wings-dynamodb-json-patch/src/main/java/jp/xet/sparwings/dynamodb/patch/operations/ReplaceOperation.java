@@ -28,8 +28,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -53,7 +53,7 @@ import com.github.fge.jackson.jsonpointer.JsonPointer;
  * @version $Id$
  * @author daisuke
  */
-public class ReplaceOperation extends PathValueOperation {
+public class ReplaceOperation extends PathValueOperation { // NOPMD - cc
 	
 	@JsonCreator
 	public ReplaceOperation(@JsonProperty("path") JsonPointer path, @JsonProperty("value") JsonNode value) {
@@ -61,7 +61,7 @@ public class ReplaceOperation extends PathValueOperation {
 	}
 	
 	@Override
-	public void applyToBuilder(ExpressionSpecBuilder builder) {
+	public void applyToBuilder(ExpressionSpecBuilder builder) { // NOPMD - cc
 		String attributePath = pathGenerator.apply(getPath());
 		JsonNode value = getValue();
 		JsonNodeType type = value.getNodeType();
@@ -114,7 +114,7 @@ public class ReplaceOperation extends PathValueOperation {
 		}
 	}
 	
-	private Map<String, ?> toMap(JsonNode value) {
+	private Map<String, ?> toMap(JsonNode value) { // NOPMD - cc
 		Map<String, Object> m = new LinkedHashMap<>();
 		for (Iterator<Entry<String, JsonNode>> iterator = value.fields(); iterator.hasNext();) {
 			Entry<String, JsonNode> e = iterator.next();

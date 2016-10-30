@@ -20,6 +20,13 @@ import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasNoJsonPath;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.internal.AssumptionViolatedException;
+
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.regions.Region;
@@ -34,12 +41,6 @@ import com.amazonaws.services.dynamodbv2.xspec.UpdateItemExpressionSpec;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jackson.JsonLoader;
 import com.google.common.collect.ImmutableMap;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.internal.AssumptionViolatedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * TODO for daisuke

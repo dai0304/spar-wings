@@ -15,12 +15,12 @@
  */
 package jp.xet.sparwings.jackson.patch;
 
+import lombok.RequiredArgsConstructor;
+
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.Annotated;
-
-import lombok.RequiredArgsConstructor;
 
 /**
  * TODO for daisuke

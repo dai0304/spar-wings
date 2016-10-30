@@ -20,13 +20,14 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jp.xet.sparwings.spring.web.httpexceptions.HttpTooManyRequestsException;
 import lombok.Getter;
 import lombok.Setter;
 
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import jp.xet.sparwings.spring.web.httpexceptions.HttpTooManyRequestsException;
 
 /**
  * リクエスト毎にレートリミットを判断する {@link HandlerInterceptor} 実装クラス。
@@ -56,7 +57,8 @@ public class RateLimitingInterceptor extends HandlerInterceptorAdapter {
 	}
 	
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+			throws Exception { // NOPMD
 		if (rateLimitService != null && isRateLimitTarget(request, response, handler)) {
 			rateLimit(request, response, handler);
 		}
@@ -114,6 +116,6 @@ public class RateLimitingInterceptor extends HandlerInterceptorAdapter {
 			rateLimited = ((HandlerMethod) handler).getMethodAnnotation(RateLimited.class);
 		}
 		int cost = Optional.ofNullable(rateLimited).map(RateLimited::value).orElse(DEFAULT_CONSUMPTION);
-		return cost;
+		return cost; // NOPMD
 	}
 }

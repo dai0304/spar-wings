@@ -124,7 +124,7 @@ public final class EmptyPage<T> implements Page<T>, Serializable {
 	}
 	
 	@Override
-	public <S>Page<S> map(Converter<? super T, ? extends S> converter) {
+	public <S> Page<S> map(Converter<? super T, ? extends S> converter) {
 		return new EmptyPage<>(pageable);
 	}
 }

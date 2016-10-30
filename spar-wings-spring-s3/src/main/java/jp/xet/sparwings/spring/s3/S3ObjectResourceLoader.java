@@ -23,8 +23,6 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import com.amazonaws.services.s3.AmazonS3;
-
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
@@ -34,6 +32,8 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.amazonaws.services.s3.AmazonS3;
 
 /**
  * {@link ResourceLoader} implementation to load {@link S3ObjectResource}.
@@ -80,7 +80,7 @@ public class S3ObjectResourceLoader implements ResourceLoader, InitializingBean 
 	}
 	
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet() {
 		if (taskExecutor == null) {
 			taskExecutor = new SyncTaskExecutor();
 		}

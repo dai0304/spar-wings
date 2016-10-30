@@ -15,6 +15,10 @@
  */
 package jp.xet.sparwings.spring.web.httpexceptions;
 
+import java.util.Locale;
+
+import lombok.NoArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -24,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @since 0.8
  * @author daisuke
  */
+@NoArgsConstructor
 @SuppressWarnings("serial")
 @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
 public class HttpTooManyRequestsException extends HttpResponseException {
@@ -34,15 +39,7 @@ public class HttpTooManyRequestsException extends HttpResponseException {
 	 * @param millisecsToWait 要待機ミリ秒
 	 */
 	public HttpTooManyRequestsException(long millisecsToWait) {
-		super(String.format("Please wait %d ms before next request", millisecsToWait));
-	}
-	
-	/**
-	 * Create instance.
-	 * 
-	 * @since 0.26
-	 */
-	public HttpTooManyRequestsException() {
+		super(String.format(Locale.ENGLISH, "Please wait %d ms before next request", millisecsToWait));
 	}
 	
 	/**

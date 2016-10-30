@@ -19,11 +19,10 @@ import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSCredentialsProvider;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * TODO for daisuke
@@ -32,9 +31,8 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  * @author daisuke
  */
+@Slf4j
 public class AwsCliConfigFile {
-	
-	private static Logger LOG = LoggerFactory.getLogger(AwsCliConfigFile.class);
 	
 	/** Environment variable name for overriding the default AWS profile */
 	public static final String AWSCLI_CONFIG_ENVIRONMENT_VARIABLE = "AWSCLI_CONFIG";
@@ -124,7 +122,7 @@ public class AwsCliConfigFile {
 		String legacyConfigFileOverride = System.getenv(AWSCLI_CONFIG_FILE_ENVIRONMENT_VARIABLE);
 		
 		if (legacyConfigFileOverride != null) {
-			LOG.debug("Loading AWS credential profiles from overridden file: " + legacyConfigFileOverride);
+			log.debug("Loading AWS credential profiles from overridden file: " + legacyConfigFileOverride);
 			return new File(legacyConfigFileOverride);
 		}
 		

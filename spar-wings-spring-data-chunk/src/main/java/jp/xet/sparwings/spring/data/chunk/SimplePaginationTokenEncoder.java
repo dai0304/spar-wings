@@ -16,6 +16,7 @@
 package jp.xet.sparwings.spring.data.chunk;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
@@ -23,14 +24,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Simple JSON and Base64 URL implementation for {@link PaginationTokenEncoder}.
@@ -69,7 +70,7 @@ public class SimplePaginationTokenEncoder implements PaginationTokenEncoder {
 		map.put(LAST_KEY, lastKey);
 		try {
 			String json = objectMapper.writeValueAsString(map);
-			return encoder.encodeToString(json.getBytes());
+			return encoder.encodeToString(json.getBytes(StandardCharsets.UTF_8));
 		} catch (JsonProcessingException e) {
 			throw new InvalidKeyExpressionException(e);
 		}

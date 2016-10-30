@@ -22,14 +22,16 @@ import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jp.xet.sparwings.aws.sns.NotificationService;
 import lombok.Setter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.AbstractHandlerExceptionResolver;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import jp.xet.sparwings.aws.sns.NotificationService;
 
 /**
  * Notify to developers when the HTTP request handling ends with Exception.
@@ -52,7 +54,8 @@ public class DefaultExceptionResolver extends AbstractHandlerExceptionResolver {
 	
 	
 	@Override
-	public ModelAndView doResolveException(HttpServletRequest req, HttpServletResponse res, Object handler, Exception e) {
+	public ModelAndView doResolveException(HttpServletRequest req, HttpServletResponse res, Object handler,
+			Exception e) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("resolveException: {}", e.getClass().toString());
 		} else if (logger.isTraceEnabled()) {

@@ -15,13 +15,13 @@
  */
 package jp.xet.sparwings.spring.data.chunk;
 
-import org.springframework.data.domain.Sort.Direction;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import org.springframework.data.domain.Sort.Direction;
 
 /**
  * Basic Java Bean implementation of {@code Chunkable}.

@@ -19,15 +19,15 @@ import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import lombok.Data;
+
+import org.junit.Test;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.junit.Test;
-
-import lombok.Data;
 
 /**
  * Test for {@link Resource} serialization.
@@ -42,6 +42,7 @@ public class ResourceTest {
 	static {
 		OM.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
 	}
+	
 	
 	@Test
 	public void testStringSer() throws Exception {
@@ -85,6 +86,7 @@ public class ResourceTest {
 		assertThat(actual, is(expected));
 	}
 	
+	
 	@Data
 	@SuppressWarnings("javadoc")
 	public static class SampleBean {
@@ -92,6 +94,7 @@ public class ResourceTest {
 		private String foo;
 		
 		private String bar;
+		
 		
 		@JsonCreator
 		public SampleBean(@JsonProperty("foo") String foo, @JsonProperty("bar") String bar) {

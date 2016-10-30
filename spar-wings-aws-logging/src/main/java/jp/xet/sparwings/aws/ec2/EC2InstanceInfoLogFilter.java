@@ -24,12 +24,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.amazonaws.util.EC2MetadataUtils;
-import com.amazonaws.util.EC2MetadataUtils.InstanceInfo;
-
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import org.slf4j.MDC;
+
+import com.amazonaws.util.EC2MetadataUtils;
+import com.amazonaws.util.EC2MetadataUtils.InstanceInfo;
 
 /**
  * {@link Filter ServletFilter} implementation that put {@link InstanceInfo} to {@link MDC}.
@@ -45,6 +46,7 @@ public class EC2InstanceInfoLogFilter extends OncePerRequestFilter {
 	
 	@Override
 	public void destroy() {
+		// nothing to do
 	}
 	
 	@Override

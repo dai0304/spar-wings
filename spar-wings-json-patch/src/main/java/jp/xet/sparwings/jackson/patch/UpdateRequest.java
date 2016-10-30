@@ -20,5 +20,5 @@ import java.util.function.UnaryOperator;
 /**
  * TODO for daisuke
  */
-public interface UpdateRequest<T> extends UnaryOperator<T> {
+public interface UpdateRequest<T>extends UnaryOperator<T> {
 }

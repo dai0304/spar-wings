@@ -17,11 +17,11 @@ package jp.xet.sparwings.testing.uri;
 
 import java.net.URI;
 
+import lombok.RequiredArgsConstructor;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-
-import lombok.RequiredArgsConstructor;
 
 /**
  * TODO for daisuke
@@ -34,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class HasPath extends TypeSafeMatcher<URI> {
 	
 	private final Matcher<?> matcher;
+	
 	
 	@Override
 	public void describeTo(Description mismatchDescription) {
