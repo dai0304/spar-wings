@@ -23,11 +23,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.MDC;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import org.slf4j.MDC;
 
 /**
  * ログイン中のユーザ名をMDCに出力するための{@link Filter ServletFilter} 実装クラス。
@@ -42,6 +43,7 @@ public class UsernameLogFilter extends OncePerRequestFilter {
 	
 	@Override
 	public void destroy() {
+		// nothing to do
 	}
 	
 	@Override
@@ -72,7 +74,7 @@ public class UsernameLogFilter extends OncePerRequestFilter {
 	 * @return true id the user can be successfully registered
 	 */
 	private boolean registerUsername(String username) {
-		if (username != null && username.trim().length() > 0) {
+		if (username != null && username.trim().isEmpty() == false) {
 			MDC.put(USER_KEY, username);
 			return true;
 		}

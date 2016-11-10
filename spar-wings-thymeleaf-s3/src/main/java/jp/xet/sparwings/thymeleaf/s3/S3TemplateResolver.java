@@ -15,10 +15,10 @@
  */
 package jp.xet.sparwings.thymeleaf.s3;
 
-import com.amazonaws.services.s3.AmazonS3;
-
 import org.thymeleaf.TemplateProcessingParameters;
 import org.thymeleaf.templateresolver.TemplateResolver;
+
+import com.amazonaws.services.s3.AmazonS3;
 
 /**
  * TODO for daisuke

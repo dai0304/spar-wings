@@ -18,7 +18,6 @@ package jp.xet.sparwings.dynamodb.patch;
 import java.io.IOException;
 import java.util.List;
 
-import jp.xet.sparwings.dynamodb.patch.operations.JsonPatchOperation;
 import lombok.Getter;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -29,6 +28,8 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.github.fge.jackson.JacksonUtils;
 import com.google.common.collect.ImmutableList;
+
+import jp.xet.sparwings.dynamodb.patch.operations.JsonPatchOperation;
 
 /**
  * TODO for daisuke

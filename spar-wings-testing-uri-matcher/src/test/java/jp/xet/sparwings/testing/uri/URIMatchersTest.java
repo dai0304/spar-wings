@@ -45,14 +45,14 @@ public class URIMatchersTest {
 	
 	final URI uri;
 	
-	{
+	
+	public URIMatchersTest() {
 		try {
 			uri = new URI("http://user:pass@example.com:8080/foo?bar=baz&qux=quux#courge=grault&garply=waldo");
-		} catch (Exception e) {
-			throw new Error(e);
+		} catch (Exception e) { // NOPMD
+			throw new AssertionError(e);
 		}
 	}
-	
 	
 	@Test
 	public void testHasScheme() throws Exception {

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -29,10 +30,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-import com.google.common.base.Strings;
-import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.google.common.base.Strings;
+import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 
 /**
  * Servlet filter implementation to compress response HTML.
@@ -41,6 +44,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * @version $Id$
  * @author daisuke
  */
+@Slf4j
 public class HtmlCompressionFilter extends OncePerRequestFilter {
 	
 	private boolean enabled = true;
@@ -196,7 +200,7 @@ public class HtmlCompressionFilter extends OncePerRequestFilter {
 			compressor.setYuiCssLineBreak(yuiCssLineBreak);
 			
 			try (PrintWriter writer = response.getWriter()) {
-				String compressed = compressor.compress(baos.toString());
+				String compressed = compressor.compress(baos.toString(StandardCharsets.UTF_8.name()));
 				response.setContentLength(compressed.length());
 				writer.write(compressed);
 			}
@@ -217,7 +221,7 @@ public class HtmlCompressionFilter extends OncePerRequestFilter {
 		private PrintWriter writer;
 		
 		
-		public OutputStreamResponseWrapper(HttpServletResponse response) {
+		OutputStreamResponseWrapper(HttpServletResponse response) {
 			super(response);
 		}
 		
@@ -234,6 +238,7 @@ public class HtmlCompressionFilter extends OncePerRequestFilter {
 					stream.close();
 				}
 			} catch (IOException e) {
+				log.trace("ignored", e);
 				// ignore
 			}
 		}
@@ -281,6 +286,7 @@ public class HtmlCompressionFilter extends OncePerRequestFilter {
 		
 		@Override
 		public void setContentLength(int length) {
+			// nothing to do
 		}
 	}
 	
@@ -298,7 +304,7 @@ public class HtmlCompressionFilter extends OncePerRequestFilter {
 		boolean closed = false;
 		
 		
-		public ServletOutputStreamWrapper(OutputStream realStream) {
+		ServletOutputStreamWrapper(OutputStream realStream) {
 			out = realStream;
 		}
 		
@@ -350,6 +356,7 @@ public class HtmlCompressionFilter extends OncePerRequestFilter {
 		
 		@Override
 		public void setWriteListener(WriteListener writeListener) {
+			// nothing to do
 		}
 	}
 }

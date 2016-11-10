@@ -19,7 +19,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Base64.Encoder;
 import java.util.Collection;
@@ -40,15 +42,16 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
-import org.springframework.http.HttpStatus;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Delegate;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.http.HttpStatus;
+
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 /**
  * TODO for daisuke
@@ -77,8 +80,8 @@ public class HttpDumpFilter implements Filter {
 	static boolean isPrintable(byte[] value) {
 		for (byte element : value) {
 			char c = (char) element;
-			if ((Character.isISOControl(c) ||
-					((element & 0xFF) >= 0x80)) && (Character.isWhitespace(c) == false)) {
+			if ((Character.isISOControl(c)
+					|| ((element & 0xFF) >= 0x80)) && (Character.isWhitespace(c) == false)) {
 				return false;
 			}
 		}
@@ -101,7 +104,7 @@ public class HttpDumpFilter implements Filter {
 		}
 		
 		if (queryString != null) {
-			url.append("?").append(queryString);
+			url.append('?').append(queryString);
 		}
 		
 		return url.toString();
@@ -119,6 +122,7 @@ public class HttpDumpFilter implements Filter {
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
+		// do nothing
 	}
 	
 	@Override
@@ -163,7 +167,7 @@ public class HttpDumpFilter implements Filter {
 	}
 	
 	private void dumpRequest(BufferedRequestWrapper bufferedRequest, StringBuilder sb) {
-		sb.append(bufferedRequest.getMethod()).append(" ")
+		sb.append(bufferedRequest.getMethod()).append(' ')
 			.append(buildRequestUrl(bufferedRequest))
 			.append(NL);
 		
@@ -180,7 +184,7 @@ public class HttpDumpFilter implements Filter {
 		if (buffer.length > 0) {
 			if (buffer.length <= 256 && isPrintable(buffer)) {
 				sb.append(NL);
-				sb.append(new String(buffer)).append(NL);
+				sb.append(new String(buffer, StandardCharsets.UTF_8)).append(NL);
 			} else {
 				sb.append("HttpDumpFilter-Body-Encoding: b64").append(NL);
 				sb.append(NL);
@@ -191,7 +195,7 @@ public class HttpDumpFilter implements Filter {
 	
 	private void dumpResponse(HttpServletResponse response, byte[] buffer, StringBuilder sb) {
 		int status = response.getStatus();
-		sb.append(status).append(" ").append(HttpStatus.valueOf(status).getReasonPhrase()).append(NL);
+		sb.append(status).append(' ').append(HttpStatus.valueOf(status).getReasonPhrase()).append(NL);
 		
 		Collection<String> responseHeaderNames = response.getHeaderNames();
 		for (String headerName : responseHeaderNames) {
@@ -204,7 +208,7 @@ public class HttpDumpFilter implements Filter {
 		if (buffer.length > 0) {
 			if (buffer.length <= 256 && isPrintable(buffer)) {
 				sb.append(NL);
-				sb.append(new String(buffer)).append(NL);
+				sb.append(new String(buffer, StandardCharsets.UTF_8)).append(NL);
 			} else {
 				sb.append("HttpDumpFilter-Body-Encoding: base64").append(NL);
 				sb.append(NL);
@@ -215,6 +219,7 @@ public class HttpDumpFilter implements Filter {
 	
 	@Override
 	public void destroy() {
+		// do nothing
 	}
 	
 	
@@ -236,6 +241,7 @@ public class HttpDumpFilter implements Filter {
 		
 		@Override
 		public void setWriteListener(WriteListener writeListener) {
+			// do nothing
 		}
 	}
 	
@@ -244,7 +250,7 @@ public class HttpDumpFilter implements Filter {
 		private ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
 		@Getter
-		private PrintWriter writer = new PrintWriter(baos);
+		private PrintWriter writer = new PrintWriter(new OutputStreamWriter(baos, StandardCharsets.UTF_8), false);
 		
 		@Getter
 		private ServletOutputStream stream = new ByteArrayServletStream(baos);
@@ -274,6 +280,7 @@ public class HttpDumpFilter implements Filter {
 		
 		@Override
 		public void setReadListener(ReadListener readListener) {
+			// do nothing
 		}
 	}
 	
@@ -289,11 +296,11 @@ public class HttpDumpFilter implements Filter {
 		byte[] buffer;
 		
 		
-		public BufferedRequestWrapper(HttpServletRequest req) throws IOException {
+		BufferedRequestWrapper(HttpServletRequest req) throws IOException {
 			super(req);
 			try (InputStream is = req.getInputStream()) {
 				baos = new ByteArrayOutputStream();
-				byte buf[] = new byte[1024];
+				byte[] buf = new byte[1024];
 				int letti;
 				while ((letti = is.read(buf)) > 0) {
 					baos.write(buf, 0, letti);
@@ -307,8 +314,8 @@ public class HttpDumpFilter implements Filter {
 			try {
 				bais = new ByteArrayInputStream(buffer);
 				bsis = new BufferedServletInputStream(bais);
-			} catch (Exception e) {
-				log.error("", e);
+			} catch (Exception e) { // NOPMD
+				log.error("unexpected", e);
 			}
 			
 			return bsis;

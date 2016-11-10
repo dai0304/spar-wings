@@ -19,21 +19,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.util.Assert;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jp.xet.sparwings.spring.data.chunk.Chunkable.PaginationRelation;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Default information of {@link Chunk}.
@@ -173,12 +175,12 @@ public class ChunkImpl<T> implements Chunk<T> {
 	@Override
 	public String toString() {
 		String contentType = "UNKNOWN";
-		List<T> content = getContent();
+		List<T> list = getContent();
 		
-		if (content.size() > 0) {
-			contentType = content.get(0).getClass().getName();
+		if (list.isEmpty() == false) {
+			contentType = list.get(0).getClass().getName();
 		}
 		
-		return String.format("Chunk containing %s instances", contentType);
+		return String.format(Locale.ENGLISH, "Chunk containing %s instances", contentType);
 	}
 }

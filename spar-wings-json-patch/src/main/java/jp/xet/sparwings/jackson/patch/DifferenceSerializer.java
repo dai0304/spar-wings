@@ -17,6 +17,8 @@ package jp.xet.sparwings.jackson.patch;
 
 import java.io.IOException;
 
+import lombok.RequiredArgsConstructor;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,8 +26,6 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.github.fge.jsonpatch.diff.JsonDiff;
-
-import lombok.RequiredArgsConstructor;
 
 /**
  * TODO for daisuke

@@ -17,6 +17,7 @@ package jp.xet.sparwings.common.envvalidator;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Locale;
 
 import com.google.common.collect.Iterables;
 
@@ -75,9 +76,9 @@ public abstract class AbstractRequiresAllRequirement implements ApplicationRequi
 	@Override
 	public String getViolationMessage() {
 		if (keys.size() == 1) {
-			return String.format("{} {} is required.", getTargetName(), Iterables.getOnlyElement(keys));
+			return String.format(Locale.ENGLISH, "{} {} is required.", getTargetName(), Iterables.getOnlyElement(keys));
 		} else {
-			return String.format("{} {} are all required.", getTargetName(), keys);
+			return String.format(Locale.ENGLISH, "{} {} are all required.", getTargetName(), keys);
 		}
 	}
 }

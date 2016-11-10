@@ -43,7 +43,7 @@ import org.springframework.core.convert.converter.Converter;
  * @author Les Hazlewood
  * @since 0.3
  */
-public interface RestErrorConverter<T> extends Converter<RestError, T> {
+public interface RestErrorConverter<T>extends Converter<RestError, T> {
 	
 	/**
 	 * Converts the RestError instance into an object that will then be used by an

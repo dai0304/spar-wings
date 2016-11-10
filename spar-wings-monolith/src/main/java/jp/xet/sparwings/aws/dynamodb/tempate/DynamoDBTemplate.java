@@ -23,6 +23,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.util.Assert;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.AttributeValueUpdate;
@@ -36,10 +41,6 @@ import com.amazonaws.services.dynamodbv2.model.QueryResult;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
 /**
  * <b>This is the central class in the DynamoDB Template package.</b>
@@ -108,7 +109,7 @@ public class DynamoDBTemplate {
 	 * @see AmazonDynamoDB#getItem(GetItemRequest)
 	 * @since 0.3
 	 */
-	public <T>T get(String tableName, Map<String, AttributeValue> key, Boolean consistentRead,
+	public <T> T get(String tableName, Map<String, AttributeValue> key, Boolean consistentRead,
 			Optional<String> projectionExpression, ObjectExtractor<T> extractor, String... columnsToInclude)
 			throws EmptyResultDataAccessException {
 		notNull(tableName, "tableName must not be null");
@@ -142,7 +143,7 @@ public class DynamoDBTemplate {
 	 * @see AmazonDynamoDB#batchGetItem(com.amazonaws.services.dynamodbv2.model.BatchGetItemRequest)
 	 * @since 0.3
 	 */
-	public <T>List<T> batchGet(String tableName, KeysAndAttributes keysAndAttributes, ObjectExtractor<T> extractor)
+	public <T> List<T> batchGet(String tableName, KeysAndAttributes keysAndAttributes, ObjectExtractor<T> extractor)
 			throws EmptyResultDataAccessException {
 		notNull(tableName, "tableName must not be null");
 		notNull(keysAndAttributes, "keysAndAttributes must not be null");
@@ -152,7 +153,7 @@ public class DynamoDBTemplate {
 		List<T> results = new ArrayList<>(keysAndAttributes.getKeys().size());
 		
 		Map<String, KeysAndAttributes> unprocessedKeys = Collections.singletonMap(tableName, keysAndAttributes);
-		while (unprocessedKeys.size() > 0) {
+		while (unprocessedKeys.isEmpty() == false) {
 			BatchGetItemResult result = client.batchGetItem(unprocessedKeys);
 			List<T> items = result.getResponses().get(tableName).stream()
 				.map(extractor::extract)
@@ -161,7 +162,7 @@ public class DynamoDBTemplate {
 			unprocessedKeys = result.getUnprocessedKeys();
 		}
 		
-		if (results.size() == 0) {
+		if (results.isEmpty()) {
 			throw new EmptyResultDataAccessException("No results found in " + tableName
 					+ "for " + keysAndAttributes.toString());
 		}
@@ -188,12 +189,12 @@ public class DynamoDBTemplate {
 	 * @throws TooManyResultDataAccessException if multiple items found as query result
 	 * @since 0.3
 	 */
-	public <T>T queryUnique(String tableName, Optional<String> indexName, Map<String, Condition> keyConditions,
+	public <T> T queryUnique(String tableName, Optional<String> indexName, Map<String, Condition> keyConditions,
 			Optional<String> projectionExpression, ObjectExtractor<T> extractor, String... columnsToInclude)
 			throws EmptyResultDataAccessException, TooManyResultDataAccessException {
 		List<T> items = query(tableName, indexName, keyConditions, projectionExpression, extractor, columnsToInclude);
 		
-		if (items.size() == 0) {
+		if (items.isEmpty()) {
 			throw new EmptyResultDataAccessException("No results found in " + tableName
 					+ "for " + renderKey(keyConditions));
 		} else if (items.size() > 1) {
@@ -224,7 +225,7 @@ public class DynamoDBTemplate {
 	 * @see AmazonDynamoDB#query(QueryRequest)
 	 * @since 0.3
 	 */
-	public <T>List<T> query(String tableName, Optional<String> indexName, Map<String, Condition> keyConditions,
+	public <T> List<T> query(String tableName, Optional<String> indexName, Map<String, Condition> keyConditions,
 			Optional<String> projectionExpression, ObjectExtractor<T> extractor, String... columnsToInclude)
 			throws EmptyResultDataAccessException {
 		notNull(tableName, "tableName must not be null");
@@ -267,7 +268,7 @@ public class DynamoDBTemplate {
 	 * @see AmazonDynamoDB#scan(ScanRequest)
 	 * @since 0.3
 	 */
-	public <T>List<T> scan(String tableName, Optional<String> indexName, Optional<Integer> limit,
+	public <T> List<T> scan(String tableName, Optional<String> indexName, Optional<Integer> limit,
 			Optional<String> projectionExpression, ObjectExtractor<T> extractor) throws EmptyResultDataAccessException {
 		notNull(tableName, "tableName must not be null");
 		notNull(extractor, "extractor must not be null");

@@ -15,18 +15,18 @@
  */
 package jp.xet.sparwings.aws;
 
-import com.amazonaws.regions.AwsRegionProvider;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
+import lombok.Getter;
+import lombok.Setter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import jp.xet.sparwings.aws.ec2.InstanceMetadata;
-import lombok.Getter;
-import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.amazonaws.regions.AwsRegionProvider;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
 
 /**
  * Spring factyory bean for {@link Region}.
@@ -45,7 +45,7 @@ public class RegionFactoryBean implements FactoryBean<Region> {
 	private Regions defaultRegion = Regions.US_EAST_1;
 	
 	@Autowired
-	InstanceMetadata metadata;
+	jp.xet.sparwings.aws.ec2.InstanceMetadata metadata;
 	
 	
 	@Override

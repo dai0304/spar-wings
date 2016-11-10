@@ -19,9 +19,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
-
 import org.apache.http.annotation.Immutable;
+
+import com.amazonaws.auth.AWSCredentialsProvider;
 
 /**
  * TODO for daisuke

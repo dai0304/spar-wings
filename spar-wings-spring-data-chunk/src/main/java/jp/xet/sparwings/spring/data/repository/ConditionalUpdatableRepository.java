@@ -32,7 +32,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  * @author daisuke
  */
 @NoRepositoryBean
-public interface ConditionalUpdatableRepository<E, ID extends Serializable, C> extends UpdatableRepository<E, ID> {
+public interface ConditionalUpdatableRepository<E, ID extends Serializable, C>extends UpdatableRepository<E, ID> {
 	
 	/**
 	 * Update entity.

@@ -135,12 +135,8 @@ public class AwsCliConfigProfileCredentialsProvider implements AWSCredentialsPro
 	@Override
 	public AWSCredentials getCredentials() {
 		if (cliConfigFile == null) {
-			synchronized (this) {
-				if (cliConfigFile == null) {
-					cliConfigFile = new AwsCliConfigFile();
-					lastRefreshed = System.nanoTime();
-				}
-			}
+			cliConfigFile = new AwsCliConfigFile();
+			lastRefreshed = System.nanoTime();
 		}
 		
 		// Periodically check if the file on disk has been modified

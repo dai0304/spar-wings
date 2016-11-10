@@ -25,12 +25,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.amazonaws.services.sqs.AmazonSQS;
-import com.amazonaws.services.sqs.model.ChangeMessageVisibilityRequest;
-import com.amazonaws.services.sqs.model.DeleteMessageRequest;
-import com.amazonaws.services.sqs.model.Message;
-import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
-import com.amazonaws.services.sqs.model.ReceiveMessageResult;
+import org.springframework.retry.support.RetryTemplate;
+import org.springframework.util.DigestUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,10 +39,13 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.retry.support.RetryTemplate;
-import org.springframework.util.DigestUtils;
+
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.ChangeMessageVisibilityRequest;
+import com.amazonaws.services.sqs.model.DeleteMessageRequest;
+import com.amazonaws.services.sqs.model.Message;
+import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
+import com.amazonaws.services.sqs.model.ReceiveMessageResult;
 
 /**
  * Test for {@link SqsMessagePoller}.
@@ -52,6 +54,7 @@ import org.springframework.util.DigestUtils;
  * @version $Id$
  * @author daisuke
  */
+@SuppressWarnings("javadoc")
 @RunWith(MockitoJUnitRunner.class)
 public class SqsMessagePollerTest {
 	
@@ -104,7 +107,7 @@ public class SqsMessagePollerTest {
 				Thread.sleep(333);
 			}
 			if (excepiton) {
-				throw new Exception();
+				throw new Exception(); // NOPMD
 			}
 			return null;
 		};

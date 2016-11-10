@@ -37,7 +37,8 @@ import org.springframework.http.HttpStatus;
  *     </tr>
  *     <tr>
  *         <td>status</td>
- *         <td>restError.{@link RestError#getStatus() getStatus()}.{@link org.springframework.http.HttpStatus#value() value()}</td>
+ *         <td>restError.{@link RestError#getStatus() getStatus()}.
+ *         {@link org.springframework.http.HttpStatus#value() value()}</td>
  *         <td></td>
  *     </tr>
  *     <tr>

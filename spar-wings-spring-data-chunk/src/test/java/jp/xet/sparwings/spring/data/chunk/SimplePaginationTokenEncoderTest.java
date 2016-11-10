@@ -18,13 +18,13 @@ package jp.xet.sparwings.spring.data.chunk;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Test;
 
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Test for {@link SimplePaginationTokenEncoder}.
@@ -38,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SimplePaginationTokenEncoderTest {
 	
 	SimplePaginationTokenEncoder sut = new SimplePaginationTokenEncoder();
+	
 	
 	@Test
 	public void testString() {
@@ -74,6 +75,7 @@ public class SimplePaginationTokenEncoderTest {
 		assertThat(actualLast, is(last));
 	}
 	
+	
 	@Data
 	private static class CompositeKey {
 		
@@ -81,8 +83,9 @@ public class SimplePaginationTokenEncoderTest {
 		
 		private final long key2;
 		
+		
 		@JsonCreator
-		public CompositeKey(@JsonProperty("key1") String key1, @JsonProperty("key2") long key2) {
+		CompositeKey(@JsonProperty("key1") String key1, @JsonProperty("key2") long key2) {
 			this.key1 = key1;
 			this.key2 = key2;
 		}

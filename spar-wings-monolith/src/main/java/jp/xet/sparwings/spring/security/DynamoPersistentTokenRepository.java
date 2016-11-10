@@ -20,6 +20,14 @@ import java.util.stream.StreamSupport;
 
 import lombok.Setter;
 
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.util.Assert;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
@@ -34,13 +42,6 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.TableWriteItems;
 import com.amazonaws.services.dynamodbv2.document.UpdateItemOutcome;
 import com.amazonaws.util.DateUtils;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-import org.springframework.util.Assert;
 
 /**
  * Amazon DynamoDB based persistent login token repository implementation.
@@ -101,7 +102,7 @@ public class DynamoPersistentTokenRepository implements PersistentTokenRepositor
 			if (logger.isDebugEnabled()) {
 				logger.debug("Token created: {}", putItemOutcome.getPutItemResult());
 			}
-		} catch (Exception e) {
+		} catch (Exception e) { // NOPMD
 			logger.error("unexpected", e);
 		}
 	}
@@ -134,7 +135,7 @@ public class DynamoPersistentTokenRepository implements PersistentTokenRepositor
 			logger.error("Failed to load token for series {}", seriesId, e);
 		} catch (AmazonClientException e) {
 			logger.error("Failed to load token for series {}", seriesId, e);
-		} catch (Exception e) {
+		} catch (Exception e) { // NOPMD
 			logger.error("unexpected", e);
 		}
 		return null;
@@ -161,7 +162,7 @@ public class DynamoPersistentTokenRepository implements PersistentTokenRepositor
 					logger.debug("Token removed: {}", batchWriteItemOutcome.getBatchWriteItemResult());
 				}
 			}
-		} catch (Exception e) {
+		} catch (Exception e) { // NOPMD
 			logger.error("unexpected", e);
 		}
 	}
@@ -185,7 +186,7 @@ public class DynamoPersistentTokenRepository implements PersistentTokenRepositor
 			if (logger.isDebugEnabled()) {
 				logger.debug("Token updated: {}", updateItemOutcome.getUpdateItemResult());
 			}
-		} catch (Exception e) {
+		} catch (Exception e) { // NOPMD
 			logger.error("unexpected", e);
 		}
 	}

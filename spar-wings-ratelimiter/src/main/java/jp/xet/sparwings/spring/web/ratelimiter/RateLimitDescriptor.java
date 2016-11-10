@@ -20,7 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.experimental.Wither;
+import lombok.experimental.Accessors;
 
 /**
  * TODO for daisuke
@@ -29,7 +29,7 @@ import lombok.experimental.Wither;
  * @author daisuke
  */
 @ToString
-@Wither
+@Accessors(chain = true)
 @AllArgsConstructor
 public class RateLimitDescriptor {
 	

@@ -21,11 +21,12 @@ import static org.hamcrest.Matchers.is;
 
 import java.util.Arrays;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.junit.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+
+import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Test for {@link PagedResources} serialization.

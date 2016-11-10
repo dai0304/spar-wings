@@ -21,15 +21,16 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import org.springframework.context.ApplicationListener;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationListener;
 
 /**
  * TODO for daisuke
@@ -67,7 +68,7 @@ public class SWEventListener implements ApplicationListener<SWEvent> {
 				.withTargetArn(eventTopicArn)
 				.withMessage(message));
 			logger.info("SWEvent {} was published: {}", event.getEventType(), publishResult.getMessageId());
-		} catch (Exception e) {
+		} catch (Exception e) { // NOPMD
 			if (exceptionHandler != null) {
 				exceptionHandler.accept(e);
 			} else {

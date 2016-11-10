@@ -18,9 +18,9 @@ package jp.xet.sparwings.dynamodb.patch;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import com.github.fge.jackson.jsonpointer.JsonPointer;
-
 import org.junit.Test;
+
+import com.github.fge.jackson.jsonpointer.JsonPointer;
 
 /**
  * TODO for daisuke

@@ -20,11 +20,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughputExceededException;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+
+import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughputExceededException;
 
 /**
  * Aspect for fault injection to AWS DynamoDB cluent.

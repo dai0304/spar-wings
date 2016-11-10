@@ -27,8 +27,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
-import org.slf4j.MDC;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import org.slf4j.MDC;
 
 /**
  * Servlet {@link Filter} implementation to generate Request-ID.
@@ -70,6 +71,7 @@ public class RequestIdFilter extends OncePerRequestFilter {
 	
 	@Override
 	public void destroy() {
+		// nothing to do
 	}
 	
 	@Override

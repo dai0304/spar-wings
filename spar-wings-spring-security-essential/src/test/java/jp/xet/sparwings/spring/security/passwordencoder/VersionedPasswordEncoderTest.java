@@ -22,15 +22,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.google.common.collect.ImmutableMap;
 
 /**
  * Test for {@link VersionedPasswordEncoder}.
@@ -93,7 +94,8 @@ public class VersionedPasswordEncoderTest {
 	public void testMatchesEncodedWithKey1() throws Exception {
 		// setup
 		String rawPassword = "p@ssW0rd";
-		String encodedPassword = "baz_$2a$10$cuR2ghEiftvcxKx/V8ZNieZBs4Xfiq6ZsRapxHZRnfWpMyBwQYUme"; // new BCryptPasswordEncoder().encode(rawPassword);
+		// String encodedPassword = new BCryptPasswordEncoder().encode(rawPassword);
+		String encodedPassword = "baz_$2a$10$cuR2ghEiftvcxKx/V8ZNieZBs4Xfiq6ZsRapxHZRnfWpMyBwQYUme";
 		// exercise
 		boolean actual = sut.matches(rawPassword, encodedPassword);
 		// verify
@@ -115,7 +117,8 @@ public class VersionedPasswordEncoderTest {
 	public void testMatchesEncodedWithKey3() throws Exception {
 		// setup
 		String rawPassword = "p@ssW0rd";
-		String encodedPassword = "bar_9bf18ae42422e047a5fa740bc9a41110d0146c5cf2b8ba6df1cc583e23202adbd132f9cb3da6e9c1"; // new StandardPasswordEncoder().encode(rawPassword);
+		// String encodedPassword = new StandardPasswordEncoder().encode(rawPassword);
+		String encodedPassword = "bar_9bf18ae42422e047a5fa740bc9a41110d0146c5cf2b8ba6df1cc583e23202adbd132f9cb3da6e9c1";
 		// exercise
 		boolean actual = sut.matches(rawPassword, encodedPassword);
 		// verify

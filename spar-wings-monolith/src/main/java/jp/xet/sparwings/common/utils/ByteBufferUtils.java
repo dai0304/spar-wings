@@ -40,13 +40,13 @@ public class ByteBufferUtils {
 		}
 	}
 	
-	public static <T>T deserialize(ByteBuffer byteBuffer) {
+	public static <T> T deserialize(ByteBuffer byteBuffer) {
 		// AWS Docs suggest that byteBuffer.array() can in fact be used, so using that directly
 		ByteArrayInputStream bais = new ByteArrayInputStream(byteBuffer.array());
 		try (ObjectInputStream oip = new ObjectInputStream(bais)) {
 			@SuppressWarnings("unchecked")
 			T result = (T) oip.readObject();
-			return result;
+			return result; // NOPMD
 		} catch (IOException | ClassNotFoundException e) {
 			throw new IllegalArgumentException(e);
 		}
