@@ -299,7 +299,20 @@ subprojects {
 	}
 }
 
-
+task resolveDependencies {
+    doLast {
+        project.rootProject.allprojects.each { subProject ->
+            subProject.buildscript.configurations.each {
+				println "Resolve " + subProject.name + " " + it.name + " configuration dependencies... (build script)"
+                it.resolve()
+            }
+            subProject.configurations.each {
+				println "Resolve " + subProject.name + " " + it.name + " configuration dependencies..."
+                it.resolve()
+            }
+        }
+    }
+}
 
 // ======== wrapper ========
 task wrapper(type: Wrapper) {
