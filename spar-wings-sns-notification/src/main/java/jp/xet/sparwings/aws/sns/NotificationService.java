@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +33,7 @@ import org.slf4j.MDC;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.util.EC2MetadataUtils.InstanceInfo;
+import com.amazonaws.util.json.Jackson;
 
 import jp.xet.sparwings.spring.env.EnvironmentService;
 
@@ -178,8 +177,14 @@ public class NotificationService implements InitializingBean {
 	 */
 	public void notifyDev(String subject, Map<String, String> messageMap, Throwable t) {
 		messageMap.put("environment", env.toString());
-		messageMap.put("instanceMetadata", Objects.toString(Optional.<Object> ofNullable(instanceInfo)
-			.orElse(instanceMetadata)));
+		if (instanceInfo != null) {
+			messageMap.put("instanceMetadata", Jackson.toJsonString(instanceInfo));
+		} else if (instanceMetadata != null) {
+			@SuppressWarnings("deprecation")
+			String metadataString = instanceMetadata.toString();
+			messageMap.put("instanceMetadata", metadataString);
+		}
+		
 		if (t != null) {
 			messageMap.put("stackTrace", toString(t));
 		}
