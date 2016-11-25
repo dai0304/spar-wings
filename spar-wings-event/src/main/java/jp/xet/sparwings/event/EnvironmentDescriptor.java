@@ -43,7 +43,7 @@ public class EnvironmentDescriptor implements Serializable {
 	/** AWS account ID */
 	@Getter
 	@Setter
-	@JsonProperty("acoount_id")
+	@JsonProperty("account_id")
 	private String accountId;
 	
 	/** AWS region */

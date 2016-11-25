@@ -95,7 +95,7 @@ public class SWEventTest {
 		assertThat(actual, hasJsonPath("$.timestamp"));
 		assertThat(actual, hasJsonPath("$.event_type", is("test_event")));
 		
-		assertThat(actual, hasJsonPath("$.source.environment.acoount_id", is("000011112222")));
+		assertThat(actual, hasJsonPath("$.source.environment.account_id", is("000011112222")));
 		assertThat(actual, hasJsonPath("$.source.environment.region", is("ap-northeast-1")));
 		assertThat(actual, hasJsonPath("$.source.environment.instance_id", is("i-0123456789abcdef")));
 		assertThat(actual, hasJsonPath("$.source.product.name", is("foobar")));
