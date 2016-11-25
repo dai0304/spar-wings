@@ -24,13 +24,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.amazonaws.util.EC2MetadataUtils;
+import com.amazonaws.util.EC2MetadataUtils.InstanceInfo;
+
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import org.slf4j.MDC;
-
-import com.amazonaws.util.EC2MetadataUtils;
-import com.amazonaws.util.EC2MetadataUtils.InstanceInfo;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * {@link Filter ServletFilter} implementation that put {@link InstanceInfo} to {@link MDC}.
@@ -42,6 +44,10 @@ public class EC2InstanceInfoLogFilter extends OncePerRequestFilter {
 	
 	@Autowired
 	EC2MetadataUtils.InstanceInfo instanceInfo;
+	
+	@Setter
+	@Getter
+	private String prefix = "im_";
 	
 	
 	@Override
@@ -62,37 +68,37 @@ public class EC2InstanceInfoLogFilter extends OncePerRequestFilter {
 	}
 	
 	private void registerMDCValues() {
-		putIfNotNull("im.instanceId", instanceInfo.getInstanceId());
-		putIfNotNull("im.billingProducts", Arrays.toString(instanceInfo.getBillingProducts()));
-		putIfNotNull("im.version", instanceInfo.getVersion());
-		putIfNotNull("im.imageId", instanceInfo.getImageId());
-		putIfNotNull("im.accountId", instanceInfo.getAccountId());
-		putIfNotNull("im.instanceType", instanceInfo.getInstanceType());
-		putIfNotNull("im.architecture", instanceInfo.getArchitecture());
-		putIfNotNull("im.kernelId", instanceInfo.getKernelId());
-		putIfNotNull("im.ramdiskId", instanceInfo.getRamdiskId());
-		putIfNotNull("im.pendingTime", instanceInfo.getPendingTime());
-		putIfNotNull("im.availabilityZone", instanceInfo.getAvailabilityZone());
-		putIfNotNull("im.devpayProductCodes", Arrays.toString(instanceInfo.getDevpayProductCodes()));
-		putIfNotNull("im.privateIp", instanceInfo.getPrivateIp());
-		putIfNotNull("im.region", instanceInfo.getRegion());
+		putIfNotNull(prefix + "instanceId", instanceInfo.getInstanceId());
+		putIfNotNull(prefix + "billingProducts", Arrays.toString(instanceInfo.getBillingProducts()));
+		putIfNotNull(prefix + "version", instanceInfo.getVersion());
+		putIfNotNull(prefix + "imageId", instanceInfo.getImageId());
+		putIfNotNull(prefix + "accountId", instanceInfo.getAccountId());
+		putIfNotNull(prefix + "instanceType", instanceInfo.getInstanceType());
+		putIfNotNull(prefix + "architecture", instanceInfo.getArchitecture());
+		putIfNotNull(prefix + "kernelId", instanceInfo.getKernelId());
+		putIfNotNull(prefix + "ramdiskId", instanceInfo.getRamdiskId());
+		putIfNotNull(prefix + "pendingTime", instanceInfo.getPendingTime());
+		putIfNotNull(prefix + "availabilityZone", instanceInfo.getAvailabilityZone());
+		putIfNotNull(prefix + "devpayProductCodes", Arrays.toString(instanceInfo.getDevpayProductCodes()));
+		putIfNotNull(prefix + "privateIp", instanceInfo.getPrivateIp());
+		putIfNotNull(prefix + "region", instanceInfo.getRegion());
 	}
 	
 	private void deregisterMDCValues() {
-		MDC.remove("im.instanceId");
-		MDC.remove("im.billingProducts");
-		MDC.remove("im.version");
-		MDC.remove("im.imageId");
-		MDC.remove("im.accountId");
-		MDC.remove("im.instanceType");
-		MDC.remove("im.architecture");
-		MDC.remove("im.kernelId");
-		MDC.remove("im.ramdiskId");
-		MDC.remove("im.pendingTime");
-		MDC.remove("im.availabilityZone");
-		MDC.remove("im.devpayProductCodes");
-		MDC.remove("im.privateIp");
-		MDC.remove("im.region");
+		MDC.remove(prefix + "instanceId");
+		MDC.remove(prefix + "billingProducts");
+		MDC.remove(prefix + "version");
+		MDC.remove(prefix + "imageId");
+		MDC.remove(prefix + "accountId");
+		MDC.remove(prefix + "instanceType");
+		MDC.remove(prefix + "architecture");
+		MDC.remove(prefix + "kernelId");
+		MDC.remove(prefix + "ramdiskId");
+		MDC.remove(prefix + "pendingTime");
+		MDC.remove(prefix + "availabilityZone");
+		MDC.remove(prefix + "devpayProductCodes");
+		MDC.remove(prefix + "privateIp");
+		MDC.remove(prefix + "region");
 	}
 	
 	private void putIfNotNull(String key, String value) {
