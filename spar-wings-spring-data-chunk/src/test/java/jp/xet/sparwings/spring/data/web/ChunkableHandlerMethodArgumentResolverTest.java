@@ -73,7 +73,7 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		
 		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
 		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
-		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
+		assertThat(actualChunkable.getMaxPageSize(), is(2000));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -178,7 +178,7 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		
 		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
 		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
-		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
+		assertThat(actualChunkable.getMaxPageSize(), is(2000));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -200,7 +200,7 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		
 		assertThat(actualChunkable.getPaginationRelation(), is(PaginationRelation.NEXT));
 		assertThat(actualChunkable.getPaginationToken(), is(notNullValue())); // TODO assert last=100
-		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
+		assertThat(actualChunkable.getMaxPageSize(), is(2000));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -222,7 +222,7 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		
 		assertThat(actualChunkable.getPaginationRelation(), is(PaginationRelation.PREV));
 		assertThat(actualChunkable.getPaginationToken(), is(notNullValue())); // TODO assert first=89
-		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
+		assertThat(actualChunkable.getMaxPageSize(), is(2000));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
@@ -266,7 +266,7 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		
 		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
 		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
-		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
+		assertThat(actualChunkable.getMaxPageSize(), is(2000));
 		assertThat(actualChunkable.getDirection(), is(Direction.DESC));
 	}
 	
@@ -288,7 +288,7 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		
 		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
 		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
-		assertThat(actualChunkable.getMaxPageSize(), is(nullValue()));
+		assertThat(actualChunkable.getMaxPageSize(), is(2000));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
