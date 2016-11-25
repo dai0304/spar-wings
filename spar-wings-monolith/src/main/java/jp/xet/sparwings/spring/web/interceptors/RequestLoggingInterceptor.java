@@ -20,11 +20,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
  * リクエストログを取得する {@link HandlerInterceptor} 実装クラス。
@@ -39,7 +40,7 @@ public class RequestLoggingInterceptor extends HandlerInterceptorAdapter {
 	
 	
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 		if (loggingRequired(request)) {
 			logger.info("PreHandle request");
 		}
@@ -47,8 +48,8 @@ public class RequestLoggingInterceptor extends HandlerInterceptorAdapter {
 	}
 	
 	@Override
-	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
-			throws Exception {
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+			Exception ex) {
 		if (loggingRequired(request) == false) {
 			return;
 		}
@@ -61,6 +62,6 @@ public class RequestLoggingInterceptor extends HandlerInterceptorAdapter {
 	
 	private boolean loggingRequired(HttpServletRequest request) {
 		Map<String, String> map = MDC.getCopyOfContextMap();
-		return map != null && map.size() != 0 && request.getRequestURI().equals("/health") == false;
+		return map != null && map.isEmpty() == false && request.getRequestURI().equals("/health") == false;
 	}
 }

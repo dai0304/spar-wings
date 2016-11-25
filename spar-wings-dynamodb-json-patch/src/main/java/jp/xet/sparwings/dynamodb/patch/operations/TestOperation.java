@@ -19,7 +19,6 @@ import com.amazonaws.services.dynamodbv2.xspec.ExpressionSpecBuilder;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.fge.jackson.JsonNumEquals;
 import com.github.fge.jackson.jsonpointer.JsonPointer;
 
 /**
@@ -33,7 +32,7 @@ import com.github.fge.jackson.jsonpointer.JsonPointer;
  *
  * <p>Also note that equality as defined by JSON Patch is exactly the same as it
  * is defined by JSON Schema itself. As such, this operation reuses {@link
- * JsonNumEquals} for testing equality.</p>
+ * com.github.fge.jackson.JsonNumEquals} for testing equality.</p>
  * 
  * @since 0.13
  * @version $Id$

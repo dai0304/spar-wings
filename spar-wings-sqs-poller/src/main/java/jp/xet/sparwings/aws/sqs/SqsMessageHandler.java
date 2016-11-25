@@ -35,6 +35,6 @@ public interface SqsMessageHandler {
 	 * @throws Exception any exception
 	 * @since 0.3
 	 */
-	Void handle(Message message) throws Exception;
+	Void handle(Message message) throws Exception; // NOPMD - ex
 	
 }

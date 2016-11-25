@@ -24,20 +24,21 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import org.junit.Test;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.junit.Test;
 
 import jp.xet.sparwings.spring.data.chunk.Chunk;
 import jp.xet.sparwings.spring.data.chunk.ChunkImpl;
 import jp.xet.sparwings.spring.data.chunk.ChunkRequest;
 import jp.xet.sparwings.spring.data.chunk.PaginationTokenEncoder;
 import jp.xet.sparwings.spring.data.chunk.SimplePaginationTokenEncoder;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * TODO for daisuke
@@ -54,6 +55,7 @@ public class ChunkedResourcesTest {
 	}
 	
 	private static final PaginationTokenEncoder ENCODER = new SimplePaginationTokenEncoder();
+	
 	
 	@Test
 	public void testStringsSer() throws Exception {
@@ -125,6 +127,7 @@ public class ChunkedResourcesTest {
 		assertThat(res2.getValue().getFoo(), is("ccc"));
 		assertThat(res2.getValue().getBar(), is("ddd"));
 	}
+	
 	
 	@Data
 	@AllArgsConstructor

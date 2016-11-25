@@ -19,10 +19,13 @@ import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+
+import org.springframework.context.ApplicationEvent;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -33,8 +36,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import org.springframework.context.ApplicationEvent;
-
 /**
  * TODO for daisuke
  * 
@@ -42,6 +43,7 @@ import org.springframework.context.ApplicationEvent;
  * @author daisuke
  */
 @ToString
+@EqualsAndHashCode(callSuper = false)
 @JsonInclude(Include.NON_NULL)
 @Accessors(chain = true)
 @SuppressWarnings("serial")
@@ -106,7 +108,7 @@ public class SWEvent extends ApplicationEvent {
 			f.setAccessible(true);
 			f.set(this, timestamp);
 		} catch (ReflectiveOperationException | SecurityException | IllegalArgumentException e) {
-			throw new Error(e);
+			throw new AssertionError(e);
 		}
 	}
 	
@@ -144,78 +146,5 @@ public class SWEvent extends ApplicationEvent {
 	@SuppressWarnings("javadoc")
 	public Map<String, Object> any() {
 		return map;
-	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((authentication == null) ? 0 : authentication.hashCode());
-		result = prime * result + ((eventType == null) ? 0 : eventType.hashCode());
-		result = prime * result + (int) (getTimestamp() ^ (getTimestamp() >>> 32));
-		result = prime * result + ((httpRequest == null) ? 0 : httpRequest.hashCode());
-		result = prime * result + ((map == null) ? 0 : map.hashCode());
-		result = prime * result + ((queueMessage == null) ? 0 : queueMessage.hashCode());
-		return result;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		SWEvent other = (SWEvent) obj;
-		if (source == null) {
-			if (other.source != null) {
-				return false;
-			}
-		} else if (!source.equals(other.source)) {
-			return false;
-		}
-		if (getTimestamp() != other.getTimestamp()) {
-			return false;
-		}
-		if (authentication == null) {
-			if (other.authentication != null) {
-				return false;
-			}
-		} else if (!authentication.equals(other.authentication)) {
-			return false;
-		}
-		if (eventType == null) {
-			if (other.eventType != null) {
-				return false;
-			}
-		} else if (!eventType.equals(other.eventType)) {
-			return false;
-		}
-		if (httpRequest == null) {
-			if (other.httpRequest != null) {
-				return false;
-			}
-		} else if (!httpRequest.equals(other.httpRequest)) {
-			return false;
-		}
-		if (map == null) {
-			if (other.map != null) {
-				return false;
-			}
-		} else if (!map.equals(other.map)) {
-			return false;
-		}
-		if (queueMessage == null) {
-			if (other.queueMessage != null) {
-				return false;
-			}
-		} else if (!queueMessage.equals(other.queueMessage)) {
-			return false;
-		}
-		return true;
 	}
 }

@@ -17,13 +17,15 @@ package jp.xet.sparwings.aws.sns;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.Signature;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * Amazon SNSによる署名の検証を行うクラス。
@@ -77,7 +79,7 @@ public class AmazonSNSMessageVerifier {
 			boolean verify = sig.verify(Base64.decodeBase64(msg.getSignature()));
 			logger.trace("Signature verified {}", verify);
 			return verify;
-		} catch (Exception e) {
+		} catch (Exception e) { // NOPMD
 			logger.warn("Verification failed.", e);
 			throw new SecurityException("Verify method failed.", e);
 		}
@@ -86,10 +88,10 @@ public class AmazonSNSMessageVerifier {
 	private static byte[] getMessageBytesToSign(SNSMessage msg) {
 		byte[] bytesToSign = null;
 		if (msg.getType().equals("Notification")) {
-			bytesToSign = buildNotificationStringToSign(msg).getBytes();
+			bytesToSign = buildNotificationStringToSign(msg).getBytes(StandardCharsets.UTF_8);
 		} else if (msg.getType().equals("SubscriptionConfirmation")
 				|| msg.getType().equals("UnsubscribeConfirmation")) {
-			bytesToSign = buildSubscriptionStringToSign(msg).getBytes();
+			bytesToSign = buildSubscriptionStringToSign(msg).getBytes(StandardCharsets.UTF_8);
 		}
 		return bytesToSign;
 	}
@@ -99,20 +101,16 @@ public class AmazonSNSMessageVerifier {
 		//Name and values separated by newline characters
 		//The name value pairs are sorted by name
 		//in byte sort order.
-		StringBuilder stringToSign = new StringBuilder("Message\n");
-		stringToSign.append(msg.getMessage()).append(NL);
-		stringToSign.append("MessageId\n");
-		stringToSign.append(msg.getMessageId()).append(NL);
+		StringBuilder stringToSign = new StringBuilder(128)
+			.append("Message\n").append(msg.getMessage()).append(NL)
+			.append("MessageId\n").append(msg.getMessageId()).append(NL);
 		if (msg.getSubject() != null) {
-			stringToSign.append("Subject\n");
-			stringToSign.append(msg.getSubject()).append(NL);
+			stringToSign.append("Subject\n").append(msg.getSubject()).append(NL);
 		}
-		stringToSign.append("Timestamp\n");
-		stringToSign.append(msg.getTimestamp()).append(NL);
-		stringToSign.append("TopicArn\n");
-		stringToSign.append(msg.getTopicArn()).append(NL);
-		stringToSign.append("Type\n");
-		stringToSign.append(msg.getType()).append(NL);
+		stringToSign
+			.append("Timestamp\n").append(msg.getTimestamp()).append(NL)
+			.append("TopicArn\n").append(msg.getTopicArn()).append(NL)
+			.append("Type\n").append(msg.getType()).append(NL);
 		
 		return stringToSign.toString();
 	}
@@ -123,20 +121,14 @@ public class AmazonSNSMessageVerifier {
 		//Name and values separated by newline characters
 		//The name value pairs are sorted by name
 		//in byte sort order.
-		StringBuilder stringToSign = new StringBuilder("Message\n");
-		stringToSign.append(msg.getMessage()).append(NL);
-		stringToSign.append("MessageId\n");
-		stringToSign.append(msg.getMessageId()).append(NL);
-		stringToSign.append("SubscribeURL\n");
-		stringToSign.append(msg.getSubscribeURL()).append(NL);
-		stringToSign.append("Timestamp\n");
-		stringToSign.append(msg.getTimestamp()).append(NL);
-		stringToSign.append("Token\n");
-		stringToSign.append(msg.getToken()).append(NL);
-		stringToSign.append("TopicArn\n");
-		stringToSign.append(msg.getTopicArn()).append(NL);
-		stringToSign.append("Type\n");
-		stringToSign.append(msg.getType()).append(NL);
+		StringBuilder stringToSign = new StringBuilder(128)
+			.append("Message\n").append(msg.getMessage()).append(NL)
+			.append("MessageId\n").append(msg.getMessageId()).append(NL)
+			.append("SubscribeURL\n").append(msg.getSubscribeURL()).append(NL)
+			.append("Timestamp\n").append(msg.getTimestamp()).append(NL)
+			.append("Token\n").append(msg.getToken()).append(NL)
+			.append("TopicArn\n").append(msg.getTopicArn()).append(NL)
+			.append("Type\n").append(msg.getType()).append(NL);
 		
 		return stringToSign.toString();
 	}

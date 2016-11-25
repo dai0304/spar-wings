@@ -39,7 +39,8 @@ public abstract class AbstractRateLimitService implements RateLimitService {
 	
 	@Setter
 	private Function<HttpServletRequest, RateLimitDescriptor> recoveryStrategy =
-			req -> new RateLimitDescriptor(req.getRemoteAddr(), fillRate, maxBudget).withCurrentBudget(maxBudget);
+			req -> new RateLimitDescriptor(req.getRemoteAddr(), fillRate, maxBudget)
+				.setCurrentBudget(maxBudget);
 	
 	
 	protected RateLimitDescriptor computeRateLimitRecovery(HttpServletRequest request) {

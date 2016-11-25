@@ -17,16 +17,16 @@ package jp.xet.sparwings.dynamodb.patch;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jackson.jsonpointer.JsonPointer;
 import com.github.fge.jackson.jsonpointer.TokenResolver;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * TODO for daisuke
@@ -35,23 +35,22 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  * @author daisuke
  */
+@Slf4j
 public class JsonPathToAttributePath implements Function<JsonPointer, String> {
 	
-	private static Logger logger = LoggerFactory.getLogger(JsonPathToAttributePath.class);
-	
-	private static Pattern ARRAY_PATTERN = Pattern.compile("(0|[1-9][0-9]+)");
+	private static final Pattern ARRAY_PATTERN = Pattern.compile("(0|[1-9][0-9]+)");
 	
 	
 	@Override
 	public String apply(JsonPointer pointer) {
-		logger.trace("pointer = {}", pointer);
+		log.trace("pointer = {}", pointer);
 		List<String> elements = new ArrayList<>();
 		for (TokenResolver<JsonNode> tokenResolver : pointer) {
 			String token = tokenResolver.getToken().getRaw();
-			logger.trace("tokenResolver = {}", token);
+			log.trace("tokenResolver = {}", token);
 			if (ARRAY_PATTERN.matcher(token).matches()) {
 				String last = elements.get(elements.size() - 1);
-				elements.set(elements.size() - 1, String.format("%s[%s]", last, token));
+				elements.set(elements.size() - 1, String.format(Locale.ENGLISH, "%s[%s]", last, token));
 			} else {
 				elements.add(token);
 			}

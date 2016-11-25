@@ -27,7 +27,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public class ChunkableRepositoryTest {
 	
 	@SuppressWarnings("unused")
-	private static interface AssertTypeCompatibleWithPagingAndSortingRepository
+	private interface AssertTypeCompatibleWithPagingAndSortingRepository
 			extends PagingAndSortingRepository<String, Long>, ChunkableRepository<String, Long> {
 	}
 }

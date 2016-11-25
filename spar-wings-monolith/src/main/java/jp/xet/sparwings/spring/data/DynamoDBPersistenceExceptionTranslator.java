@@ -15,6 +15,14 @@
  */
 package jp.xet.sparwings.spring.data;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.dao.TransientDataAccessResourceException;
+import org.springframework.dao.UncategorizedDataAccessException;
+import org.springframework.dao.support.PersistenceExceptionTranslator;
+
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.InternalServerErrorException;
@@ -24,18 +32,10 @@ import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughputExceededExce
 import com.amazonaws.services.dynamodbv2.model.ResourceInUseException;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataAccessResourceFailureException;
-import org.springframework.dao.InvalidDataAccessResourceUsageException;
-import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.dao.TransientDataAccessResourceException;
-import org.springframework.dao.UncategorizedDataAccessException;
-import org.springframework.dao.support.PersistenceExceptionTranslator;
-
 /**
  * TODO for daisuke
  */
-public class DynamoDBPersistenceExceptionTranslator implements PersistenceExceptionTranslator {
+public class DynamoDBPersistenceExceptionTranslator implements PersistenceExceptionTranslator { // NOPMD - cc
 	
 	@Override
 	public DataAccessException translateExceptionIfPossible(RuntimeException ex) {
@@ -74,7 +74,7 @@ public class DynamoDBPersistenceExceptionTranslator implements PersistenceExcept
 	@SuppressWarnings("serial")
 	private static class DynamoDBSystemException extends UncategorizedDataAccessException {
 		
-		public DynamoDBSystemException(String msg, Throwable cause) {
+		DynamoDBSystemException(String msg, Throwable cause) {
 			super(msg, cause);
 		}
 	}

@@ -27,6 +27,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
@@ -37,6 +38,13 @@ import java.util.concurrent.Future;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+
+import org.springframework.core.io.AbstractResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.WritableResource;
+import org.springframework.core.task.SyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.core.task.support.ExecutorServiceAdapter;
 
 import com.amazonaws.regions.Region;
 import com.amazonaws.services.s3.AmazonS3;
@@ -55,13 +63,6 @@ import com.amazonaws.services.s3.model.UploadPartRequest;
 import com.amazonaws.services.s3.model.UploadPartResult;
 import com.amazonaws.util.BinaryUtils;
 
-import org.springframework.core.io.AbstractResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.WritableResource;
-import org.springframework.core.task.SyncTaskExecutor;
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.core.task.support.ExecutorServiceAdapter;
-
 /**
  * {@link Resource} implementation for Amazon {@link S3Object}.
  *
@@ -77,7 +78,7 @@ public class S3ObjectResource extends AbstractResource implements WritableResour
 		try {
 			MD5 = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) {
-			throw new Error(e);
+			throw new AssertionError(e);
 		}
 	}
 	
@@ -174,7 +175,7 @@ public class S3ObjectResource extends AbstractResource implements WritableResour
 	public URL getURL() throws IOException {
 		if (amazonS3 instanceof AmazonS3Client) {
 			Region region = ((AmazonS3Client) amazonS3).getRegion().toAWSRegion();
-			String path = String.format("/%s/%s", bucketName, key);
+			String path = String.format(Locale.ENGLISH, "/%s/%s", bucketName, key);
 			return new URL("https", region.getServiceEndpoint(AmazonS3Client.S3_SERVICE_NAME), path);
 		} else {
 			return super.getURL();
@@ -183,8 +184,8 @@ public class S3ObjectResource extends AbstractResource implements WritableResour
 	
 	@Override
 	public File getFile() throws IOException {
-		throw new UnsupportedOperationException("Amazon S3 resource can not be resolved to java.io.File objects.Use " +
-				"getInputStream() to retrieve the contents of the object!");
+		throw new UnsupportedOperationException("Amazon S3 resource can not be resolved to java.io.File objects.Use "
+				+ "getInputStream() to retrieve the contents of the object!");
 	}
 	
 	@Override
@@ -201,7 +202,7 @@ public class S3ObjectResource extends AbstractResource implements WritableResour
 	public S3ObjectResource createRelative(String relativePath) throws IOException {
 		StringBuilder sb = new StringBuilder(key);
 		if (key.endsWith("/") == false) {
-			sb.append("/");
+			sb.append('/');
 		}
 		sb.append(relativePath);
 		return new S3ObjectResource(amazonS3, bucketName, sb.toString(), taskExecutor);
@@ -219,13 +220,13 @@ public class S3ObjectResource extends AbstractResource implements WritableResour
 	
 	@Override
 	public String getDescription() {
-		StringBuilder builder = new StringBuilder("Amazon s3 resource [")
+		StringBuilder builder = new StringBuilder().append("Amazon s3 resource [") // NOPMD
 			.append("bucket='").append(bucketName).append("'")
 			.append(", key='").append(key).append("'");
 		versionId.ifPresent(vid -> {
-			builder.append(", versionId='").append(vid).append("'");
+			builder.append(", versionId='").append(vid).append('\''); // NOPMD
 		});
-		builder.append("]");
+		builder.append(']');
 		return builder.toString();
 	}
 	
@@ -250,22 +251,24 @@ public class S3ObjectResource extends AbstractResource implements WritableResour
 		return getObjectMetadata().orElseThrow(() -> new FileNotFoundException(getDescription() + " does not found!"));
 	}
 	
-	private synchronized Optional<ObjectMetadata> getObjectMetadata() {
-		if (objectMetadata == null) {
-			try {
-				GetObjectMetadataRequest metadataRequest = new GetObjectMetadataRequest(bucketName, key);
-				versionId.ifPresent(metadataRequest::setVersionId);
-				objectMetadata = amazonS3.getObjectMetadata(metadataRequest);
-			} catch (AmazonS3Exception e) {
-				// Catch 404 (object not found) and 301 (bucket not found, moved permanently)
-				if (e.getStatusCode() == 404 || e.getStatusCode() == 301) {
-					objectMetadata = null;
-				} else {
-					throw e;
+	private Optional<ObjectMetadata> getObjectMetadata() {
+		synchronized (this) {
+			if (objectMetadata == null) {
+				try {
+					GetObjectMetadataRequest metadataRequest = new GetObjectMetadataRequest(bucketName, key);
+					versionId.ifPresent(metadataRequest::setVersionId);
+					objectMetadata = amazonS3.getObjectMetadata(metadataRequest);
+				} catch (AmazonS3Exception e) {
+					// Catch 404 (object not found) and 301 (bucket not found, moved permanently)
+					if (e.getStatusCode() == 404 || e.getStatusCode() == 301) {
+						objectMetadata = null;
+					} else {
+						throw e;
+					}
 				}
 			}
+			return Optional.ofNullable(objectMetadata);
 		}
-		return Optional.ofNullable(objectMetadata);
 	}
 	
 	
@@ -325,14 +328,14 @@ public class S3ObjectResource extends AbstractResource implements WritableResour
 		}
 		
 		private void finishSimpleUpload() {
-			ObjectMetadata objectMetadata = new ObjectMetadata();
-			objectMetadata.setContentLength(currentOutputStream.size());
+			ObjectMetadata meta = new ObjectMetadata();
+			meta.setContentLength(currentOutputStream.size());
 			
 			byte[] content = currentOutputStream.toByteArray();
 			String md5Digest = BinaryUtils.toBase64(MD5.digest(content));
-			objectMetadata.setContentMD5(md5Digest);
+			meta.setContentMD5(md5Digest);
 			
-			amazonS3.putObject(bucketName, key, new ByteArrayInputStream(content), objectMetadata);
+			amazonS3.putObject(bucketName, key, new ByteArrayInputStream(content), meta);
 			
 			//Release the memory early
 			currentOutputStream = null;
@@ -356,7 +359,7 @@ public class S3ObjectResource extends AbstractResource implements WritableResour
 						initiateMultiPartUploadResult.getUploadId(), partETags));
 			} catch (ExecutionException e) {
 				abortMultiPartUpload();
-				throw new IOException("Multi part upload failed ", e.getCause());
+				throw new IOException("Multi part upload failed ", e.getCause()); // NOPMD
 			} catch (InterruptedException e) {
 				abortMultiPartUpload();
 				Thread.currentThread().interrupt();
@@ -368,7 +371,7 @@ public class S3ObjectResource extends AbstractResource implements WritableResour
 		private InitiateMultipartUploadResult initiateMultipartUploadIfRequired() {
 			if (initiateMultiPartUploadResult == null) {
 				initiateMultiPartUploadResult = amazonS3.initiateMultipartUpload(
-					new InitiateMultipartUploadRequest(bucketName, key));
+						new InitiateMultipartUploadRequest(bucketName, key));
 			}
 			return initiateMultiPartUploadResult;
 		}
@@ -411,7 +414,7 @@ public class S3ObjectResource extends AbstractResource implements WritableResour
 			private final String uploadId;
 			
 			
-			private UploadPartResultCallable(AmazonS3 amazonS3, byte[] content, int contentLength, String bucketName,
+			UploadPartResultCallable(AmazonS3 amazonS3, byte[] content, int contentLength, String bucketName, // NOPMD
 					String key, String uploadId, int partNumber, boolean last) {
 				this.amazonS3 = amazonS3;
 				this.content = content;
@@ -424,7 +427,7 @@ public class S3ObjectResource extends AbstractResource implements WritableResour
 			}
 			
 			@Override
-			public UploadPartResult call() throws Exception {
+			public UploadPartResult call() {
 				try {
 					return amazonS3.uploadPart(new UploadPartRequest()
 						.withBucketName(bucketName)

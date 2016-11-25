@@ -219,7 +219,8 @@ public class URIMatchers {
 	}
 	
 	/**
-	 * Creates a matcher for {@link URI}s that matches if the examined {@link URI}'s specific name query parameter value matches specified matcher.
+	 * Creates a matcher for {@link URI}s that matches if the examined {@link URI}'s specific name query parameter
+	 * value matches specified matcher.
 	 * 
 	 * <p>
 	 * For example:
@@ -254,7 +255,8 @@ public class URIMatchers {
 	}
 	
 	/**
-	 * Creates a matcher for {@link URI}s that matches if the examined {@link URI}'s specific name fragment parameter value matches specified matcher.
+	 * Creates a matcher for {@link URI}s that matches if the examined {@link URI}'s specific name fragment parameter
+	 * value matches specified matcher.
 	 * 
 	 * <p>
 	 * For example:

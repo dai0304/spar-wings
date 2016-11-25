@@ -16,6 +16,13 @@
 package jp.xet.sparwings.spring.data.web;
 
 import java.lang.reflect.Method;
+import java.util.Locale;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.MethodParameter;
@@ -29,10 +36,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import jp.xet.sparwings.spring.data.chunk.ChunkRequest;
 import jp.xet.sparwings.spring.data.chunk.Chunkable;
 import jp.xet.sparwings.spring.data.chunk.Chunkable.PaginationRelation;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
 
 /**
  * Extracts paging information from web requests and thus allows injecting {@link Chunkable} instances into controller
@@ -43,7 +46,8 @@ import lombok.Setter;
  * @since 0.19
  * @author daisuke
  */
-public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
+@Slf4j
+public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver { // NOPMD - cc
 	
 	private static final String INVALID_DEFAULT_PAGE_SIZE =
 			"Invalid default page size configured for method %s! Must not be less than one!";
@@ -62,7 +66,7 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 	
 	private static final int DEFAULT_MAX_PAGE_SIZE = 2000;
 	
-	static final Chunkable DEFAULT_CHUNK_REQUEST = new ChunkRequest(null, null, null, null);
+	static final Chunkable DEFAULT_CHUNK_REQUEST = new ChunkRequest(null, null, DEFAULT_MAX_PAGE_SIZE, null);
 	
 	
 	private static Chunkable getDefaultChunkRequestFrom(MethodParameter parameter) {
@@ -75,7 +79,7 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 		
 		if (defaultPageSize < 1) {
 			Method annotatedMethod = parameter.getMethod();
-			throw new IllegalStateException(String.format(INVALID_DEFAULT_PAGE_SIZE, annotatedMethod));
+			throw new IllegalStateException(String.format(Locale.ENGLISH, INVALID_DEFAULT_PAGE_SIZE, annotatedMethod));
 		}
 		
 		return new ChunkRequest(defaultPageSize, defaults.direction());
@@ -146,8 +150,8 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 	}
 	
 	@Override
-	public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer mavContainer,
-			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+	public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer mavContainer, // NOPMD - cc
+			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception { // NOPMD - ex
 		SpringDataChunkableAnnotationUtils.assertChunkableUniqueness(methodParameter);
 		
 		String next = webRequest.getParameter(getParameterNameToUse(nextParameterName, methodParameter));
@@ -164,25 +168,19 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 			return defaultOrFallback;
 		}
 		
-		Integer pageSize;
+		Integer pageSize = maxPageSize;
 		if (StringUtils.hasText(pageSizeString)) {
 			try {
-				int parsed = Integer.parseInt(pageSizeString);
-				pageSize = parsed < 0 ? 0 : parsed > maxPageSize ? maxPageSize : parsed;
+				pageSize = Integer.parseInt(pageSizeString);
 			} catch (NumberFormatException e) {
-				pageSize = null;
+				log.trace("invalid page size: {}", pageSizeString);
 			}
-		} else {
-			pageSize = defaultOrFallback.getMaxPageSize();
 		}
-		if (pageSize != null) {
-			// Limit lower bound
-			pageSize = pageSize < 1 ? 1 : pageSize;
-		}
-		if (pageSize != null) {
-			// Limit upper bound
-			pageSize = pageSize > maxPageSize ? maxPageSize : pageSize;
-		}
+		
+		// Limit lower bound
+		pageSize = pageSize < 1 ? 1 : pageSize;
+		// Limit upper bound
+		pageSize = pageSize > maxPageSize ? maxPageSize : pageSize;
 		
 		Direction direction = Direction.fromStringOrNull(directionString);
 		

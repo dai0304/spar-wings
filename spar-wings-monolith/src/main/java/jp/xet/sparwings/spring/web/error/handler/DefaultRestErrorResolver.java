@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.xet.sparwings.spring.web.error.handler;
+package jp.xet.sparwings.spring.web.error.handler; // NOPMD - gc
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -21,9 +21,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.MessageSource;
@@ -47,14 +46,13 @@ import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMeth
  * @author Les Hazlewood
  * @since 0.3
  */
+@Slf4j
 @SuppressWarnings("javadoc")
-public class DefaultRestErrorResolver implements RestErrorResolver, MessageSourceAware, InitializingBean {
+public class DefaultRestErrorResolver implements RestErrorResolver, MessageSourceAware, InitializingBean { // NOPMD - cc
 	
 	public static final String DEFAULT_EXCEPTION_MESSAGE_VALUE = "_exmsg";
 	
 	public static final String DEFAULT_MESSAGE_VALUE = "_msg";
-	
-	private static final Logger log = LoggerFactory.getLogger(DefaultRestErrorResolver.class);
 	
 	private Map<String, RestError> exceptionMappings = Collections.emptyMap();
 	
@@ -83,8 +81,7 @@ public class DefaultRestErrorResolver implements RestErrorResolver, MessageSourc
 	}
 	
 	@Override
-	public void afterPropertiesSet() throws Exception {
-		
+	public void afterPropertiesSet() {
 		//populate with some defaults:
 		Map<String, String> definitions = createDefaultExceptionMappingDefinitions();
 		
@@ -210,24 +207,24 @@ public class DefaultRestErrorResolver implements RestErrorResolver, MessageSourc
 	 *         status message should be returned.
 	 */
 	protected String getMessage(String msg, ServletWebRequest webRequest, Exception ex) {
-		
-		if (msg != null) {
-			if (msg.equalsIgnoreCase("null") || msg.equalsIgnoreCase("off")) {
-				return null;
+		if (msg == null || msg.equalsIgnoreCase("null") || msg.equalsIgnoreCase("off")) {
+			return null;
+		}
+		String message;
+		if (msg.equalsIgnoreCase(DEFAULT_EXCEPTION_MESSAGE_VALUE)) {
+			message = ex.getMessage();
+		} else {
+			message = msg;
+		}
+		if (messageSource != null) {
+			Locale locale = null;
+			if (localeResolver != null) {
+				locale = localeResolver.resolveLocale(webRequest.getRequest());
 			}
-			if (msg.equalsIgnoreCase(DEFAULT_EXCEPTION_MESSAGE_VALUE)) {
-				msg = ex.getMessage();
-			}
-			if (messageSource != null) {
-				Locale locale = null;
-				if (localeResolver != null) {
-					locale = localeResolver.resolveLocale(webRequest.getRequest());
-				}
-				msg = messageSource.getMessage(msg, null, msg, locale);
-			}
+			message = messageSource.getMessage(message, null, message, locale);
 		}
 		
-		return msg;
+		return message;
 	}
 	
 	/**
@@ -258,8 +255,8 @@ public class DefaultRestErrorResolver implements RestErrorResolver, MessageSourc
 		}
 		if (template != null && log.isDebugEnabled()) {
 			log.debug("Resolving to RestError template '" + template + "' for exception of type ["
-					+ ex.getClass().getName() +
-					"], based on exception mapping [" + dominantMapping + "]");
+					+ ex.getClass().getName()
+					+ "], based on exception mapping [" + dominantMapping + "]");
 		}
 		return template;
 	}
@@ -307,7 +304,7 @@ public class DefaultRestErrorResolver implements RestErrorResolver, MessageSourc
 		return map;
 	}
 	
-	protected RestError toRestError(String exceptionConfig) {
+	protected RestError toRestError(String exceptionConfig) { // NOPMD - cc
 		String[] values = StringUtils.commaDelimitedListToStringArray(exceptionConfig);
 		if (values == null || values.length == 0) {
 			throw new IllegalStateException(
@@ -375,7 +372,7 @@ public class DefaultRestErrorResolver implements RestErrorResolver, MessageSourc
 						continue;
 					}
 				}
-				if (!moreInfoSet && trimmedVal.toLowerCase().startsWith("http")) {
+				if (!moreInfoSet && trimmedVal.toLowerCase(Locale.ENGLISH).startsWith("http")) {
 					builder.setMoreInfoUrl(trimmedVal);
 					moreInfoSet = true;
 					continue;
@@ -407,8 +404,8 @@ public class DefaultRestErrorResolver implements RestErrorResolver, MessageSourc
 			int anInt = Integer.valueOf(value);
 			return Math.max(-1, anInt);
 		} catch (NumberFormatException e) {
-			String msg = "Configuration element '" + key + "' requires an integer value.  The value " +
-					"specified: " + value;
+			String msg = "Configuration element '" + key + "' requires an integer value.  The value "
+					+ "specified: " + value;
 			throw new IllegalArgumentException(msg, e);
 		}
 	}

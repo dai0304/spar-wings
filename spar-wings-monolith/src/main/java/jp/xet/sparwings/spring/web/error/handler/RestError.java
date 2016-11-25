@@ -23,6 +23,8 @@ import lombok.experimental.Accessors;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.ObjectUtils;
 
+import com.google.common.base.Preconditions;
+
 /**
  * @author Les Hazlewood
  * @since 0.3
@@ -51,9 +53,7 @@ public class RestError {
 	
 	public RestError(HttpStatus status, int code, String message, String developerMessage, String moreInfoUrl,
 			Throwable throwable) {
-		if (status == null) {
-			throw new NullPointerException("HttpStatus argument cannot be null.");
-		}
+		Preconditions.checkNotNull(status, "HttpStatus argument cannot be null.");
 		this.status = status;
 		this.code = code;
 		this.message = message;
@@ -69,12 +69,12 @@ public class RestError {
 		}
 		if (o instanceof RestError) {
 			RestError re = (RestError) o;
-			return ObjectUtils.nullSafeEquals(getStatus(), re.getStatus()) &&
-					getCode() == re.getCode() &&
-					ObjectUtils.nullSafeEquals(getMessage(), re.getMessage()) &&
-					ObjectUtils.nullSafeEquals(getDeveloperMessage(), re.getDeveloperMessage()) &&
-					ObjectUtils.nullSafeEquals(getMoreInfoUrl(), re.getMoreInfoUrl()) &&
-					ObjectUtils.nullSafeEquals(getThrowable(), re.getThrowable());
+			return ObjectUtils.nullSafeEquals(getStatus(), re.getStatus())
+					&& getCode() == re.getCode()
+					&& ObjectUtils.nullSafeEquals(getMessage(), re.getMessage())
+					&& ObjectUtils.nullSafeEquals(getDeveloperMessage(), re.getDeveloperMessage())
+					&& ObjectUtils.nullSafeEquals(getMoreInfoUrl(), re.getMoreInfoUrl())
+					&& ObjectUtils.nullSafeEquals(getThrowable(), re.getThrowable());
 		}
 		
 		return false;

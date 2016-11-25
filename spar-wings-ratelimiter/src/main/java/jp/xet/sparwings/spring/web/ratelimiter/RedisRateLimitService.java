@@ -19,12 +19,13 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
-import jp.xet.baseunits.timeutil.Clock;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.redis.core.RedisTemplate;
+
+import jp.xet.baseunits.timeutil.Clock;
 
 /**
  * {@link RateLimitService} implementation to store values in redis.
@@ -41,7 +42,7 @@ public class RedisRateLimitService extends AbstractRateLimitService {
 	
 	
 	@Override
-	public RateLimitDescriptor consume(HttpServletRequest request, long consumption) {
+	public RateLimitDescriptor consume(HttpServletRequest request, long consumption) { // NOPMD - nc
 		RateLimitDescriptor descriptor = computeRateLimitRecovery(request);
 		if (descriptor == null) {
 			return null;

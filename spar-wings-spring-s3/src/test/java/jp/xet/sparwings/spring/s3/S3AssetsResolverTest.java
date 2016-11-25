@@ -21,11 +21,12 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+import org.springframework.core.io.Resource;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.core.io.Resource;
 
 /**
  * Test for {@link S3AssetsResolver}.
@@ -36,7 +37,6 @@ import org.springframework.core.io.Resource;
 @SuppressWarnings("javadoc")
 @RunWith(MockitoJUnitRunner.class)
 public class S3AssetsResolverTest {
-	
 	
 	@Mock
 	Resource resource;

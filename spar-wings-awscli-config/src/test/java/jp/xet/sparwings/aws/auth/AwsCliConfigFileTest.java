@@ -23,14 +23,14 @@ import static org.hamcrest.Matchers.is;
 import java.io.File;
 import java.util.Map;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider;
-import com.amazonaws.internal.StaticCredentialsProvider;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider;
+import com.amazonaws.internal.StaticCredentialsProvider;
 
 /**
  * Test for {@link AwsCliConfigFile}.

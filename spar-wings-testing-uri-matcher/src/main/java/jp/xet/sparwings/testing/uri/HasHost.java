@@ -17,12 +17,11 @@ package jp.xet.sparwings.testing.uri;
 
 import java.net.URI;
 
+import lombok.RequiredArgsConstructor;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-
-import lombok.RequiredArgsConstructor;
-
 
 /**
  * TODO for daisuke
@@ -35,12 +34,13 @@ import lombok.RequiredArgsConstructor;
 public class HasHost extends TypeSafeMatcher<URI> {
 	
 	private final Matcher<?> matcher;
-
+	
+	
 	@Override
 	public void describeTo(Description mismatchDescription) {
 		mismatchDescription.appendText("host is ").appendDescriptionOf(matcher);
 	}
-
+	
 	@Override
 	protected boolean matchesSafely(URI item) {
 		return matcher.matches(item.getHost());

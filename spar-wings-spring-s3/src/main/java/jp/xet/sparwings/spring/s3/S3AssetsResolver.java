@@ -32,7 +32,6 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 public class S3AssetsResolver extends AbstractResourceResolver {
 	
-	
 	/**
 	 * resource loader from s3
 	 */

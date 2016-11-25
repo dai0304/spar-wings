@@ -27,7 +27,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public class TruncatableRepositoryTest {
 	
 	@SuppressWarnings("unused")
-	private static interface AssertTypeCompatibleWithPagingAndSortingRepository
+	private interface AssertTypeCompatibleWithPagingAndSortingRepository
 			extends PagingAndSortingRepository<String, Long>, TruncatableRepository<String, Long> {
 	}
 }

@@ -23,9 +23,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import org.slf4j.MDC;
 
 /**
  * {@link Filter ServletFilter} implementation that put {@link InstanceMetadata} to {@link MDC}.
@@ -43,6 +44,7 @@ public class InstanceMetadataLogFilter extends OncePerRequestFilter {
 	
 	@Override
 	public void destroy() {
+		// nothing to do
 	}
 	
 	@Override

@@ -26,9 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.MediaType;
@@ -60,7 +59,8 @@ import org.springframework.web.util.WebUtils;
  *     <li>The
  *     {@link #setMessageConverters(org.springframework.http.converter.HttpMessageConverter[]) HttpMessageConverters}
  *     are consulted (in iteration order) with this object result for rendering.  The first
- *     {@code HttpMessageConverter} instance that {@link HttpMessageConverter#canWrite(Class, org.springframework.http.MediaType) canWrite}
+ *     {@code HttpMessageConverter} instance that {@link
+ *     HttpMessageConverter#canWrite(Class, org.springframework.http.MediaType) canWrite}
  *     the object based on the request's supported {@code MediaType}s will be used to render this result object as
  *     the HTTP response body.</li>
  *     <li>If no {@code HttpMessageConverter}s {@code canWrite} the result object, nothing is done, and this handler
@@ -93,7 +93,9 @@ import org.springframework.web.util.WebUtils;
  *         <td>messageConverters</td>
  *         <td>multiple instances</td>
  *         <td>Default collection are those automatically enabled by Spring as
- *         <a href="http://static.springsource.org/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-config-enable">defined here</a> (specifically item #5)</td>
+ *         <a href=
+ *     "http://static.springsource.org/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-config-enable"
+ *         >defined here</a> (specifically item #5)</td>
  *     </tr>
  * </table>
  *
@@ -111,10 +113,9 @@ import org.springframework.web.util.WebUtils;
  * @see org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
  * @author Les Hazlewood
  */
+@Slf4j
 @SuppressWarnings("javadoc")
 public class RestExceptionHandler extends AbstractHandlerExceptionResolver implements InitializingBean {
-	
-	private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
 	
 	@Setter
 	private HttpMessageConverter<?>[] messageConverters = null;
@@ -136,7 +137,7 @@ public class RestExceptionHandler extends AbstractHandlerExceptionResolver imple
 	}
 	
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet() {
 		ensureMessageConverters();
 	}
 	
@@ -198,7 +199,7 @@ public class RestExceptionHandler extends AbstractHandlerExceptionResolver imple
 		
 		try {
 			mav = getModelAndView(webRequest, handler, error);
-		} catch (Exception invocationEx) {
+		} catch (Exception invocationEx) { // NOPMD
 			log.error("Acquiring ModelAndView for Exception [" + ex + "] resulted in an exception.", invocationEx);
 		}
 		
@@ -216,8 +217,7 @@ public class RestExceptionHandler extends AbstractHandlerExceptionResolver imple
 	 * @since 0.3
 	 */
 	protected ModelAndView getModelAndView(ServletWebRequest webRequest, Object handler, RestError error)
-			throws Exception {
-		
+			throws ServletException, IOException {
 		applyStatusIfPossible(webRequest, error);
 		
 		Object body = error; //default the error instance in case they don't configure an error converter
@@ -269,8 +269,8 @@ public class RestExceptionHandler extends AbstractHandlerExceptionResolver imple
 			}
 			
 			if (logger.isWarnEnabled()) {
-				logger.warn("Could not find HttpMessageConverter that supports return type [" + bodyType +
-						"] and " + acceptedMediaTypes);
+				logger.warn("Could not find HttpMessageConverter that supports return type [" + bodyType
+						+ "] and " + acceptedMediaTypes);
 			}
 			return null;
 		}

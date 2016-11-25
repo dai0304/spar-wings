@@ -18,17 +18,19 @@ package jp.xet.sparwings.common.utils;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for application initialization.
@@ -58,7 +60,7 @@ public final class InitializationUtil {
 				.sorted(Comparator.comparing(Map.Entry::getKey))
 				.map(InitializationUtil::toLogMessage)
 				.forEach(log::info);
-		} catch (Exception e) {
+		} catch (Exception e) { // NOPMD - ex
 			log.info("unexpected", e);
 		}
 		
@@ -70,7 +72,7 @@ public final class InitializationUtil {
 				.sorted(Comparator.comparing(Map.Entry::getKey))
 				.map(InitializationUtil::toLogMessage)
 				.forEach(log::info);
-		} catch (Exception e) {
+		} catch (Exception e) { // NOPMD - ex
 			log.info("unexpected", e);
 		}
 		
@@ -93,7 +95,7 @@ public final class InitializationUtil {
 				.sorted(Comparator.comparing(Map.Entry::getKey))
 				.map(InitializationUtil::toLogMessage)
 				.forEach(log::info);
-		} catch (Exception e) {
+		} catch (Exception e) { // NOPMD - ex
 			log.info("unexpected", e);
 		}
 		
@@ -128,7 +130,7 @@ public final class InitializationUtil {
 		String key = e.getKey();
 		String value = isMaskingRequired(key) ? MASK_STRING : Objects.toString(e.getValue());
 		String clear = isClearEscapeSequenceRequired(value) ? "\033[m" : "";
-		return String.format("%s = %s%s", key, value, clear);
+		return String.format(Locale.ENGLISH, "%s = %s%s", key, value, clear);
 	}
 	
 	private static boolean isClearEscapeSequenceRequired(String value) {
@@ -136,8 +138,8 @@ public final class InitializationUtil {
 	}
 	
 	private static boolean isMaskingRequired(String key) {
-		key = key.toLowerCase();
-		return key.contains("secret") || key.contains("password");
+		String lowerKey = key.toLowerCase(Locale.ENGLISH);
+		return lowerKey.contains("secret") || lowerKey.contains("password");
 	}
 	
 	/**

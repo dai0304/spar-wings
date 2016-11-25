@@ -25,10 +25,13 @@ import java.util.concurrent.Executors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import jp.xet.baseunits.time.TimePoint;
-import jp.xet.baseunits.timeutil.Clock;
-import jp.xet.baseunits.timeutil.FixedTimeSource;
-import jp.xet.baseunits.timeutil.SystemClock;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import org.junit.After;
 import org.junit.Before;
@@ -36,15 +39,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericToStringSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import jp.xet.baseunits.time.TimePoint;
+import jp.xet.baseunits.timeutil.Clock;
+import jp.xet.baseunits.timeutil.FixedTimeSource;
+import jp.xet.baseunits.timeutil.SystemClock;
 
 /**
  * TODO for daisuke
  */
+@Slf4j
 @RunWith(MockitoJUnitRunner.class)
 public class RedisRateLimitServiceTest {
 	
@@ -145,7 +149,7 @@ public class RedisRateLimitServiceTest {
 				try {
 					startLatch.await();
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					log.error("error", e);
 				}
 				// exercise
 				sut.consume(request, consume);

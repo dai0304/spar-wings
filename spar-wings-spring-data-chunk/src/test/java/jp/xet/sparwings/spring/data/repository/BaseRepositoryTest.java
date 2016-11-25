@@ -27,7 +27,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public class BaseRepositoryTest {
 	
 	@SuppressWarnings("unused")
-	private static interface AssertTypeCompatibleWithPagingAndSortingRepository
+	private interface AssertTypeCompatibleWithPagingAndSortingRepository
 			extends PagingAndSortingRepository<String, Long>, BaseRepository<String, Long> {
 	}
 }

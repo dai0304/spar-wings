@@ -15,6 +15,8 @@
  */
 package jp.xet.sparwings.spring.web.httpexceptions;
 
+import lombok.NoArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -24,17 +26,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @since 0.9
  * @author daisuke
  */
+@NoArgsConstructor
 @SuppressWarnings("serial")
 @ResponseStatus(HttpStatus.GONE)
 public class HttpGoneException extends HttpResponseException {
-	
-	/**
-	 * インスタンスを生成する。
-	 * 
-	 * @since 0.9
-	 */
-	public HttpGoneException() {
-	}
 	
 	/**
 	 * インスタンスを生成する。

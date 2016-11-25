@@ -22,11 +22,12 @@ import java.util.function.Supplier;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Aspect for fault injection to Spring MVC controllers.
@@ -60,6 +61,7 @@ public class ControllerFaultInjectionAspect extends AbstractFaultInjectionAspect
 			+ " && @annotation(requestMapping)"
 			+ " && !execution(* org.springframework.boot.autoconfigure.web.BasicErrorController.*(..))")
 	public void controller(RequestMapping requestMapping) {
+		// empty
 	}
 	
 	/**
@@ -76,7 +78,7 @@ public class ControllerFaultInjectionAspect extends AbstractFaultInjectionAspect
 			try {
 				Integer sleep = Integer.valueOf(v.split(":", 2)[1]);
 				Thread.sleep(sleep);
-			} catch (Exception e) {
+			} catch (Exception e) { // NOPMD
 				log.warn("Unexpected exception", e);
 			}
 		});

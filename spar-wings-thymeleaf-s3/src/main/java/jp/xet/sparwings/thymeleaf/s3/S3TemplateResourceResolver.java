@@ -20,13 +20,14 @@ import java.util.Objects;
 
 import lombok.RequiredArgsConstructor;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.thymeleaf.TemplateProcessingParameters;
 import org.thymeleaf.resourceresolver.IResourceResolver;
+
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 
 /**
  * {@link IResourceResolver} implementation to get S3 object resource.

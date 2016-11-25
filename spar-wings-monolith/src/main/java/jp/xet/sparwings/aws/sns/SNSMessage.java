@@ -317,22 +317,3 @@ public class SNSMessage {
 		this.token = token;
 	}
 }
-/*
-
-{
-  "Type" : "Notification",
-  "MessageId" : "b42b1281-b563-507e-b750-5e425f5aca9c",
-  "TopicArn" : "arn:aws:sns:ap-northeast-1:695874969485:portnoydev-BrianTopic-1RWRIUYD2AL34",
-  "Message" : "{\n  \"jobData\": {\n    \"batchJobName\": \"cmBillingAggregationJob\",\n    \"batchJobParameters\": {\n      \"targetMonth\": \"'2014-08'\"\n    }\n  }\n}\n",
-  "Timestamp" : "2014-10-24T05:47:37.616Z",
-  "SignatureVersion" : "1",
-  "Signature" : "QauTr7KgYJgZG04q4XAWJLLYz34cdL/zpMn165ZLB6ERdOMjAvi0152ZxYdzAG52EiWreH51ZsXb9Db5jpAOW8oi1cgvNGsE6FqFBS7EAjoA0DZSqfNP8T8iXQ0JFicsfdPHU/zHVSdHk/UGF2BGvapGE2SRT0Iih4YC4xDYLKfU8091c3wi+KOdUxwx3Xx0aN2U/wW+ML+6I4RzKxZvfirWkHFHXgd68JTLmmc7pCDaJ4pQMxW56ZbbLbRbCqcl72A0O+3kdm7MEjqzWcTVDKXyBIL6D86NUreaLh5iM5ROtLz7o1sIEHMKRZuO/gIZjg+NNGiytLX1oyk/hPNdmA==",
-  "SigningCertURL" : "https://sns.ap-northeast-1.amazonaws.com/SimpleNotificationService-d6d679a1d18e95c2f9ffcf11f4f9e198.pem",
-  "UnsubscribeURL" : "https://sns.ap-northeast-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:ap-northeast-1:695874969485:portnoydev-BrianTopic-1RWRIUYD2AL34:ec96820e-5a5b-4e49-b3a6-f83050936471",
-  "MessageAttributes" : {
-    "AWS.SNS.MOBILE.MPNS.Type" : {"Type":"String","Value":"token"},
-    "AWS.SNS.MOBILE.WNS.Type" : {"Type":"String","Value":"wns/badge"},
-    "AWS.SNS.MOBILE.MPNS.NotificationClass" : {"Type":"String","Value":"realtime"}
-  }
-}
-*/

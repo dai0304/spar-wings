@@ -20,17 +20,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.POJONode;
 import com.fasterxml.jackson.databind.util.RawValue;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  * Test for {@link JsonRawValueExtended} annotation.

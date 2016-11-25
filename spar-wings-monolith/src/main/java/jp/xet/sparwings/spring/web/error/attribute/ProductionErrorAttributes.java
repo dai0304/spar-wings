@@ -52,7 +52,7 @@ public class ProductionErrorAttributes implements ErrorAttributes {
 		Map<String, Object> errorAttributes = new LinkedHashMap<>();
 		errorAttributes.put("timestamp", new Date());
 		addStatus(errorAttributes, requestAttributes);
-		addErrorDetails(errorAttributes, requestAttributes, includeStackTrace);
+		addErrorDetails(errorAttributes, requestAttributes);
 		addPath(errorAttributes, requestAttributes);
 		return errorAttributes;
 	}
@@ -68,14 +68,13 @@ public class ProductionErrorAttributes implements ErrorAttributes {
 		errorAttributes.put("status", status);
 		try {
 			errorAttributes.put("error", HttpStatus.valueOf(status).getReasonPhrase());
-		} catch (Exception ex) {
+		} catch (Exception ex) { // NOPMD
 			// Unable to obtain a reason
 			errorAttributes.put("error", "Http Status " + status);
 		}
 	}
 	
-	private void addErrorDetails(Map<String, Object> errorAttributes,
-			RequestAttributes requestAttributes, boolean includeStackTrace) {
+	private void addErrorDetails(Map<String, Object> errorAttributes, RequestAttributes requestAttributes) {
 		Throwable error = getError(requestAttributes);
 		Object message = getAttribute(requestAttributes, "javax.servlet.error.message");
 		if ((StringUtils.isEmpty(message) == false || errorAttributes.get("message") == null)
@@ -102,7 +101,7 @@ public class ProductionErrorAttributes implements ErrorAttributes {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <T>T getAttribute(RequestAttributes requestAttributes, String name) {
+	private <T> T getAttribute(RequestAttributes requestAttributes, String name) {
 		return (T) requestAttributes.getAttribute(name, RequestAttributes.SCOPE_REQUEST);
 	}
 }

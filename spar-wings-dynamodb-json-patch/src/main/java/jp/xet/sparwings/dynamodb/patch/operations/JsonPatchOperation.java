@@ -17,7 +17,6 @@ package jp.xet.sparwings.dynamodb.patch.operations;
 
 import java.util.function.Function;
 
-import jp.xet.sparwings.dynamodb.patch.JsonPathToAttributePath;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +30,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.databind.JsonSerializable;
 import com.github.fge.jackson.jsonpointer.JsonPointer;
+
+import jp.xet.sparwings.dynamodb.patch.JsonPathToAttributePath;
 
 @JsonTypeInfo(use = Id.NAME, include = As.PROPERTY, property = "op")
 @JsonSubTypes({

@@ -17,13 +17,13 @@ package jp.xet.sparwings.jackson.patch;
 
 import java.io.IOException;
 
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
-
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 @ToString
 @RequiredArgsConstructor
@@ -42,7 +42,7 @@ class JsonPatches<T> implements UpdateRequest<T> {
 			JsonNode originalNode = mapper.valueToTree(original);
 			JsonNode patchedNode = patch.apply(originalNode);
 			T patched = mapper.treeToValue(patchedNode, (Class<T>) original.getClass());
-			return patched;
+			return patched; // NOPMD
 		} catch (IllegalArgumentException | JsonPatchException | IOException e) {
 			throw new IllegalPatchException(e);
 		}

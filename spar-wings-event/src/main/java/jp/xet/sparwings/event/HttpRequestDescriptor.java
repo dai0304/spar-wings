@@ -18,6 +18,7 @@ package jp.xet.sparwings.event;
 import java.io.Serializable;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -33,8 +34,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author daisuke
  */
 @Data
-@JsonInclude(Include.NON_NULL)
+@EqualsAndHashCode
 @Accessors(chain = true)
+@JsonInclude(Include.NON_NULL)
 @SuppressWarnings("serial")
 public class HttpRequestDescriptor implements Serializable {
 	

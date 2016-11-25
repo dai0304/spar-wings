@@ -58,7 +58,7 @@ public interface Chunkable {
 	Direction getDirection();
 	
 	
-	public enum PaginationRelation {
+	enum PaginationRelation {
 		NEXT,
 		PREV
 	}
