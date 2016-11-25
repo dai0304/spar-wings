@@ -35,7 +35,7 @@ import org.slf4j.MDC;
  * 
  * <p>The values are removed after the request is processed.</p>
  *
- * @since #version#
+ * @since 0.30
  * @author daisuke
  * @see ch.qos.logback.classic.helpers.MDCInsertingServletFilter
  */
