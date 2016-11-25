@@ -49,6 +49,15 @@ public abstract class DualPathOperation extends JsonPatchOperation {
 		super(op, path);
 		this.from = from;
 	}
+
+	/**
+	 * creates a sparwings dual path operation from a github dual path operation
+	 * @param dpo the dual path operation to convert
+	 */
+	protected DualPathOperation(com.github.fge.jsonpatch.DualPathOperation dpo) {
+		super(dpo);
+		this.from = getProtected(com.github.fge.jsonpatch.DualPathOperation.class, "from", dpo);
+	}
 	
 	@Override
 	public void serialize(JsonGenerator jgen, SerializerProvider provider)

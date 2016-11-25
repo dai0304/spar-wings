@@ -16,6 +16,8 @@
 package jp.xet.sparwings.dynamodb.patch.operations;
 
 import com.amazonaws.services.dynamodbv2.xspec.ExpressionSpecBuilder;
+import com.amazonaws.services.dynamodbv2.xspec.PathSetAction;
+import com.amazonaws.services.dynamodbv2.xspec.UpdateAction;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.fge.jackson.jsonpointer.JsonPointer;
@@ -61,6 +63,7 @@ import com.github.fge.jackson.jsonpointer.JsonPointer;
  * @since 0.13
  * @version $Id$
  * @author daisuke
+ * @author Alexander Patrikalakis
  */
 public final class MoveOperation extends DualPathOperation {
 	
@@ -68,10 +71,19 @@ public final class MoveOperation extends DualPathOperation {
 	public MoveOperation(@JsonProperty("from") JsonPointer from, @JsonProperty("path") JsonPointer path) {
 		super("move", from, path);
 	}
+
+	public MoveOperation(com.github.fge.jsonpatch.MoveOperation o) {
+		super(o);
+	}
 	
 	@Override
 	public void applyToBuilder(ExpressionSpecBuilder builder) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("JSON patch 'move' operation is not implemented yet.");
+		String removePath = pathGenerator.apply(from);
+		String setPath = pathGenerator.apply(path);
+		//remove the attribute in the from location
+		builder.addUpdate(ExpressionSpecBuilder.remove(removePath));
+		//set the attribute in the path location
+		builder.addUpdate(new PathSetAction(ExpressionSpecBuilder.attribute(setPath),
+				ExpressionSpecBuilder.attribute(removePath)));
 	}
 }

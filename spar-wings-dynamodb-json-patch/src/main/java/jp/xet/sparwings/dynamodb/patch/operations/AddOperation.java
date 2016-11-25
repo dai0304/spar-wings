@@ -16,10 +16,13 @@
 package jp.xet.sparwings.dynamodb.patch.operations;
 
 import com.amazonaws.services.dynamodbv2.xspec.ExpressionSpecBuilder;
+import com.amazonaws.services.kms.model.UnsupportedOperationException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jackson.jsonpointer.JsonPointer;
+import com.github.fge.jackson.jsonpointer.TokenResolver;
+import com.google.common.collect.Iterators;
 
 /**
  * JSON Patch {@code add} operation
@@ -65,10 +68,19 @@ public class AddOperation extends PathValueOperation {
 	public AddOperation(@JsonProperty("path") JsonPointer path, @JsonProperty("value") JsonNode value) {
 		super("add", path, value);
 	}
+
+	public AddOperation(com.github.fge.jsonpatch.AddOperation o) {
+		super(o);
+	}
 	
 	@Override
 	public void applyToBuilder(ExpressionSpecBuilder builder) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("JSON patch 'add' operation is not implemented yet.");
+		final TokenResolver<JsonNode> node = Iterators.getLast(path.iterator(), null /*default*/);
+		if(null == node || "-".equals(node.getToken().getRaw())) {
+			//list_append
+			throw new UnsupportedOperationException("list_append not supported yet");
+		} else {
+			super.applyToBuilder(builder);
+		}
 	}
 }

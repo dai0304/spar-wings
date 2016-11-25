@@ -16,11 +16,18 @@
 package jp.xet.sparwings.dynamodb.patch.operations;
 
 import com.amazonaws.services.dynamodbv2.xspec.ExpressionSpecBuilder;
+import com.amazonaws.services.dynamodbv2.xspec.NULLComparable;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.github.fge.jackson.JsonNumEquals;
 import com.github.fge.jackson.jsonpointer.JsonPointer;
+
+import static com.amazonaws.services.dynamodbv2.xspec.ExpressionSpecBuilder.BOOL;
+import static com.amazonaws.services.dynamodbv2.xspec.ExpressionSpecBuilder.N;
+import static com.amazonaws.services.dynamodbv2.xspec.ExpressionSpecBuilder.S;
+
 
 /**
  * JSON Patch {@code test} operation
@@ -45,10 +52,41 @@ public class TestOperation extends PathValueOperation {
 	public TestOperation(@JsonProperty("path") JsonPointer path, @JsonProperty("value") JsonNode value) {
 		super("test", path, value);
 	}
+
+	public TestOperation(com.github.fge.jsonpatch.TestOperation o) {
+		super(o);
+	}
 	
 	@Override
 	public void applyToBuilder(ExpressionSpecBuilder builder) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("JSON patch 'test' operation is not implemented yet.");
+		String attributePath = pathGenerator.apply(path);
+		JsonNodeType type = value.getNodeType();
+		switch (type) {
+			case NUMBER:
+				builder.withCondition(N(attributePath).eq(value.numberValue()));
+				break;
+
+			case STRING:
+				builder.withCondition(S(attributePath).eq(value.textValue()));
+				break;
+
+			case BOOLEAN:
+				builder.withCondition(BOOL(attributePath).eq(value.booleanValue()));
+				break;
+
+			case NULL:
+				builder.withCondition(new NULLComparable(attributePath).eq(NULLComparable.generateNull()));
+				break;
+
+			case ARRAY:
+				throw new UnsupportedOperationException("DynamoDB only supports conditions on scalars, not lists");
+
+			case OBJECT:
+				throw new UnsupportedOperationException("DynamoDB only supports conditions on scalars, not maps");
+
+			default:
+				// TODO Auto-generated method stub
+				throw new UnsupportedOperationException("Not implemented yet: " + type);
+		}
 	}
 }
