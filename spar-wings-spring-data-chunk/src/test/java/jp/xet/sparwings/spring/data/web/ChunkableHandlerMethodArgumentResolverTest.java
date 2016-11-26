@@ -77,6 +77,56 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
+	public void defaultHandler(@ChunkableDefault Chunkable chunkable) {
+		// nothing to do
+	}
+	
+	@Test
+	public void testDefaultHandler() throws Exception {
+		// setup
+		Method method = getClass().getMethod("defaultHandler", Chunkable.class);
+		MethodParameter methodParametere = new MethodParameter(method, 0);
+		ModelAndViewContainer mavContainer = mock(ModelAndViewContainer.class);
+		NativeWebRequest webRequest = mock(NativeWebRequest.class);
+		WebDataBinderFactory binderFactory = mock(WebDataBinderFactory.class);
+		// exercise
+		Object actual = sut.resolveArgument(methodParametere, mavContainer, webRequest, binderFactory);
+		// verify
+		assertThat(actual, is(notNullValue()));
+		assertThat(actual, is(instanceOf(Chunkable.class)));
+		Chunkable actualChunkable = (Chunkable) actual;
+		
+		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
+		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
+		assertThat(actualChunkable.getMaxPageSize(), is(10));
+		assertThat(actualChunkable.getDirection(), is(Direction.ASC));
+	}
+	
+	public void defaultHandlerWithValue(@ChunkableDefault(size = 123) Chunkable chunkable) {
+		// nothing to do
+	}
+	
+	@Test
+	public void testDefaultHandlerWithValue() throws Exception {
+		// setup
+		Method method = getClass().getMethod("defaultHandlerWithValue", Chunkable.class);
+		MethodParameter methodParametere = new MethodParameter(method, 0);
+		ModelAndViewContainer mavContainer = mock(ModelAndViewContainer.class);
+		NativeWebRequest webRequest = mock(NativeWebRequest.class);
+		WebDataBinderFactory binderFactory = mock(WebDataBinderFactory.class);
+		// exercise
+		Object actual = sut.resolveArgument(methodParametere, mavContainer, webRequest, binderFactory);
+		// verify
+		assertThat(actual, is(notNullValue()));
+		assertThat(actual, is(instanceOf(Chunkable.class)));
+		Chunkable actualChunkable = (Chunkable) actual;
+		
+		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
+		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
+		assertThat(actualChunkable.getMaxPageSize(), is(123));
+		assertThat(actualChunkable.getDirection(), is(Direction.ASC));
+	}
+	
 	public void multipleChunkable(Chunkable c1, Chunkable c2) {
 		// nothing to do
 	}
@@ -95,7 +145,7 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 	}
 	
 	@Test
-	public void testSize() throws Exception {
+	public void testSimpleHandlerWithSizeParameter() throws Exception {
 		// setup
 		Method method = getClass().getMethod("simpleHandler", Chunkable.class);
 		MethodParameter methodParametere = new MethodParameter(method, 0);
@@ -117,9 +167,75 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 	}
 	
 	@Test
-	public void testExceededSize() throws Exception {
+	public void testDefaultHandlerWithSizeParameter() throws Exception {
+		// setup
+		Method method = getClass().getMethod("defaultHandler", Chunkable.class);
+		MethodParameter methodParametere = new MethodParameter(method, 0);
+		ModelAndViewContainer mavContainer = mock(ModelAndViewContainer.class);
+		NativeWebRequest webRequest = mock(NativeWebRequest.class);
+		when(webRequest.getParameter(eq("size"))).thenReturn("123");
+		WebDataBinderFactory binderFactory = mock(WebDataBinderFactory.class);
+		// exercise
+		Object actual = sut.resolveArgument(methodParametere, mavContainer, webRequest, binderFactory);
+		// verify
+		assertThat(actual, is(notNullValue()));
+		assertThat(actual, is(instanceOf(Chunkable.class)));
+		Chunkable actualChunkable = (Chunkable) actual;
+		
+		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
+		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
+		assertThat(actualChunkable.getMaxPageSize(), is(123));
+		assertThat(actualChunkable.getDirection(), is(nullValue()));
+	}
+	
+	@Test
+	public void testDefaultHandlerWithValueWithSizeParameter() throws Exception {
+		// setup
+		Method method = getClass().getMethod("defaultHandlerWithValue", Chunkable.class);
+		MethodParameter methodParametere = new MethodParameter(method, 0);
+		ModelAndViewContainer mavContainer = mock(ModelAndViewContainer.class);
+		NativeWebRequest webRequest = mock(NativeWebRequest.class);
+		when(webRequest.getParameter(eq("size"))).thenReturn("123");
+		WebDataBinderFactory binderFactory = mock(WebDataBinderFactory.class);
+		// exercise
+		Object actual = sut.resolveArgument(methodParametere, mavContainer, webRequest, binderFactory);
+		// verify
+		assertThat(actual, is(notNullValue()));
+		assertThat(actual, is(instanceOf(Chunkable.class)));
+		Chunkable actualChunkable = (Chunkable) actual;
+		
+		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
+		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
+		assertThat(actualChunkable.getMaxPageSize(), is(123));
+		assertThat(actualChunkable.getDirection(), is(nullValue()));
+	}
+	
+	@Test
+	public void testSimpleHandlerWithExceededSizeParameter() throws Exception {
 		// setup
 		Method method = getClass().getMethod("simpleHandler", Chunkable.class);
+		MethodParameter methodParametere = new MethodParameter(method, 0);
+		ModelAndViewContainer mavContainer = mock(ModelAndViewContainer.class);
+		NativeWebRequest webRequest = mock(NativeWebRequest.class);
+		when(webRequest.getParameter(eq("size"))).thenReturn("12345");
+		WebDataBinderFactory binderFactory = mock(WebDataBinderFactory.class);
+		// exercise
+		Object actual = sut.resolveArgument(methodParametere, mavContainer, webRequest, binderFactory);
+		// verify
+		assertThat(actual, is(notNullValue()));
+		assertThat(actual, is(instanceOf(Chunkable.class)));
+		Chunkable actualChunkable = (Chunkable) actual;
+		
+		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
+		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
+		assertThat(actualChunkable.getMaxPageSize(), is(2000));
+		assertThat(actualChunkable.getDirection(), is(nullValue()));
+	}
+	
+	@Test
+	public void testDefaultHandlerWithExceededSizeParameter() throws Exception {
+		// setup
+		Method method = getClass().getMethod("defaultHandler", Chunkable.class);
 		MethodParameter methodParametere = new MethodParameter(method, 0);
 		ModelAndViewContainer mavContainer = mock(ModelAndViewContainer.class);
 		NativeWebRequest webRequest = mock(NativeWebRequest.class);
@@ -161,7 +277,7 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 	}
 	
 	@Test
-	public void testIllegalSize() throws Exception {
+	public void testSimpleHandlerWithIllegalSizeParameter() throws Exception {
 		// setup
 		Method method = getClass().getMethod("simpleHandler", Chunkable.class);
 		MethodParameter methodParametere = new MethodParameter(method, 0);
@@ -179,6 +295,50 @@ public class ChunkableHandlerMethodArgumentResolverTest {
 		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
 		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
 		assertThat(actualChunkable.getMaxPageSize(), is(2000));
+		assertThat(actualChunkable.getDirection(), is(nullValue()));
+	}
+	
+	@Test
+	public void testDefaultHandlerWithIllegalSizeParameter() throws Exception {
+		// setup
+		Method method = getClass().getMethod("defaultHandler", Chunkable.class);
+		MethodParameter methodParametere = new MethodParameter(method, 0);
+		ModelAndViewContainer mavContainer = mock(ModelAndViewContainer.class);
+		NativeWebRequest webRequest = mock(NativeWebRequest.class);
+		when(webRequest.getParameter(eq("size"))).thenReturn("foo");
+		WebDataBinderFactory binderFactory = mock(WebDataBinderFactory.class);
+		// exercise
+		Object actual = sut.resolveArgument(methodParametere, mavContainer, webRequest, binderFactory);
+		// verify
+		assertThat(actual, is(notNullValue()));
+		assertThat(actual, is(instanceOf(Chunkable.class)));
+		Chunkable actualChunkable = (Chunkable) actual;
+		
+		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
+		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
+		assertThat(actualChunkable.getMaxPageSize(), is(10));
+		assertThat(actualChunkable.getDirection(), is(nullValue()));
+	}
+	
+	@Test
+	public void testDefaultHandlerWithValueWithIllegalSizeParameter() throws Exception {
+		// setup
+		Method method = getClass().getMethod("defaultHandlerWithValue", Chunkable.class);
+		MethodParameter methodParametere = new MethodParameter(method, 0);
+		ModelAndViewContainer mavContainer = mock(ModelAndViewContainer.class);
+		NativeWebRequest webRequest = mock(NativeWebRequest.class);
+		when(webRequest.getParameter(eq("size"))).thenReturn("foo");
+		WebDataBinderFactory binderFactory = mock(WebDataBinderFactory.class);
+		// exercise
+		Object actual = sut.resolveArgument(methodParametere, mavContainer, webRequest, binderFactory);
+		// verify
+		assertThat(actual, is(notNullValue()));
+		assertThat(actual, is(instanceOf(Chunkable.class)));
+		Chunkable actualChunkable = (Chunkable) actual;
+		
+		assertThat(actualChunkable.getPaginationRelation(), is(nullValue()));
+		assertThat(actualChunkable.getPaginationToken(), is(nullValue()));
+		assertThat(actualChunkable.getMaxPageSize(), is(123));
 		assertThat(actualChunkable.getDirection(), is(nullValue()));
 	}
 	
