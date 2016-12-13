@@ -69,6 +69,9 @@ public class EC2InstanceInfoLogFilter extends OncePerRequestFilter {
 	}
 	
 	private void registerMDCValues() {
+		if (instanceInfo == null) {
+			return;
+		}
 		putIfNotNull(prefix + "instanceId", instanceInfo.getInstanceId());
 		putIfNotNull(prefix + "billingProducts", Arrays.toString(instanceInfo.getBillingProducts()));
 		putIfNotNull(prefix + "version", instanceInfo.getVersion());
