@@ -1,0 +1,32 @@
+checkstyle {
+	toolVersion = "7.1.2"
+	configFile = rootProject.file("${rootProject.projectDir}/config/checkstyle/checkstyle.xml")
+}
+
+checkstyleTest {
+	configFile = file("${rootProject.projectDir}/config/checkstyle/checkstyle-test.xml")
+}
+
+// workaround: see https://issues.gradle.org/browse/GRADLE-2888
+task verifyNoCheckstyleWarningsInMain {
+	group = "verification"
+	description = "Fail if checkstyleMain result contains warnings"
+	doLast {
+		File warningsFile = file('build/reports/checkstyle/main.xml')
+		if (warningsFile.exists() && warningsFile.text.contains("<error ")) {
+			throw new GradleException("There were checkstyle warnings! For more info check $warningsFile")
+		}
+	}
+}
+checkstyleMain.finalizedBy verifyNoCheckstyleWarningsInMain
+task verifyNoCheckstyleWarningsInTest {
+	group = "verification"
+	description = "Fail if checkstyleTest result contains warnings"
+	doLast {
+		File warningsFile = file('build/reports/checkstyle/test.xml')
+		if (warningsFile.exists() && warningsFile.text.contains("<error ")) {
+			throw new GradleException("There were checkstyle warnings! For more info check $warningsFile")
+		}
+	}
+}
+checkstyleTest.finalizedBy verifyNoCheckstyleWarningsInTest
