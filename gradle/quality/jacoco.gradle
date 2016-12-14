@@ -1,0 +1,6 @@
+jacocoTestReport {
+	reports {
+		xml.enabled false
+		csv.enabled false
+	}
+}
