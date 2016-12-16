@@ -18,6 +18,8 @@ package jp.xet.sparwings.spring.data.chunk;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Optional;
+
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -58,6 +60,18 @@ public class SimplePaginationTokenEncoderTest {
 		String last = sut.extractLastKey(encoded).get();
 		assertThat(first, is("123"));
 		assertThat(last, is("234"));
+	}
+	
+	@Test
+	public void testDecodeFirstInvalid() {
+		Optional<String> actual = sut.extractFirstKey("1");
+		assertThat(actual.isPresent(), is(false));
+	}
+	
+	@Test
+	public void testDecodeLastInvalid() {
+		Optional<String> actual = sut.extractLastKey("1");
+		assertThat(actual.isPresent(), is(false));
 	}
 	
 	@Test
