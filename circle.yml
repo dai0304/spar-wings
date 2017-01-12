@@ -5,7 +5,7 @@ checkout:
 dependencies:
   override:
     - ./gradlew -v
-    - ./gradlew testClasses
+    - ./gradlew resolveDependencies
 
 general:
   artifacts:
@@ -14,7 +14,6 @@ general:
 machine:
   environment:
     _JAVA_OPTIONS: -Xmx3G
-    GRADLE_OPTS: -Dorg.gradle.daemon=true
     TERM: dumb
   java:
     version: oraclejdk8

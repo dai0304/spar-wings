@@ -100,12 +100,12 @@ public class SimplePaginationTokenEncoder implements PaginationTokenEncoder {
 		if (paginationToken == null) {
 			return Optional.empty();
 		}
-		byte[] json = decoder.decode(paginationToken);
 		try {
+			byte[] json = decoder.decode(paginationToken);
 			JsonNode keyNode = objectMapper.readTree(json).path(key);
 			T object = objectMapper.treeToValue(keyNode, clazz);
 			return Optional.ofNullable(object);
-		} catch (IOException e) {
+		} catch (IOException | IllegalArgumentException e) {
 			log.warn("Invalid pagination token: {}", paginationToken);
 		}
 		return Optional.empty();

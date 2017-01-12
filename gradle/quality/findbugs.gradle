@@ -1,0 +1,12 @@
+findbugs {
+	effort = "max"
+	includeFilter = file("${rootProject.projectDir}/config/findbugs/includeFilter.xml")
+	excludeFilter = file("${rootProject.projectDir}/config/findbugs/excludeFilter.xml")
+}
+
+tasks.withType(FindBugs) {
+	reports {
+		xml.enabled = false
+		html.enabled = true
+	}
+}

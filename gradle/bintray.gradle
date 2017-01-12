@@ -1,0 +1,19 @@
+// -*- coding: utf-8; mode: groovy -*-
+
+if (project.hasProperty("bintrayUser") && project.hasProperty("bintrayKey")) {
+	bintray {
+		user = project.bintrayUser
+		key = project.bintrayKey
+		publications = ["mavenJava"]
+		pkg {
+			repo = "spar-wings"
+			name = project.name
+			desc = project.description
+			websiteUrl = "https://github.com/dai0304/spar-wings"
+			issueTrackerUrl = "https://github.com/dai0304/spar-wings/issues"
+			vcsUrl = "https://github.com/dai0304/spar-wings.git"
+			licenses = ["Apache-2.0"]
+			labels = ["AWS", "Spring framework"]
+		}
+	}
+}

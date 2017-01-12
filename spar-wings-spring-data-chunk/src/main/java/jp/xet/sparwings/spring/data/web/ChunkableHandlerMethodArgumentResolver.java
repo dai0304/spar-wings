@@ -168,7 +168,8 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 			return defaultOrFallback;
 		}
 		
-		Integer pageSize = maxPageSize;
+		Integer pageSize = defaultOrFallback.getMaxPageSize() != null
+				? defaultOrFallback.getMaxPageSize() : maxPageSize;
 		if (StringUtils.hasText(pageSizeString)) {
 			try {
 				pageSize = Integer.parseInt(pageSizeString);
