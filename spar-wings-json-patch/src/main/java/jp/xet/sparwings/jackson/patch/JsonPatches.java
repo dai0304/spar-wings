@@ -31,6 +31,7 @@ class JsonPatches<T> implements UpdateRequest<T> {
 	
 	private final ObjectMapper mapper;
 	
+	/** JSON Patch document node */
 	private final JsonNode node;
 	
 	
@@ -39,7 +40,8 @@ class JsonPatches<T> implements UpdateRequest<T> {
 	public T apply(T original) throws IllegalPatchException {
 		try {
 			JsonPatch patch = JsonPatch.fromJson(node);
-			JsonNode originalNode = mapper.valueToTree(original);
+			String json = mapper.writeValueAsString(original);
+			JsonNode originalNode = mapper.readTree(json);
 			JsonNode patchedNode = patch.apply(originalNode);
 			T patched = mapper.treeToValue(patchedNode, (Class<T>) original.getClass());
 			return patched; // NOPMD
