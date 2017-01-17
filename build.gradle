@@ -38,6 +38,8 @@ description "Support library for Spring framework, AWS Java SDK and the others."
 subprojects {
 	apply plugin: "java"
 	apply plugin: "maven"
+	apply plugin: "maven-publish"
+	apply plugin: "com.jfrog.bintray"
 	
 	sourceCompatibility = targetCompatibility = 1.8
 	
@@ -91,7 +93,6 @@ subprojects {
 	
 	
 	// ======== Publishing =======
-	apply plugin: 'maven-publish'
 	publishing {
 		publications {
 			mavenJava(MavenPublication) {
