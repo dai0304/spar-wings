@@ -121,7 +121,11 @@ public class ChunkImpl<T> implements Chunk<T> {
 	
 	@Override
 	public boolean isLast() {
-		return content.size() < chunkable.getMaxPageSize();
+		Integer maxPageSize = chunkable.getMaxPageSize();
+		if (maxPageSize == null) {
+			return false;
+		}
+		return content.size() < maxPageSize;
 	}
 	
 	@Override
