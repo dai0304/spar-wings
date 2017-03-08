@@ -20,6 +20,7 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
@@ -38,13 +39,16 @@ class JsonPatches<T> implements UpdateRequest<T> {
 	@Override
 	@SuppressWarnings("unchecked")
 	public T apply(T original) throws IllegalPatchException {
+		String json = null;
 		try {
 			JsonPatch patch = JsonPatch.fromJson(node);
-			String json = mapper.writeValueAsString(original);
+			json = mapper.writeValueAsString(original);
 			JsonNode originalNode = mapper.readTree(json);
 			JsonNode patchedNode = patch.apply(originalNode);
 			T patched = mapper.treeToValue(patchedNode, (Class<T>) original.getClass());
 			return patched; // NOPMD
+		} catch (JsonParseException e) {
+			throw new IllegalStateException("Failed to parse original JSON:" + json, e);
 		} catch (IllegalArgumentException | JsonPatchException | IOException | NullPointerException e) { // NOPMD
 			throw new IllegalPatchException(e);
 		}
