@@ -59,7 +59,9 @@ public class S3TemplateResourceResolver implements IResourceResolver {
 			} else {
 				log.warn(e.getMessage());
 			}
-			return null;
+		} catch (Exception e) { // NOPMD
+			log.warn("Unexpected", e);
 		}
+		return null;
 	}
 }
