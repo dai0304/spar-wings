@@ -19,9 +19,7 @@ import java.io.InputStream;
 import java.util.Objects;
 
 import lombok.RequiredArgsConstructor;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.thymeleaf.TemplateProcessingParameters;
 import org.thymeleaf.resourceresolver.IResourceResolver;
@@ -36,10 +34,9 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
  * @version $Id$
  * @author fd0
  */
+@Slf4j
 @RequiredArgsConstructor
 public class S3TemplateResourceResolver implements IResourceResolver {
-	
-	private static Logger logger = LoggerFactory.getLogger(S3TemplateResourceResolver.class);
 	
 	private final AmazonS3 s3;
 	
@@ -58,9 +55,9 @@ public class S3TemplateResourceResolver implements IResourceResolver {
 			return s3.getObject(bucketName, resourceName).getObjectContent();
 		} catch (AmazonS3Exception e) {
 			if (Objects.equals(e.getErrorCode(), "NoSuchKey")) {
-				logger.trace(e.getMessage());
+				log.trace(e.getMessage());
 			} else {
-				logger.warn(e.getMessage());
+				log.warn(e.getMessage());
 			}
 			return null;
 		}
