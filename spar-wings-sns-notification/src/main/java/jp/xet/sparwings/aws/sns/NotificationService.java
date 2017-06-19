@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,11 +47,9 @@ import jp.xet.sparwings.spring.env.EnvironmentService;
  * @since 0.3
  * @author daisuke
  */
+@Slf4j
 @RequiredArgsConstructor
 public class NotificationService implements InitializingBean {
-	
-	private static Logger logger = LoggerFactory.getLogger(NotificationService.class);
-	
 	
 	/**
 	 * Returns stacktrace as string.
@@ -94,8 +93,8 @@ public class NotificationService implements InitializingBean {
 	
 	@Override
 	public void afterPropertiesSet() {
-		logger.info("Initialize devTopicArn = {}", devTopicArn);
-		logger.info("Initialize opsTopicArn = {}", opsTopicArn);
+		log.info("Initialize devTopicArn = {}", devTopicArn);
+		log.info("Initialize opsTopicArn = {}", opsTopicArn);
 	}
 	
 	/**
@@ -200,13 +199,13 @@ public class NotificationService implements InitializingBean {
 		String subject = String.format(Locale.ENGLISH, "[%s:%s] %s (%s)",
 				appCodeName, stackName, originalSubject, env.getActiveProfilesAsString());
 		if (subject.length() > 100) {
-			logger.warn("Topic message subject is truncated.  Full subject is: {}", subject);
+			log.warn("Topic message subject is truncated.  Full subject is: {}", subject);
 			subject = subject.substring(0, 100);
 		}
 		
-		logger.debug("notify message to topic[{}] - {} : {}", topicArn, subject, message);
+		log.debug("notify message to topic[{}] - {} : {}", topicArn, subject, message);
 		if (topicArn == null || topicArn.isEmpty() || topicArn.equals("arn:aws:sns:null")) {
-			logger.debug("topicArn: NULL");
+			log.debug("topicArn: NULL");
 			return;
 		}
 		try {
@@ -214,9 +213,9 @@ public class NotificationService implements InitializingBean {
 				.withTopicArn(topicArn)
 				.withSubject(subject)
 				.withMessage(message));
-			logger.debug("SNS Notification published: {} - {}", topicArn, subject);
+			log.debug("SNS Notification published: {} - {}", topicArn, subject);
 		} catch (Exception e) { // NOPMD
-			logger.error("SNS Publish failed: {} - {} - {}", topicArn, subject, message, e);
+			log.error("SNS Publish failed: {} - {} - {}", topicArn, subject, message, e);
 		}
 	}
 }
