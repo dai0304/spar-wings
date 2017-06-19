@@ -18,6 +18,8 @@ plugins {
 	id "com.jfrog.bintray" version "1.7.1"
 }
 
+// custom configuration
+apply from: 'gradle/version.gradle'
 apply from: 'gradle/resolveDependencies.gradle'
 
 ext.githubProjectName = rootProject.name // Change if github project name is not the same as the root project's name
@@ -31,7 +33,7 @@ allprojects {
 		jcenter()
 	}
 	group = "jp.xet.${githubProjectName}"
-	version = currentVersion
+	version = rootProject.version
 }
 description "Support library for Spring framework, AWS Java SDK and the others."
 

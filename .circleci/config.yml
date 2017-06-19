@@ -1,0 +1,193 @@
+version: 2
+jobs:
+  build:
+    working_directory: /app
+    docker:
+      - image: java:openjdk-8-jdk
+    environment:
+      _JAVA_OPTIONS: -Xmx3G
+      TERM: dumb
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - barista-{{ .Branch }}-{{ checksum ".circleci/config.yml" }}-{{ checksum "build.gradle" }}-{{ checksum "gradle.properties" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+            - barista-{{ .Branch }}-{{ checksum ".circleci/config.yml" }}
+            - barista-{{ .Branch }}
+            - barista-develop
+            - barista-master
+      - run:
+          name: Show version
+          command: ./gradlew -v
+      - run:
+          name: Run tests
+          command: ./gradlew check jacocoTestReport
+
+      - store_artifacts:
+          name: Store spar-wings-aws-essential artifacts
+          path: spar-wings-aws-essential/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-aws-essential/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-aws-logging artifacts
+          path: spar-wings-aws-logging/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-aws-logging/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-awscli-config artifacts
+          path: spar-wings-awscli-config/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-awscli-config/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-dynamodb-json-patch artifacts
+          path: spar-wings-dynamodb-json-patch/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-dynamodb-json-patch/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-event artifacts
+          path: spar-wings-event/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-event/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-fault-injection artifacts
+          path: spar-wings-fault-injection/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-fault-injection/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-http-dump artifacts
+          path: spar-wings-http-dump/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-http-dump/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-httpexceptions artifacts
+          path: spar-wings-httpexceptions/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-httpexceptions/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-jackson-essential artifacts
+          path: spar-wings-jackson-essential/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-jackson-essential/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-json-patch artifacts
+          path: spar-wings-json-patch/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-json-patch/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-logging artifacts
+          path: spar-wings-logging/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-logging/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-monolith artifacts
+          path: spar-wings-monolith/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-monolith/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-ratelimiter artifacts
+          path: spar-wings-ratelimiter/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-ratelimiter/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-request-id artifacts
+          path: spar-wings-request-id/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-request-id/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-sns-notification artifacts
+          path: spar-wings-sns-notification/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-sns-notification/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-spring-data-chunk artifacts
+          path: spar-wings-spring-data-chunk/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-spring-data-chunk/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-spring-essential artifacts
+          path: spar-wings-spring-essential/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-spring-essential/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-spring-s3 artifacts
+          path: spar-wings-spring-s3/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-spring-s3/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-spring-security-essential artifacts
+          path: spar-wings-spring-security-essential/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-spring-security-essential/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-sqs-poller artifacts
+          path: spar-wings-sqs-poller/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-sqs-poller/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-testing-uri-matcher artifacts
+          path: spar-wings-testing-uri-matcher/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-testing-uri-matcher/build/test-results/
+
+      - store_artifacts:
+          name: Store spar-wings-thymeleaf-s3 artifacts
+          path: spar-wings-thymeleaf-s3/build/reports
+          destination: artifact-sdk
+      - store_test_results:
+          path: spar-wings-thymeleaf-s3/build/test-results/
+
+      - save_cache:
+          key: barista-{{ .Branch }}-{{ checksum ".circleci/config.yml" }}-{{ checksum "build.gradle" }}-{{ checksum "gradle.properties" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+          paths:
+            - "~/.gradle"
+            - "~/.m2"
+      - deploy:
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]
+            then
+              ./gradlew uploadBundle pushImageAsLatest
+            else
+              ./gradlew uploadBundle pushImage
+            fi
