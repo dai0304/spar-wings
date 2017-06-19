@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +46,7 @@ import jp.xet.sparwings.spring.env.EnvironmentService;
  * @since 0.3
  * @author daisuke
  */
+@RequiredArgsConstructor
 public class NotificationService implements InitializingBean {
 	
 	private static Logger logger = LoggerFactory.getLogger(NotificationService.class);
@@ -67,10 +69,11 @@ public class NotificationService implements InitializingBean {
 	}
 	
 	
+	private final AmazonSNS sns;
+	
 	private final String appCodeName;
 	
-	@Autowired
-	AmazonSNS sns;
+	private final EnvironmentService env;
 	
 	@Autowired(required = false)
 	InstanceInfo instanceInfo;
@@ -78,9 +81,6 @@ public class NotificationService implements InitializingBean {
 	@Deprecated
 	@Autowired(required = false)
 	jp.xet.sparwings.aws.ec2.InstanceMetadata instanceMetadata;
-	
-	@Autowired
-	EnvironmentService env;
 	
 	@Value("#{systemEnvironment['CFN_STACK_NAME'] ?: systemProperties['CFN_STACK_NAME']}")
 	String stackName;
@@ -91,16 +91,6 @@ public class NotificationService implements InitializingBean {
 	@Value("#{systemEnvironment['OPS_TOPIC_ARN'] ?: systemProperties['OPS_TOPIC_ARN']}")
 	String opsTopicArn;
 	
-	
-	/**
-	 * インスタンスを生成する。
-	 * 
-	 * @param appCodeName Application code name
-	 * @since 0.3
-	 */
-	public NotificationService(String appCodeName) {
-		this.appCodeName = appCodeName;
-	}
 	
 	@Override
 	public void afterPropertiesSet() {
