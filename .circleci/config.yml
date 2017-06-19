@@ -184,10 +184,9 @@ jobs:
             - "~/.gradle"
             - "~/.m2"
       - deploy:
+          name: Deploy bintray
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]
             then
-              ./gradlew uploadBundle pushImageAsLatest
-            else
-              ./gradlew uploadBundle pushImage
+              ./gradlew assemble bintrayUpload
             fi
