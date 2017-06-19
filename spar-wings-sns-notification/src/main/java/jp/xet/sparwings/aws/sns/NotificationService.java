@@ -21,16 +21,14 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import com.amazonaws.services.sns.AmazonSNS;
@@ -103,6 +101,7 @@ public class NotificationService implements InitializingBean {
 	@Value("${sparwings.notification.ops}")
 	String opsTopicArn;
 	
+	
 	private String getStackName() {
 		return stackName != null ? stackName : deprecatedStackName;
 	}
@@ -114,7 +113,6 @@ public class NotificationService implements InitializingBean {
 	private String getOpsTopicArn() {
 		return opsTopicArn != null ? opsTopicArn : deprecatedOpsTopicArn;
 	}
-	
 	
 	@Override
 	public void afterPropertiesSet() {
