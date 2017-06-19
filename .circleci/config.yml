@@ -4,9 +4,11 @@ jobs:
     working_directory: /app
     docker:
       - image: java:openjdk-8-jdk
+      - image: redis:2.8.23
     environment:
       _JAVA_OPTIONS: -Xmx3G
       TERM: dumb
+      REDIS_URL: redis://localhost:6379
     steps:
       - checkout
       - setup_remote_docker
