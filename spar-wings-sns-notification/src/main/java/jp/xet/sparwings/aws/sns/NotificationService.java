@@ -22,12 +22,13 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import com.amazonaws.services.sns.AmazonSNS;
@@ -45,10 +46,9 @@ import jp.xet.sparwings.spring.env.EnvironmentService;
  * @since 0.3
  * @author daisuke
  */
+@Slf4j
+@RequiredArgsConstructor
 public class NotificationService implements InitializingBean {
-	
-	private static Logger logger = LoggerFactory.getLogger(NotificationService.class);
-	
 	
 	/**
 	 * Returns stacktrace as string.
@@ -67,10 +67,11 @@ public class NotificationService implements InitializingBean {
 	}
 	
 	
+	private final AmazonSNS sns;
+	
 	private final String appCodeName;
 	
-	@Autowired
-	AmazonSNS sns;
+	private final EnvironmentService env;
 	
 	@Autowired(required = false)
 	InstanceInfo instanceInfo;
@@ -79,33 +80,44 @@ public class NotificationService implements InitializingBean {
 	@Autowired(required = false)
 	jp.xet.sparwings.aws.ec2.InstanceMetadata instanceMetadata;
 	
-	@Autowired
-	EnvironmentService env;
-	
+	@Deprecated
 	@Value("#{systemEnvironment['CFN_STACK_NAME'] ?: systemProperties['CFN_STACK_NAME']}")
+	String deprecatedStackName;
+	
+	@Deprecated
+	@Value("#{systemEnvironment['DEV_TOPIC_ARN'] ?: systemProperties['DEV_TOPIC_ARN']}")
+	String deprecatedDevTopicArn;
+	
+	@Deprecated
+	@Value("#{systemEnvironment['OPS_TOPIC_ARN'] ?: systemProperties['OPS_TOPIC_ARN']}")
+	String deprecatedOpsTopicArn;
+	
+	@Value("${sparwings.notification.stack-name}")
 	String stackName;
 	
-	@Value("#{systemEnvironment['DEV_TOPIC_ARN'] ?: systemProperties['DEV_TOPIC_ARN']}")
+	@Value("${sparwings.notification.dev}")
 	String devTopicArn;
 	
-	@Value("#{systemEnvironment['OPS_TOPIC_ARN'] ?: systemProperties['OPS_TOPIC_ARN']}")
+	@Value("${sparwings.notification.ops}")
 	String opsTopicArn;
 	
 	
-	/**
-	 * インスタンスを生成する。
-	 * 
-	 * @param appCodeName Application code name
-	 * @since 0.3
-	 */
-	public NotificationService(String appCodeName) {
-		this.appCodeName = appCodeName;
+	private String getStackName() {
+		return stackName != null ? stackName : deprecatedStackName;
+	}
+	
+	private String getDevTopicArn() {
+		return devTopicArn != null ? devTopicArn : deprecatedDevTopicArn;
+	}
+	
+	private String getOpsTopicArn() {
+		return opsTopicArn != null ? opsTopicArn : deprecatedOpsTopicArn;
 	}
 	
 	@Override
 	public void afterPropertiesSet() {
-		logger.info("Initialize devTopicArn = {}", devTopicArn);
-		logger.info("Initialize opsTopicArn = {}", opsTopicArn);
+		log.info("Initialize devTopicArn = {}", getDevTopicArn());
+		log.info("Initialize opsTopicArn = {}", getOpsTopicArn());
 	}
 	
 	/**
@@ -116,7 +128,7 @@ public class NotificationService implements InitializingBean {
 	 * @since 0.3
 	 */
 	public void notifyOps(String subject, String message) {
-		notifyMessage0(opsTopicArn, subject, message);
+		notifyMessage0(getOpsTopicArn(), subject, message);
 	}
 	
 	/**
@@ -189,7 +201,7 @@ public class NotificationService implements InitializingBean {
 			messageMap.put("stackTrace", toString(t));
 		}
 		
-		notifyMessage0(devTopicArn, subject, createMessage(messageMap));
+		notifyMessage0(getDevTopicArn(), subject, createMessage(messageMap));
 	}
 	
 	private String createMessage(Map<String, String> messageMap) {
@@ -208,15 +220,15 @@ public class NotificationService implements InitializingBean {
 	
 	private void notifyMessage0(String topicArn, String originalSubject, String message) {
 		String subject = String.format(Locale.ENGLISH, "[%s:%s] %s (%s)",
-				appCodeName, stackName, originalSubject, env.getActiveProfilesAsString());
+				appCodeName, getStackName(), originalSubject, env.getActiveProfilesAsString());
 		if (subject.length() > 100) {
-			logger.warn("Topic message subject is truncated.  Full subject is: {}", subject);
+			log.warn("Topic message subject is truncated.  Full subject is: {}", subject);
 			subject = subject.substring(0, 100);
 		}
 		
-		logger.debug("notify message to topic[{}] - {} : {}", topicArn, subject, message);
-		if (topicArn == null || topicArn.isEmpty() || topicArn.equals("arn:aws:sns:null")) {
-			logger.debug("topicArn: NULL");
+		log.debug("notify message to topic[{}] - {} : {}", topicArn, subject, message);
+		if (sns == null || topicArn == null || topicArn.isEmpty() || topicArn.equals("arn:aws:sns:null")) {
+			log.debug("topicArn: NULL");
 			return;
 		}
 		try {
@@ -224,9 +236,9 @@ public class NotificationService implements InitializingBean {
 				.withTopicArn(topicArn)
 				.withSubject(subject)
 				.withMessage(message));
-			logger.debug("SNS Notification published: {} - {}", topicArn, subject);
+			log.debug("SNS Notification published: {} - {}", topicArn, subject);
 		} catch (Exception e) { // NOPMD
-			logger.error("SNS Publish failed: {} - {} - {}", topicArn, subject, message, e);
+			log.error("SNS Publish failed: {} - {} - {}", topicArn, subject, message, e);
 		}
 	}
 }
