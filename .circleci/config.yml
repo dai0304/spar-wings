@@ -180,11 +180,6 @@ jobs:
       - store_test_results:
           path: spar-wings-thymeleaf-s3/build/test-results/
 
-      - save_cache:
-          key: barista-{{ .Branch }}-{{ checksum ".circleci/config.yml" }}-{{ checksum "build.gradle" }}-{{ checksum "gradle.properties" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-          paths:
-            - "~/.gradle"
-            - "~/.m2"
       - deploy:
           name: Deploy bintray
           command: |
@@ -192,3 +187,8 @@ jobs:
             then
               ./gradlew assemble bintrayUpload
             fi
+      - save_cache:
+          key: barista-{{ .Branch }}-{{ checksum ".circleci/config.yml" }}-{{ checksum "build.gradle" }}-{{ checksum "gradle.properties" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+          paths:
+            - "~/.gradle"
+            - "~/.m2"
