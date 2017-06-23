@@ -139,7 +139,7 @@ public final class InitializationUtil {
 	
 	private static boolean isMaskingRequired(String key) {
 		String lowerKey = key.toLowerCase(Locale.ENGLISH);
-		return lowerKey.contains("secret") || lowerKey.contains("password");
+		return lowerKey.contains("secret") || lowerKey.contains("password") || lowerKey.contains("key");
 	}
 	
 	/**
