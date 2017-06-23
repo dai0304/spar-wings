@@ -68,27 +68,29 @@ public class InitializationUtilTest {
 		List<LoggingEvent> logEvents = acptor.getAllValues();
 		
 		// regular environment variables
-		assertThat(logEvents.stream().map(LoggingEvent::getMessage)
+		assertThat(logEvents.stream().map(LoggingEvent::getFormattedMessage)
 			.anyMatch(m -> m.startsWith("HOME = /")), is(true));
-		assertThat(logEvents.stream().map(LoggingEvent::getMessage)
-			.anyMatch(m -> m.startsWith("USER = ")), is(true));
+		assertThat(logEvents.stream().map(LoggingEvent::getFormattedMessage)
+			.anyMatch(m -> m.startsWith("PWD = ")), is(true));
+		assertThat(logEvents.stream().map(LoggingEvent::getFormattedMessage)
+			.anyMatch(m -> m.startsWith("TERM = ")), is(true));
 		
 		// regular system properties
-		assertThat(logEvents.stream().map(LoggingEvent::getMessage)
+		assertThat(logEvents.stream().map(LoggingEvent::getFormattedMessage)
 			.anyMatch(m -> m.startsWith("java.vm.name = ")), is(true));
-		assertThat(logEvents.stream().map(LoggingEvent::getMessage)
+		assertThat(logEvents.stream().map(LoggingEvent::getFormattedMessage)
 			.anyMatch(m -> m.startsWith("java.home = ")), is(true));
-		assertThat(logEvents.stream().map(LoggingEvent::getMessage)
+		assertThat(logEvents.stream().map(LoggingEvent::getFormattedMessage)
 			.anyMatch(m -> m.startsWith("user.home = ")), is(true));
 		
 		// custom system properties
-		assertThat(logEvents.stream().map(LoggingEvent::getMessage)
+		assertThat(logEvents.stream().map(LoggingEvent::getFormattedMessage)
 			.anyMatch(m -> m.equals("sparwings.test = " + nonSecretValue)), is(true));
-		assertThat(logEvents.stream().map(LoggingEvent::getMessage)
+		assertThat(logEvents.stream().map(LoggingEvent::getFormattedMessage)
 			.anyMatch(m -> m.equals("sparwings.test.password = " + InitializationUtil.MASK_STRING)), is(true));
-		assertThat(logEvents.stream().map(LoggingEvent::getMessage)
+		assertThat(logEvents.stream().map(LoggingEvent::getFormattedMessage)
 			.anyMatch(m -> m.equals("sparwings.test.secret = " + InitializationUtil.MASK_STRING)), is(true));
-		assertThat(logEvents.stream().map(LoggingEvent::getMessage)
+		assertThat(logEvents.stream().map(LoggingEvent::getFormattedMessage)
 			.anyMatch(m -> m.contains(secretValue)), is(false));
 		
 		// teardown

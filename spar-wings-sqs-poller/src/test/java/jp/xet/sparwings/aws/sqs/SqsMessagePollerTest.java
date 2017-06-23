@@ -19,11 +19,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.function.Consumer;
 
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.util.DigestUtils;
@@ -69,7 +73,7 @@ public class SqsMessagePollerTest {
 	RetryTemplate retry = new RetryTemplate(); // retry 3 times
 	
 	@Mock
-	SqsMessageHandler messageHandler;
+	Consumer<Message> messageHandler;
 	
 	SqsMessagePoller sut;
 	
@@ -122,7 +126,7 @@ public class SqsMessagePollerTest {
 		sut.loop();
 		// verify
 		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
-		verify(messageHandler, never()).handle(any(Message.class));
+		verify(messageHandler, never()).accept(any(Message.class));
 		verify(sqs, never()).deleteMessage(any(DeleteMessageRequest.class));
 		verify(sqs, never()).changeMessageVisibility(any(ChangeMessageVisibilityRequest.class));
 	}
@@ -137,7 +141,7 @@ public class SqsMessagePollerTest {
 		sut.loop();
 		// verify
 		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
-		verify(messageHandler).handle(eq(msg1));
+		verify(messageHandler).accept(eq(msg1));
 		verify(sqs).deleteMessage(eq(expectedDmr));
 		verify(sqs, never()).changeMessageVisibility(any(ChangeMessageVisibilityRequest.class));
 	}
@@ -157,9 +161,9 @@ public class SqsMessagePollerTest {
 		sut.loop();
 		// verify
 		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
-		verify(messageHandler).handle(eq(msg1));
-		verify(messageHandler).handle(eq(msg2));
-		verify(messageHandler).handle(eq(msg3));
+		verify(messageHandler).accept(eq(msg1));
+		verify(messageHandler).accept(eq(msg2));
+		verify(messageHandler).accept(eq(msg3));
 		verify(sqs).deleteMessage(eq(expectedDmr1));
 		verify(sqs).deleteMessage(eq(expectedDmr2));
 		verify(sqs).deleteMessage(eq(expectedDmr3));
@@ -172,12 +176,12 @@ public class SqsMessagePollerTest {
 		Message msg1 = createMessage(1);
 		DeleteMessageRequest expectedDmr = createDeleteMessageRequest(1);
 		when(sqs.receiveMessage(any(ReceiveMessageRequest.class))).thenReturn(receiveMessageResultOf(msg1));
-		when(messageHandler.handle(any(Message.class))).then(createHeavyJobAnswer(4, false));
+		doAnswer(createHeavyJobAnswer(4, false)).when(messageHandler).accept(any(Message.class));
 		// exercise
 		sut.loop();
 		// verify
 		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
-		verify(messageHandler).handle(eq(msg1));
+		verify(messageHandler).accept(eq(msg1));
 		verify(sqs).deleteMessage(eq(expectedDmr));
 		
 		ArgumentCaptor<ChangeMessageVisibilityRequest> captor =
@@ -198,15 +202,17 @@ public class SqsMessagePollerTest {
 		DeleteMessageRequest expectedDmr1 = createDeleteMessageRequest(1);
 		DeleteMessageRequest expectedDmr2 = createDeleteMessageRequest(2);
 		DeleteMessageRequest expectedDmr3 = createDeleteMessageRequest(3);
-		when(sqs.receiveMessage(any(ReceiveMessageRequest.class))).thenReturn(receiveMessageResultOf(msg1, msg2, msg3));
-		when(messageHandler.handle(any(Message.class))).then(createHeavyJobAnswer(4, false));
+		doReturn(receiveMessageResultOf(msg1, msg2, msg3))
+			.when(sqs).receiveMessage(any(ReceiveMessageRequest.class));
+		doAnswer(createHeavyJobAnswer(4, false))
+			.when(messageHandler).accept(any(Message.class));
 		// exercise
 		sut.loop();
 		// verify
 		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
-		verify(messageHandler).handle(eq(msg1));
-		verify(messageHandler).handle(eq(msg2));
-		verify(messageHandler).handle(eq(msg3));
+		verify(messageHandler).accept(eq(msg1));
+		verify(messageHandler).accept(eq(msg2));
+		verify(messageHandler).accept(eq(msg3));
 		verify(sqs).deleteMessage(eq(expectedDmr1));
 		verify(sqs).deleteMessage(eq(expectedDmr2));
 		verify(sqs).deleteMessage(eq(expectedDmr3));
@@ -238,12 +244,12 @@ public class SqsMessagePollerTest {
 		Message msg1 = createMessage(1);
 		DeleteMessageRequest expectedDmr = createDeleteMessageRequest(1);
 		when(sqs.receiveMessage(any(ReceiveMessageRequest.class))).thenReturn(receiveMessageResultOf(msg1));
-		when(messageHandler.handle(any(Message.class))).then(createHeavyJobAnswer(7, false));
+		doAnswer(createHeavyJobAnswer(7, false)).when(messageHandler).accept(any(Message.class));
 		// exercise
 		sut.loop();
 		// verify
 		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
-		verify(messageHandler).handle(eq(msg1));
+		verify(messageHandler).accept(eq(msg1));
 		verify(sqs).deleteMessage(eq(expectedDmr));
 		
 		ArgumentCaptor<ChangeMessageVisibilityRequest> captor =
@@ -269,12 +275,12 @@ public class SqsMessagePollerTest {
 		Message msg1 = createMessage(1);
 		DeleteMessageRequest expectedDmr = createDeleteMessageRequest(1);
 		when(sqs.receiveMessage(any(ReceiveMessageRequest.class))).thenReturn(receiveMessageResultOf(msg1));
-		when(messageHandler.handle(any(Message.class))).then(createHeavyJobAnswer(24, false));
+		doAnswer(createHeavyJobAnswer(24, false)).when(messageHandler).accept(any(Message.class));
 		// exercise
 		sut.loop();
 		// verify
 		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
-		verify(messageHandler).handle(eq(msg1));
+		verify(messageHandler).accept(eq(msg1));
 		verify(sqs, never()).deleteMessage(eq(expectedDmr)); // retry attempt exceeded
 		verify(sqs, times(3)).changeMessageVisibility(any(ChangeMessageVisibilityRequest.class));
 	}
@@ -285,12 +291,12 @@ public class SqsMessagePollerTest {
 		Message msg1 = createMessage(1);
 		DeleteMessageRequest expectedDmr = createDeleteMessageRequest(1);
 		when(sqs.receiveMessage(any(ReceiveMessageRequest.class))).thenReturn(receiveMessageResultOf(msg1));
-		doThrow(Exception.class).when(messageHandler).handle(any(Message.class));
+		doThrow(Exception.class).when(messageHandler).accept(any(Message.class));
 		// exercise
 		sut.loop();
 		// verify
 		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
-		verify(messageHandler).handle(eq(msg1));
+		verify(messageHandler).accept(eq(msg1));
 		verify(sqs, never()).deleteMessage(eq(expectedDmr));
 		verify(sqs, never()).changeMessageVisibility(any(ChangeMessageVisibilityRequest.class));
 	}
@@ -301,12 +307,12 @@ public class SqsMessagePollerTest {
 		Message msg1 = createMessage(1);
 		DeleteMessageRequest expectedDmr = createDeleteMessageRequest(1);
 		when(sqs.receiveMessage(any(ReceiveMessageRequest.class))).thenReturn(receiveMessageResultOf(msg1));
-		when(messageHandler.handle(any(Message.class))).then(createHeavyJobAnswer(4, true));
+		doAnswer(createHeavyJobAnswer(4, true)).when(messageHandler).accept(any(Message.class));
 		// exercise
 		sut.loop();
 		// verify
 		verify(sqs).receiveMessage(any(ReceiveMessageRequest.class));
-		verify(messageHandler).handle(eq(msg1));
+		verify(messageHandler).accept(eq(msg1));
 		verify(sqs, never()).deleteMessage(eq(expectedDmr));
 		verify(sqs).changeMessageVisibility(any(ChangeMessageVisibilityRequest.class));
 	}

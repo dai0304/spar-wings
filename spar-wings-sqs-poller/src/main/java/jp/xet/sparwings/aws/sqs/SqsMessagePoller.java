@@ -16,6 +16,7 @@
 package jp.xet.sparwings.aws.sqs;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -23,17 +24,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.DigestUtils;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.model.ChangeMessageVisibilityRequest;
@@ -50,10 +50,9 @@ import com.amazonaws.services.sqs.model.ReceiveMessageResult;
  * @version $Id$
  * @author daisuke
  */
+@Slf4j
 @RequiredArgsConstructor
 public class SqsMessagePoller { // NOPMD - cc
-	
-	private static Logger logger = LoggerFactory.getLogger(SqsMessagePoller.class);
 	
 	@Getter
 	private final AmazonSQS sqs;
@@ -65,7 +64,7 @@ public class SqsMessagePoller { // NOPMD - cc
 	private final String workerQueueUrl;
 	
 	@Getter
-	private final SqsMessageHandler messageHandler;
+	private final Consumer<Message> messageHandler;
 	
 	@Getter
 	@Setter
@@ -73,7 +72,7 @@ public class SqsMessagePoller { // NOPMD - cc
 		Thread thread = new Thread(r);
 		thread.setUncaughtExceptionHandler((t, e) -> {
 			synchronized (SqsMessagePoller.class) {
-				logger.error("Uncaught exception in thread '{}': {}", t.getName(), e.getMessage());
+				log.error("Uncaught exception in thread '{}': {}", t.getName(), e.getMessage());
 			}
 		});
 		return thread;
@@ -103,82 +102,97 @@ public class SqsMessagePoller { // NOPMD - cc
 	 */
 	@Scheduled(fixedDelay = 1) // SUPPRESS CHECKSTYLE bug?
 	public void loop() { // NOPMD - cc
+		List<Message> messages = reveiveMessages();
+		if (messages.isEmpty()) {
+			log.trace("No SQS message received");
+			return;
+		}
+		log.debug("{} SQS messages are received", messages.size());
+		messages.stream().parallel().forEach(this::handleMessage);
+	}
+	
+	private List<Message> reveiveMessages() {
 		ReceiveMessageResult receiveMessageResult;
 		try {
-			logger.trace("Start SQS long polling");
+			log.trace("Start SQS long polling");
 			receiveMessageResult = sqs.receiveMessage(new ReceiveMessageRequest(workerQueueUrl)
 				.withWaitTimeSeconds(waitTimeSeconds)
 				.withMaxNumberOfMessages(maxNumberOfMessages)
 				.withVisibilityTimeout(visibilityTimeout)
 				.withAttributeNames("ApproximateReceiveCount"));
+			return receiveMessageResult.getMessages();
 		} catch (OverLimitException e) {
-			logger.error("SQS over limit", e);
+			log.error("SQS over limit", e);
 			try {
 				Thread.sleep(60000);
 			} catch (InterruptedException e1) {
-				logger.error("interrupted", e1);
+				log.error("interrupted", e1);
 				throw new AssertionError(e1); // NOPMD - lost OverLimitException's stacktrace
 			}
-			return;
 		}
-		
-		List<Message> messages = receiveMessageResult.getMessages();
-		if (messages.isEmpty()) {
-			logger.trace("No SQS message received");
-			return;
-		}
-		logger.debug("{} SQS messages are received", messages.size());
-		messages.stream().parallel().forEach(message -> {
-			logger.info("SQS message was recieved: {}", message.getMessageId());
-			logger.debug("Receive SQS:{} C:{} RHD:{}", new Object[] {
+		return Collections.emptyList();
+	}
+	
+	private void handleMessage(Message message) {
+		log.info("SQS message was recieved: {}", message.getMessageId());
+		log.debug("Receive SQS:{} C:{} RHD:{}",
 				message.getMessageId(),
 				message.getAttributes().get("ApproximateReceiveCount"),
-				DigestUtils.md5DigestAsHex(message.getReceiptHandle().getBytes(StandardCharsets.UTF_8))
+				computeReceptHandleDigest(message));
+		
+		Future<Message> future = executor.submit(() -> messageHandler.accept(message), message);
+		log.debug("Main task for {} is submitted", message.getMessageId());
+		
+		doFollowup(message, future);
+	}
+	
+	private void doFollowup(Message message, Future<Message> future) {
+		log.debug("Start visibility timeout follow-up task for {}", message.getMessageId());
+		try {
+			retry.execute(context -> {
+				try {
+					future.get(changeVisibilityThreshold, TimeUnit.SECONDS);
+					log.debug("Job for SQS:{} was done", message.getMessageId());
+					sqs.deleteMessage(new DeleteMessageRequest(workerQueueUrl, message.getReceiptHandle()));
+					log.info("SQS:{} was deleted", message.getMessageId());
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+					log.warn("Job for SQS:{} was interrupted", message.getMessageId());
+				} catch (ExecutionException e) { // handle e.getCause()
+					log.error("Job for SQS:{} was failed", message.getMessageId(), e.getCause());
+				} catch (TimeoutException e) { // we need more time
+					extendTimeout(message);
+					throw e;
+				}
+				return null;
 			});
+		} catch (Exception e) { // NOPMD - cc
+			log.error("Retry attempt exceeded?", e);
+		}
+		log.debug("Visibility timeout follow-up task for {} was finished", message.getMessageId());
+	}
+	
+	private void extendTimeout(Message message) {
+		log.debug("Job for SQS:{} was timeout RHD:{}", message.getMessageId(), computeReceptHandleDigest(message));
+		sqs.changeMessageVisibility(new ChangeMessageVisibilityRequest(
+				workerQueueUrl, message.getReceiptHandle(), visibilityTimeout));
+		if (log.isDebugEnabled()) {
+			log.debug("Visibility for SQS:{} was updated VT:{}", message.getMessageId(), visibilityTimeout);
+		} else if (log.isTraceEnabled()) {
+			log.trace("Visibility for SQS:{} was updated VT:{} RHD:{}",
+					message.getMessageId(),
+					visibilityTimeout,
+					computeReceptHandleDigest(message));
+		}
+	}
+	
+	private Object computeReceptHandleDigest(Message message) {
+		return new Object() {
 			
-			Future<Void> future = executor.submit(() -> messageHandler.handle(message));
-			logger.debug("Main task for {} is submitted", message.getMessageId());
-			
-			logger.debug("Start visibility timeout follow-up task for {}", message.getMessageId());
-			try {
-				retry.execute(context -> {
-					try {
-						future.get(changeVisibilityThreshold, TimeUnit.SECONDS);
-						logger.debug("Job for SQS:{} was done", message.getMessageId());
-						sqs.deleteMessage(new DeleteMessageRequest(workerQueueUrl, message.getReceiptHandle()));
-						logger.info("SQS:{} was deleted", message.getMessageId());
-					} catch (InterruptedException e) {
-						Thread.currentThread().interrupt();
-						logger.warn("Job for SQS:{} was interrupted", message.getMessageId());
-					} catch (ExecutionException e) { // handle e.getCause()
-						logger.error("Job for SQS:{} was failed", message.getMessageId(), e.getCause());
-					} catch (TimeoutException e) { // we need more time
-						logger.debug("Job for SQS:{} was timeout RHD:{}", new Object[] {
-							message.getMessageId(),
-							DigestUtils.md5DigestAsHex(message.getReceiptHandle().getBytes(StandardCharsets.UTF_8))
-						});
-						sqs.changeMessageVisibility(new ChangeMessageVisibilityRequest(
-								workerQueueUrl, message.getReceiptHandle(), visibilityTimeout));
-						if (logger.isDebugEnabled()) {
-							logger.debug("Visibility for SQS:{} was updated", new Object[] {
-								message.getMessageId(),
-								visibilityTimeout
-							});
-						} else if (logger.isTraceEnabled()) {
-							logger.trace("Visibility for SQS:{} was updated VT:{} RHD:{}", new Object[] {
-								message.getMessageId(),
-								visibilityTimeout,
-								DigestUtils.md5DigestAsHex(message.getReceiptHandle().getBytes(StandardCharsets.UTF_8))
-							});
-						}
-						throw e;
-					}
-					return null;
-				});
-			} catch (Exception e) { // NOPMD - cc
-				logger.error("Retry attempt exceeded?", e);
+			@Override
+			public String toString() {
+				return DigestUtils.md5DigestAsHex(message.getReceiptHandle().getBytes(StandardCharsets.UTF_8));
 			}
-			logger.debug("Visibility timeout follow-up task for {} was finished", message.getMessageId());
-		});
+		};
 	}
 }

@@ -29,6 +29,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.node.POJONode;
 import com.fasterxml.jackson.databind.util.RawValue;
 
@@ -49,6 +50,7 @@ public class JsonRawValueExtendedTest {
 	public void setup() throws Exception {
 		mapper = new ObjectMapper();
 		mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
 	}
 	
 	@Test
@@ -58,13 +60,15 @@ public class JsonRawValueExtendedTest {
 		model.setFoo("12341234");
 		model.setBar(1234);
 		model.setMetadata("{\"foo\":\"bar\"}");
+		model.setHogeMetadata("{\"baz\":\"qux\"}");
 		// exercise
 		String actual = mapper.writeValueAsString(model);
 		// verify
 		with(actual)
 			.assertThat("$.foo", is("12341234"))
 			.assertThat("$.bar", is(1234))
-			.assertThat("$.metadata.foo", is("bar"));
+			.assertThat("$.metadata.foo", is("bar"))
+			.assertThat("$.hoge_metadata.baz", is("qux"));
 	}
 	
 	@Test
@@ -74,6 +78,7 @@ public class JsonRawValueExtendedTest {
 		model.setFoo("12341234");
 		model.setBar(1234);
 		model.setMetadata("{\"foo\":\"bar\"}");
+		model.setHogeMetadata("{\"baz\":\"qux\"}");
 		
 		// exercise 1: Value to Tree
 		JsonNode actualNode = mapper.valueToTree(model);
@@ -88,6 +93,12 @@ public class JsonRawValueExtendedTest {
 		assertThat(pojoNode.getPojo(), is(instanceOf(RawValue.class)));
 		RawValue rawValue = (RawValue) pojoNode.getPojo();
 		assertThat(rawValue.rawValue(), is("{\"foo\":\"bar\"}"));
+		
+		assertThat(actualNode.path("hoge_metadata").isPojo(), is(true));
+		POJONode pojoNodeHoge = (POJONode) actualNode.path("hoge_metadata");
+		assertThat(pojoNodeHoge.getPojo(), is(instanceOf(RawValue.class)));
+		RawValue rawValueHoge = (RawValue) pojoNodeHoge.getPojo();
+		assertThat(rawValueHoge.rawValue(), is("{\"baz\":\"qux\"}"));
 		
 		// exercise 2: Tree to Value
 		Model actualValue = mapper.treeToValue(actualNode, Model.class);
@@ -104,12 +115,16 @@ public class JsonRawValueExtendedTest {
 				+ "  'bar':1234,"
 				+ "  'metadata':{"
 				+ "    'foo':'bar'"
+				+ "  },"
+				+ "  'hoge_metadata':{"
+				+ "    'baz':'qux'"
 				+ "  }"
 				+ "}";
 		Model expected = new Model();
 		expected.setFoo("12341234");
 		expected.setBar(1234);
 		expected.setMetadata("{\"foo\":\"bar\"}");
+		expected.setHogeMetadata("{\"baz\":\"qux\"}");
 		// exercise
 		Model actual = mapper.readValue(modelJson, Model.class);
 		// verify
@@ -125,12 +140,16 @@ public class JsonRawValueExtendedTest {
 				+ "  'bar':1234,"
 				+ "  'metadata':{"
 				+ "    'foo':'bar'"
+				+ "  },"
+				+ "  'hoge_metadata':{"
+				+ "    'baz':'qux'"
 				+ "  }"
 				+ "}";
 		Model model = new Model();
 		model.setFoo("12341234");
 		model.setBar(1234);
 		model.setMetadata("{\"foo\":\"bar\"}");
+		model.setHogeMetadata("{\"baz\":\"qux\"}");
 		
 		// exercise 1: Json to Tree
 		JsonNode actualNode = mapper.readTree(modelJson);
@@ -143,6 +162,9 @@ public class JsonRawValueExtendedTest {
 		// WARN: readTree does not serialize `metadata` as String, because mapper does not know this JSON is `Model`
 		assertThat(actualNode.path("metadata").isObject(), is(true));
 		assertThat(actualNode.path("metadata").path("foo").textValue(), is("bar"));
+		
+		assertThat(actualNode.path("hoge_metadata").isObject(), is(true));
+		assertThat(actualNode.path("hoge_metadata").path("baz").textValue(), is("qux"));
 		
 		// exercise 2: Tree to Value
 		Model actualValue = mapper.treeToValue(actualNode, Model.class);
@@ -161,5 +183,8 @@ class Model {
 	
 	@JsonRawValueExtended
 	private String metadata;
+	
+	@JsonRawValueExtended
+	private String hogeMetadata;
 	
 }
