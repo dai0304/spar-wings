@@ -182,11 +182,7 @@ jobs:
 
       - deploy:
           name: Deploy bintray
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]
-            then
-              ./gradlew assemble bintrayUpload
-            fi
+          command: ./gradlew assemble bintrayUpload
       - save_cache:
           key: barista-{{ .Branch }}-{{ checksum ".circleci/config.yml" }}-{{ checksum "build.gradle" }}-{{ checksum "gradle.properties" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
           paths:
