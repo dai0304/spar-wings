@@ -2,8 +2,8 @@
 
 buildscript {
 	repositories {
-		mavenCentral()
 		jcenter()
+		mavenCentral()
 		maven { url "http://repo.spring.io/plugins-release" }
 	}
 	dependencies {
@@ -76,16 +76,18 @@ subprojects {
 	
 	configurations {
 		deployerJars
+		testCompile.extendsFrom compileOnly
 	}
 
 	repositories {
+		jcenter()
 		mavenCentral()
 		maven { url "http://maven.xet.jp/release" } // for baseunits
 	}
 	
 	dependencies {
-		compile "org.projectlombok:lombok:1.16.2"
 		compile "org.slf4j:slf4j-api:$slf4jVersion"
+		compileOnly "org.projectlombok:lombok:$lombokVersion"
 		testCompile "org.slf4j:jul-to-slf4j:$slf4jVersion"
 		testCompile "ch.qos.logback:logback-classic:$logbackVersion"
 		testCompile "junit:junit:$junitVersion"
