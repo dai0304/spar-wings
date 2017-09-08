@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -40,6 +41,7 @@ import org.slf4j.MDC;
  * @since 0.3
  * @author daisuke
  */
+@Slf4j
 public class RequestIdFilter extends OncePerRequestFilter {
 	
 	private static final String DEFAULT_REQUEST_ID_ATTRIBUTE = "requestId";
@@ -77,8 +79,9 @@ public class RequestIdFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		
+		log.trace("Start issue request ID");
 		String requestId = generator.generateRequestId(request);
+		log.info("Request ID issued: {}", requestId);
 		if (requestIdAttribute != null) {
 			request.setAttribute(requestIdAttribute, requestId);
 		}
