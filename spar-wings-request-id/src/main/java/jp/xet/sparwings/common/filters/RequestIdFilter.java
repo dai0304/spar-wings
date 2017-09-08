@@ -50,17 +50,14 @@ public class RequestIdFilter extends OncePerRequestFilter {
 	
 	private static final String DEFAULT_REQUEST_ID_MDC_KEY = "requestId";
 	
-	@NonNull
 	@Getter
 	@Setter
 	private String requestIdAttribute = DEFAULT_REQUEST_ID_ATTRIBUTE;
 	
-	@NonNull
 	@Getter
 	@Setter
 	private String requestIdMdcKey = DEFAULT_REQUEST_ID_MDC_KEY;
 	
-	@NonNull
 	@Getter
 	@Setter
 	private String requestIdHeader = DEFAULT_REQUEST_ID_HEADER;
@@ -88,11 +85,15 @@ public class RequestIdFilter extends OncePerRequestFilter {
 		if (requestIdMdcKey != null) {
 			MDC.put(requestIdMdcKey, requestId);
 		}
-		response.setHeader(requestIdHeader, requestId);
+		if (requestIdHeader != null) {
+			response.setHeader(requestIdHeader, requestId);
+		}
 		try {
 			filterChain.doFilter(request, response);
 		} finally {
-			MDC.remove(requestIdMdcKey);
+			if (requestIdMdcKey != null) {
+				MDC.remove(requestIdMdcKey);
+			}
 		}
 	}
 }
