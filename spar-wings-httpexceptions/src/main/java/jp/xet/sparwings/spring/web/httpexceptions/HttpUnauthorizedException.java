@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * Respond 401.
  * 
- * @since #version#
+ * @since 0.34
  * @author daisuke
  */
 @NoArgsConstructor
@@ -36,7 +36,7 @@ public class HttpUnauthorizedException extends HttpResponseException {
 	 * 
 	 * @param message 例外メッセージ
 	 * @param cause 起因例外
-	 * @since #version#
+	 * @since 0.34
 	 */
 	public HttpUnauthorizedException(String message, Throwable cause) {
 		super(message, cause);
@@ -46,7 +46,7 @@ public class HttpUnauthorizedException extends HttpResponseException {
 	 * インスタンスを生成する。
 	 * 
 	 * @param message 例外メッセージ
-	 * @since #version#
+	 * @since 0.34
 	 */
 	public HttpUnauthorizedException(String message) {
 		super(message);
@@ -56,7 +56,7 @@ public class HttpUnauthorizedException extends HttpResponseException {
 	 * インスタンスを生成する。
 	 * 
 	 * @param cause 起因例外
-	 * @since #version#
+	 * @since 0.34
 	 */
 	public HttpUnauthorizedException(Throwable cause) {
 		super(cause);
