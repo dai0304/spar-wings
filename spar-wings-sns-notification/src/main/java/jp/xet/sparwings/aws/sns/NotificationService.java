@@ -92,13 +92,13 @@ public class NotificationService implements InitializingBean {
 	@Value("#{systemEnvironment['OPS_TOPIC_ARN'] ?: systemProperties['OPS_TOPIC_ARN']}")
 	String deprecatedOpsTopicArn;
 	
-	@Value("${sparwings.notification.stack-name}")
+	@Value("${sparwings.notification.stack-name:#{null}}")
 	String stackName;
 	
-	@Value("${sparwings.notification.dev}")
+	@Value("${sparwings.notification.dev:#{null}}")
 	String devTopicArn;
 	
-	@Value("${sparwings.notification.ops}")
+	@Value("${sparwings.notification.ops:#{null}}")
 	String opsTopicArn;
 	
 	
