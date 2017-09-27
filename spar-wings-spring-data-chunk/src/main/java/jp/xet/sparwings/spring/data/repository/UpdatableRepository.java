@@ -19,6 +19,7 @@ import java.io.Serializable;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.repository.NoRepositoryBean;
 
 /**
@@ -40,6 +41,7 @@ public interface UpdatableRepository<E, ID extends Serializable>extends BaseRepo
 	 * @param entity entity to update
 	 * @return updated entity
 	 * @throws IncorrectResultSizeDataAccessException 対象エンティティがなかった場合
+	 * @throws DataIntegrityViolationException 一意制約に違反した場合
 	 * @throws DataAccessException データアクセスエラーが発生した場合
 	 * @since 0.25
 	 */
