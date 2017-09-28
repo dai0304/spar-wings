@@ -18,8 +18,8 @@ package jp.xet.sparwings.spring.data.repository;
 import java.io.Serializable;
 
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.repository.NoRepositoryBean;
 
 /**
