@@ -29,12 +29,12 @@ import java.util.Scanner;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSCredentialsProviderChain;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.BasicSessionCredentials;
 import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.auth.profile.internal.AbstractProfilesConfigFileScanner;
-import com.amazonaws.internal.StaticCredentialsProvider;
 
 /**
  * TODO for daisuke
@@ -100,7 +100,7 @@ public class AwsCliConfigFileLoader { // NOPMD - cc
 						"Unable to load credentials into profile: ProfileName is empty.");
 				if (accessKey != null && secretKey != null) {
 					if (sessionToken == null) {
-						AWSCredentialsProvider cp = new StaticCredentialsProvider(
+						AWSCredentialsProvider cp = new AWSStaticCredentialsProvider(
 								new BasicAWSCredentials(accessKey, secretKey));
 						profilesByName.put(profileName, new AwsCliProfile(profileName, cp));
 					} else {
@@ -110,7 +110,8 @@ public class AwsCliConfigFileLoader { // NOPMD - cc
 									profileName);
 							throw new AmazonClientException(msg);
 						}
-						AWSCredentialsProvider cp = new StaticCredentialsProvider(
+						
+						AWSCredentialsProvider cp = new AWSStaticCredentialsProvider(
 								new BasicSessionCredentials(accessKey, secretKey, sessionToken));
 						profilesByName.put(profileName, new AwsCliProfile(profileName, cp));
 					}
@@ -121,8 +122,10 @@ public class AwsCliConfigFileLoader { // NOPMD - cc
 					AWSCredentialsProvider source = new AWSCredentialsProviderChain(
 							new AwsCliConfigProfileCredentialsProvider(sourceProfile),
 							new ProfileCredentialsProvider(sourceProfile));
-					AWSCredentialsProvider cp = new STSAssumeRoleSessionCredentialsProvider(
-							source, roleArn, roleSessionName);
+					AWSCredentialsProvider cp =
+							new STSAssumeRoleSessionCredentialsProvider.Builder(roleArn, roleSessionName)
+								.withLongLivedCredentialsProvider(source)
+								.build();
 					profilesByName.put(profileName, new AwsCliProfile(profileName, cp));
 				}
 			}
