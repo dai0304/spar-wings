@@ -29,8 +29,8 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider;
-import com.amazonaws.internal.StaticCredentialsProvider;
 
 /**
  * Test for {@link AwsCliConfigFile}.
@@ -64,7 +64,7 @@ public class AwsCliConfigFileTest {
 		// exercise
 		AWSCredentialsProvider actual = sut.getCredentialsProvider("src");
 		// verify
-		assertThat(actual, is(instanceOf(StaticCredentialsProvider.class)));
+		assertThat(actual, is(instanceOf(AWSStaticCredentialsProvider.class)));
 		
 	}
 	
