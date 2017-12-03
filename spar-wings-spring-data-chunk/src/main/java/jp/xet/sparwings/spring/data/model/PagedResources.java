@@ -88,9 +88,9 @@ public class PagedResources<T> {
 	 * @since 0.11
 	 */
 	public PagedResources(String key, Collection<T> content, PageMetadata metadata) {
-		Assert.notNull(key);
-		Assert.notNull(content);
-		Assert.notNull(metadata);
+		Assert.notNull(key, "The key must not be null");
+		Assert.notNull(content, "The content must not be null");
+		Assert.notNull(metadata, "The metadata must not be null");
 		this.content = new LinkedHashMap<>();
 		if (content.isEmpty() == false) {
 			this.content.put(key, content);

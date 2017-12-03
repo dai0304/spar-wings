@@ -92,7 +92,7 @@ public class VersionedPasswordEncoder implements PasswordEncoder {
 	 */
 	public VersionedPasswordEncoder(String unknownEncoder, String primaryEncoder,
 			Map<String, PasswordEncoder> encoders) {
-		Assert.notNull(encoders);
+		Assert.notNull(encoders, "The encoders must not be null.");
 		Assert.isTrue(encoders.containsKey(unknownEncoder), "The encoders must to contain unknown-encoder");
 		Assert.isTrue(encoders.containsKey(primaryEncoder), "The encoders must to contain primary-encoder");
 		if (encoders.keySet().stream().allMatch(key -> VERSION_KEY_PATTERN.matcher(key).matches()) == false) {
