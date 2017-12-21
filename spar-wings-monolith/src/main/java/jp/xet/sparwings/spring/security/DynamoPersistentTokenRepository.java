@@ -83,7 +83,7 @@ public class DynamoPersistentTokenRepository implements PersistentTokenRepositor
 	
 	@Override
 	public void createNewToken(PersistentRememberMeToken token) {
-		Assert.notNull(token);
+		Assert.notNull(token, "token is requied");
 		if (logger.isTraceEnabled()) {
 			logger.trace("Create token: username={}, series={}, tokenValue={}, date={}", new Object[] {
 				token.getUsername(),

@@ -43,7 +43,7 @@ public class EnvironmentService {
 	 * @since 0.3
 	 */
 	public boolean is(String profileName) {
-		Assert.notNull(profileName);
+		Assert.notNull(profileName, "The profile name is must not be null.");
 		return Arrays.asList(env.getActiveProfiles()).contains(profileName);
 	}
 	
