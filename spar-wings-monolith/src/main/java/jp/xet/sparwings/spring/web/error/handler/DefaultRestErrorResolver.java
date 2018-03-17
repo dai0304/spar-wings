@@ -37,7 +37,6 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
 /**
  * Default {@code RestErrorResolver} implementation that converts discovered Exceptions to
@@ -104,7 +103,6 @@ public class DefaultRestErrorResolver implements RestErrorResolver, MessageSourc
 		applyDef(m, "javax.validation.ValidationException", HttpStatus.BAD_REQUEST);
 		
 		// 404
-		applyDef(m, NoSuchRequestHandlingMethodException.class, HttpStatus.NOT_FOUND);
 		applyDef(m, "org.hibernate.ObjectNotFoundException", HttpStatus.NOT_FOUND);
 		
 		// 405
@@ -230,9 +228,9 @@ public class DefaultRestErrorResolver implements RestErrorResolver, MessageSourc
 	/**
 	 * Returns the config-time 'template' RestError instance configured for the specified Exception, or
 	 * {@code null} if a match was not found.
-	 * 
+	 *
 	 * <p>The config-time template is used as the basis for the RestError constructed at runtime.</p>
-	 * 
+	 *
 	 * @param ex
 	 * @return the template to use for the RestError instance to be constructed.
 	 */
@@ -263,10 +261,10 @@ public class DefaultRestErrorResolver implements RestErrorResolver, MessageSourc
 	
 	/**
 	 * Return the depth to the superclass matching.
-	 * 
+	 *
 	 * <p>0 means ex matches exactly. Returns -1 if there's no match.
 	 * Otherwise, returns depth. Lowest depth wins.</p>
-	 * 
+	 *
 	 * @param exceptionMapping
 	 * @param ex
 	 * @return
