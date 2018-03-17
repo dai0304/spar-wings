@@ -30,7 +30,6 @@ import com.amazonaws.auth.AWSCredentialsProvider;
  * @version $Id$
  * @author daisuke
  */
-@Immutable
 @RequiredArgsConstructor
 @EqualsAndHashCode
 public class AwsCliProfile {
