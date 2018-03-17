@@ -35,10 +35,12 @@ import com.amazonaws.auth.BasicSessionCredentials;
 import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.auth.profile.internal.AbstractProfilesConfigFileScanner;
+import com.amazonaws.services.securitytoken.AWSSecurityTokenService;
+import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder;
 
 /**
  * TODO for daisuke
- * 
+ *
  * @since 0.10
  * @version $Id$
  * @author daisuke
@@ -122,9 +124,11 @@ public class AwsCliConfigFileLoader { // NOPMD - cc
 					AWSCredentialsProvider source = new AWSCredentialsProviderChain(
 							new AwsCliConfigProfileCredentialsProvider(sourceProfile),
 							new ProfileCredentialsProvider(sourceProfile));
+					AWSSecurityTokenService stsClient = AWSSecurityTokenServiceClientBuilder.standard()
+						.withCredentials(source).build();
 					AWSCredentialsProvider cp =
 							new STSAssumeRoleSessionCredentialsProvider.Builder(roleArn, roleSessionName)
-								.withLongLivedCredentialsProvider(source)
+								.withStsClient(stsClient)
 								.build();
 					profilesByName.put(profileName, new AwsCliProfile(profileName, cp));
 				}
