@@ -23,13 +23,12 @@ import static org.junit.Assert.assertThat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.junit.AssumptionViolatedException;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.internal.AssumptionViolatedException;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
-import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
@@ -65,10 +64,10 @@ public class JsonPatchToExpressionSpecBuilderRemoveIT {
 	
 	
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		try {
-			AmazonDynamoDB amazonDynamoDB = new AmazonDynamoDBClient();
-			amazonDynamoDB.setRegion(Region.getRegion(Regions.AP_NORTHEAST_1));
+			AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClient.builder()
+				.withRegion(Regions.AP_NORTHEAST_1).build();
 			table = new Table(amazonDynamoDB, "json_patch_test");
 			table.deleteItem(PK);
 		} catch (AmazonClientException e) {
