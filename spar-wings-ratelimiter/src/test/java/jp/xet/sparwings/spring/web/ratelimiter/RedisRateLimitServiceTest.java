@@ -38,7 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import jp.xet.baseunits.time.TimePoint;
 import jp.xet.baseunits.timeutil.Clock;
@@ -49,7 +49,7 @@ import jp.xet.baseunits.timeutil.SystemClock;
  * TODO for daisuke
  */
 @Slf4j
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class RedisRateLimitServiceTest {
 	
 	@Mock
