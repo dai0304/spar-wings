@@ -44,7 +44,7 @@ import jp.xet.baseunits.timeutil.SystemClock;
  * TODO for daisuke
  */
 @Slf4j
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class InMemoryRateLimitServiceTest {
 	
 	@Mock
