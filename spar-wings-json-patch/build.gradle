@@ -3,6 +3,6 @@
 description "Support library for Spring MVC to support JSON Patch (RFC 6902) request."
 
 dependencies {
-	compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+	compile "com.fasterxml.jackson.core:jackson-databind"
 	compile "com.github.fge:json-patch:1.9"
 }
