@@ -4,5 +4,5 @@ description "Servlet filter implementation which dump every HTTP request and res
 
 dependencies {
 	compile "javax.servlet:javax.servlet-api:3.1.0"
-	compile "org.springframework:spring-web:$springVersion"
+	compile "org.springframework:spring-web"
 }

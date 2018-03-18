@@ -3,6 +3,6 @@
 description "Essential support library for AWS Java SDK in Spring framework environment."
 
 dependencies {
-	compile "org.springframework:spring-beans:$springVersion"
+	compile "org.springframework:spring-beans"
 	compile "com.amazonaws:aws-java-sdk-core:$awsJavaSdkVersion"
 }

@@ -3,8 +3,8 @@
 description "Support library for Spring framework to use S3 objects as resources."
 
 dependencies {
-	compile "org.springframework:spring-web:$springVersion"
-	compile "org.springframework:spring-webmvc:$springVersion"
+	compile "org.springframework:spring-web"
+	compile "org.springframework:spring-webmvc"
 	compile "com.amazonaws:aws-java-sdk-s3:$awsJavaSdkVersion"
 	compile "javax.servlet:javax.servlet-api:3.1.0"
 }
