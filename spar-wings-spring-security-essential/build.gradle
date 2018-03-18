@@ -3,7 +3,7 @@
 description "Essential support library for Spring security."
 
 dependencies {
-	compile "javax.servlet:javax.servlet-api:3.1.0"
+	compile "javax.servlet:javax.servlet-api"
 	compile "org.springframework.security:spring-security-core:$springSecurityVersion"
 	compile "org.springframework.security:spring-security-config:$springSecurityVersion"
 	compile "org.springframework.security:spring-security-web:$springSecurityVersion"

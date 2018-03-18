@@ -3,6 +3,6 @@
 description "Servlet filter implementation which dump every HTTP request and response."
 
 dependencies {
-	compile "javax.servlet:javax.servlet-api:3.1.0"
+	compile "javax.servlet:javax.servlet-api"
 	compile "org.springframework:spring-web"
 }
