@@ -44,6 +44,7 @@ public class S3AssetsResolverTest {
 	@Mock
 	S3ObjectResourceLoader s3ObjectResourceLoader;
 	
+	
 	@Test
 	public void test_buildS3Uri() {
 		// setup
