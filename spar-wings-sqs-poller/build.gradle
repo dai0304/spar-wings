@@ -5,7 +5,7 @@ description "Support library to poll Amazon SQS queue."
 dependencies {
 	compile "org.springframework:spring-core"
 	compile "org.springframework:spring-context"
-	compile "org.springframework.retry:spring-retry:$springRetryVersion"
+	compile "org.springframework.retry:spring-retry"
 	compile "org.springframework:spring-context"
 	compile "com.amazonaws:aws-java-sdk-sqs:$awsJavaSdkVersion"
 }

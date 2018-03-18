@@ -5,7 +5,7 @@ description "Support library for Spring MVC to support HTTP request rate limiter
 dependencies {
 	compile "javax.servlet:javax.servlet-api"
 	compile "org.springframework:spring-webmvc"
-	compile "org.springframework.security:spring-security-core:$springSecurityVersion"
+	compile "org.springframework.security:spring-security-core"
 	compile "org.springframework.data:spring-data-redis:1.7.11.RELEASE"
 	compile "redis.clients:jedis:2.5.2"
 	compile "jp.xet:baseunits:$baseunitsVersion"
