@@ -291,7 +291,7 @@ public class SqsMessagePollerTest {
 		Message msg1 = createMessage(1);
 		DeleteMessageRequest expectedDmr = createDeleteMessageRequest(1);
 		when(sqs.receiveMessage(any(ReceiveMessageRequest.class))).thenReturn(receiveMessageResultOf(msg1));
-		doThrow(Exception.class).when(messageHandler).accept(any(Message.class));
+		doThrow(RuntimeException.class).when(messageHandler).accept(any(Message.class));
 		// exercise
 		sut.loop();
 		// verify
