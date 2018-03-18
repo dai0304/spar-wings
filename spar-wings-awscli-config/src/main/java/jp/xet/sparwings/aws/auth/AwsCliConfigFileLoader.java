@@ -124,11 +124,9 @@ public class AwsCliConfigFileLoader { // NOPMD - cc
 					AWSCredentialsProvider source = new AWSCredentialsProviderChain(
 							new AwsCliConfigProfileCredentialsProvider(sourceProfile),
 							new ProfileCredentialsProvider(sourceProfile));
-					AWSSecurityTokenService stsClient = AWSSecurityTokenServiceClientBuilder.standard()
-						.withCredentials(source).build();
 					AWSCredentialsProvider cp =
 							new STSAssumeRoleSessionCredentialsProvider.Builder(roleArn, roleSessionName)
-								.withStsClient(stsClient)
+								.withLongLivedCredentialsProvider(source)
 								.build();
 					profilesByName.put(profileName, new AwsCliProfile(profileName, cp));
 				}
