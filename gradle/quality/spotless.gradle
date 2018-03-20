@@ -2,7 +2,7 @@ spotless {
 	java {
 		licenseHeaderFile "${rootProject.projectDir}/config/spotless/spotless.license.java"
 		importOrderFile   "${rootProject.projectDir}/config/spotless/spotless.importorder"
-		eclipseFormatFile "${rootProject.projectDir}/config/spotless/spotless.eclipseformat.xml"
+		eclipse().configFile "${rootProject.projectDir}/config/spotless/spotless.eclipseformat.xml"
 		
 		// Eclipse formatter screws up long literals with underscores inside of annotations (see issue #14)
 		//    @Max(value = 9_999_999 L) // what Eclipse does
@@ -16,8 +16,8 @@ spotless {
 		
 		indentWithTabs()
 		endWithNewline()
-		
-		customReplaceRegex 'Add space before comment asterisk', '^(\\t*)\\*', '$1 *'
+
+		replaceRegex 'Add space before comment asterisk', '^(\\t*)\\*', '$1 *'
 //		customReplaceRegex 'Remove indent before line comment', '^\\t*//', '//'
 	}
 	

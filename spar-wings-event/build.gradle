@@ -3,9 +3,9 @@
 description "Support library to emit event in JSON"
 
 dependencies {
-	compile "org.springframework:spring-context:$springVersion"
+	compile "org.springframework:spring-context"
 	compile "com.amazonaws:aws-java-sdk-sns:$awsJavaSdkVersion"
-	compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+	compile "com.fasterxml.jackson.core:jackson-databind"
 	compile "jp.xet:baseunits:$baseunitsVersion"
 	
 	testCompile 'com.jayway.jsonpath:json-path-assert:2.2.0'

@@ -5,6 +5,6 @@ description "-"
 dependencies {
 	compile 'org.apache.httpcomponents:httpclient:4.5.2'
 	compile "junit:junit:$junitVersion"
-	compile "org.hamcrest:hamcrest-library:$hamcrestVersion"
+	compile "org.hamcrest:hamcrest-library"
 //	compile "com.google.guava:guava:18.0"
 }

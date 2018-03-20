@@ -18,7 +18,7 @@ package jp.xet.sparwings.spring.s3;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import org.springframework.core.io.Resource;
@@ -26,11 +26,11 @@ import org.springframework.core.io.Resource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * Test for {@link S3AssetsResolver}.
- * 
+ *
  * @since 0.12
  * @author fd0
  */

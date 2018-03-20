@@ -72,6 +72,10 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 	private static Chunkable getDefaultChunkRequestFrom(MethodParameter parameter) {
 		ChunkableDefault defaults = parameter.getParameterAnnotation(ChunkableDefault.class);
 		
+		if (defaults == null) {
+			throw new IllegalArgumentException("MethodParameter must have @ChunkableDefault");
+		}
+		
 		int defaultPageSize = defaults.size();
 		if (defaultPageSize == 10) {
 			defaultPageSize = defaults.value();
@@ -183,7 +187,7 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 		// Limit upper bound
 		pageSize = pageSize > maxPageSize ? maxPageSize : pageSize;
 		
-		Direction direction = Direction.fromStringOrNull(directionString);
+		Direction direction = Direction.fromOptionalString(directionString).orElse(null);
 		
 		if (StringUtils.hasText(next)) {
 			return new ChunkRequest(next, PaginationRelation.NEXT, pageSize, direction);
@@ -214,9 +218,12 @@ public class ChunkableHandlerMethodArgumentResolver implements HandlerMethodArgu
 	protected String getParameterNameToUse(String source, MethodParameter parameter) {
 		StringBuilder builder = new StringBuilder(prefix);
 		
-		if (parameter != null && parameter.hasParameterAnnotation(Qualifier.class)) {
-			builder.append(parameter.getParameterAnnotation(Qualifier.class).value());
-			builder.append(qualifierDelimiter);
+		if (parameter != null) {
+			Qualifier qualifier = parameter.getParameterAnnotation(Qualifier.class);
+			if (qualifier != null) {
+				builder.append(qualifier.value());
+				builder.append(qualifierDelimiter);
+			}
 		}
 		
 		return builder.append(source).toString();

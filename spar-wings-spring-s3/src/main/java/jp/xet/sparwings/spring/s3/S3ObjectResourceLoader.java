@@ -91,7 +91,17 @@ public class S3ObjectResourceLoader implements ResourceLoader, InitializingBean 
 		UriComponents components = UriComponentsBuilder.fromUriString(location).build();
 		if (Objects.equals(components.getScheme(), "s3")) {
 			String bucketName = components.getHost();
+			
+			if (bucketName == null) {
+				throw new IllegalArgumentException("location must contain host");
+			}
+			
 			String key = components.getPath();
+			
+			if (key == null) {
+				throw new IllegalArgumentException("location must contain path");
+			}
+			
 			if (key.startsWith("/")) {
 				key = key.substring(1);
 			}

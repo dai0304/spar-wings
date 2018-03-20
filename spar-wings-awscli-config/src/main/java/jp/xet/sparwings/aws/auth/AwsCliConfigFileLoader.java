@@ -38,7 +38,7 @@ import com.amazonaws.auth.profile.internal.AbstractProfilesConfigFileScanner;
 
 /**
  * TODO for daisuke
- * 
+ *
  * @since 0.10
  * @version $Id$
  * @author daisuke
