@@ -69,7 +69,7 @@ public class JsonPatch implements JsonSerializable {
 	 * @throws NullPointerException input is null
 	 */
 	public static JsonPatch fromJson(JsonNode node) throws IOException {
-		return JacksonUtils.getReader().forType(JsonPatch.class)
+		return JacksonUtils.getReader().withType(JsonPatch.class)
 			.readValue(node);
 	}
 	
