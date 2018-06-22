@@ -2,28 +2,25 @@
 
 dependencies {
 	compile "com.google.guava:guava:18.0"
-	compile "jp.xet:baseunits:2.13"
-	compile "javax.servlet:javax.servlet-api:3.1.0"
+	compile "jp.xet:baseunits:$baseunitsVersion"
+	compileOnly "javax.servlet:javax.servlet-api"
 	compile "com.googlecode.htmlcompressor:htmlcompressor:1.5.2"
-	
-	compile "javax.json:javax.json-api:1.0"
-	compile "org.glassfish:javax.json:1.0.4"
 	
 	compile "com.amazonaws:aws-java-sdk-dynamodb:$awsJavaSdkVersion"
 	compile "com.amazonaws:aws-java-sdk-sns:$awsJavaSdkVersion"
 	
-	compile "org.springframework:spring-web:$springVersion"
-	compile "org.springframework:spring-webmvc:$springVersion"
-	compile "org.springframework.security:spring-security-core:$springSecurityVersion"
-	compile "org.springframework.security:spring-security-config:$springSecurityVersion"
-	compile "org.springframework.security:spring-security-web:$springSecurityVersion"
+	compile "org.springframework:spring-web"
+	compile "org.springframework:spring-webmvc"
+	compile "org.springframework.security:spring-security-core"
+	compile "org.springframework.security:spring-security-config"
+	compile "org.springframework.security:spring-security-web"
 	compile "org.springframework.security.oauth:spring-security-oauth2:$springSecurityOauth2Version"
-	compile "org.springframework.retry:spring-retry:$springRetryVersion"
-	compile "org.springframework.data:spring-data-commons:$springDataVersion"
-	compile "org.springframework.data:spring-data-redis:1.7.11.RELEASE"
+	compile "org.springframework.retry:spring-retry"
+	compile "org.springframework.data:spring-data-commons"
+	compile "org.springframework.data:spring-data-redis"
 	compile "redis.clients:jedis:2.5.2"
 	
-	compile "org.springframework.boot:spring-boot-autoconfigure:1.2.5.RELEASE"
+	compile "org.springframework.boot:spring-boot-autoconfigure"
 	
 	compile project(":spar-wings-httpexceptions")
 	compile project(":spar-wings-aws-essential")
