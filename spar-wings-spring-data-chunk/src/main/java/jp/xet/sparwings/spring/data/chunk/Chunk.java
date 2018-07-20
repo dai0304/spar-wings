@@ -15,6 +15,7 @@
  */
 package jp.xet.sparwings.spring.data.chunk;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -28,7 +29,7 @@ import org.springframework.data.domain.Sort.Direction;
  * @since 0.11
  * @author daisuke
  */
-public interface Chunk<T>extends Iterable<T> {
+public interface Chunk<T>extends Collection<T> {
 	
 	/**
 	 * Returns the chunk content as {@link List}.

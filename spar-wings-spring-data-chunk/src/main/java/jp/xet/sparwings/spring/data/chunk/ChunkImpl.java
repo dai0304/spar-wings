@@ -16,6 +16,8 @@
 package jp.xet.sparwings.spring.data.chunk;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -174,6 +176,66 @@ public class ChunkImpl<T> implements Chunk<T> {
 	protected <S> List<S> getConvertedContent(Converter<? super T, ? extends S> converter) {
 		Assert.notNull(converter, "Converter must not be null!");
 		return content.stream().map(converter::convert).collect(Collectors.toList());
+	}
+	
+	@Override
+	public int size() {
+		return content.size();
+	}
+	
+	@Override
+	public boolean isEmpty() {
+		return content.isEmpty();
+	}
+	
+	@Override
+	public boolean contains(Object o) {
+		return content.contains(o);
+	}
+	
+	@Override
+	public Object[] toArray() {
+		return content.toArray();
+	}
+	
+	@Override
+	public <T1> T1[] toArray(T1[] a) {
+		return content.toArray(a);
+	}
+	
+	@Override
+	public boolean add(T t) {
+		return content.add(t);
+	}
+	
+	@Override
+	public boolean remove(Object o) {
+		return content.remove(o);
+	}
+	
+	@Override
+	public boolean containsAll(Collection<?> c) {
+		return content.containsAll(c);
+	}
+	
+	@Override
+	public boolean addAll(Collection<? extends T> c) {
+		return content.addAll(c);
+	}
+	
+	@Override
+	public boolean removeAll(Collection<?> c) {
+		return content.removeAll(c);
+	}
+	
+	@Override
+	public boolean retainAll(Collection<?> c) {
+		return c.retainAll(c);
+	}
+	
+	@Override
+	public void clear() {
+		content.clear();
 	}
 	
 	@Override
