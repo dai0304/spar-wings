@@ -204,12 +204,12 @@ public class ChunkImpl<T> implements Chunk<T> {
 	
 	@Override
 	public boolean add(T t) {
-		return content.add(t);
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public boolean remove(Object o) {
-		return content.remove(o);
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
@@ -219,22 +219,22 @@ public class ChunkImpl<T> implements Chunk<T> {
 	
 	@Override
 	public boolean addAll(Collection<? extends T> c) {
-		return content.addAll(c);
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public boolean removeAll(Collection<?> c) {
-		return content.removeAll(c);
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public boolean retainAll(Collection<?> c) {
-		return c.retainAll(c);
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public void clear() {
-		content.clear();
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
