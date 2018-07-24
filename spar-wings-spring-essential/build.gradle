@@ -3,5 +3,5 @@
 description "Essential support library for Spring framework."
 
 dependencies {
-	compile "org.springframework:spring-beans:$springVersion"
+	compile "org.springframework:spring-beans"
 }

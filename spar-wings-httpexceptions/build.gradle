@@ -3,5 +3,5 @@
 description "Exceptions for Spring MVC framework to return error HTTP statuses."
 
 dependencies {
-	compile "org.springframework:spring-web:$springVersion"
+	compile "org.springframework:spring-web"
 }

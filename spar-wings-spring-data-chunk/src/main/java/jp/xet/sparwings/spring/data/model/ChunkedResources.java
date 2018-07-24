@@ -111,9 +111,9 @@ public class ChunkedResources<T> {
 	 * @since 0.11
 	 */
 	public ChunkedResources(String key, Collection<T> content, ChunkMetadata metadata) {
-		Assert.notNull(key);
-		Assert.notNull(content);
-		Assert.notNull(metadata);
+		Assert.notNull(key, "The key must not be null");
+		Assert.notNull(content, "The content must not be null");
+		Assert.notNull(metadata, "The metadata must not be null");
 		this.content = Collections.singletonMap(key, content);
 		this.metadata = metadata;
 	}

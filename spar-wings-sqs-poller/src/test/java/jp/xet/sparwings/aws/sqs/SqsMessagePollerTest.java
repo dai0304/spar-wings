@@ -17,8 +17,8 @@ package jp.xet.sparwings.aws.sqs;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import com.amazonaws.services.sqs.AmazonSQS;
@@ -291,7 +291,7 @@ public class SqsMessagePollerTest {
 		Message msg1 = createMessage(1);
 		DeleteMessageRequest expectedDmr = createDeleteMessageRequest(1);
 		when(sqs.receiveMessage(any(ReceiveMessageRequest.class))).thenReturn(receiveMessageResultOf(msg1));
-		doThrow(Exception.class).when(messageHandler).accept(any(Message.class));
+		doThrow(RuntimeException.class).when(messageHandler).accept(any(Message.class));
 		// exercise
 		sut.loop();
 		// verify
