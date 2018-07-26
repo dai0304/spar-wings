@@ -7,7 +7,6 @@ buildscript {
 		maven { url "http://repo.spring.io/plugins-release" }
 	}
 	dependencies {
-		classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
 		classpath "com.diffplug.spotless:spotless-plugin-gradle:3.13.0"
 		classpath "de.thetaphi:forbiddenapis:2.2"
 		classpath "de.aaschmid:gradle-cpd-plugin:1.0"
@@ -16,12 +15,13 @@ buildscript {
 }
 
 plugins {
-	id "com.jfrog.bintray" version "1.7.3"
+	id "com.jfrog.bintray" version "1.8.4"
 }
 
 // custom configuration
 apply from: 'gradle/version.gradle'
 apply from: 'gradle/resolveDependencies.gradle'
+bintrayUpload.enabled = false
 
 ext.githubProjectName = rootProject.name // Change if github project name is not the same as the root project's name
 
