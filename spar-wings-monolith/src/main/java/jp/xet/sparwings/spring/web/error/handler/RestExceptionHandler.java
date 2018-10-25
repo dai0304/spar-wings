@@ -232,7 +232,10 @@ public class RestExceptionHandler extends AbstractHandlerExceptionResolver imple
 	
 	private void applyStatusIfPossible(ServletWebRequest webRequest, RestError error) {
 		if (!WebUtils.isIncludeRequest(webRequest.getRequest())) {
-			webRequest.getResponse().setStatus(error.getStatus().value());
+			HttpServletResponse response = webRequest.getResponse();
+			if (response != null) {
+				response.setStatus(error.getStatus().value());
+			}
 		}
 		//TODO support response.sendError ?
 	}
@@ -250,7 +253,13 @@ public class RestExceptionHandler extends AbstractHandlerExceptionResolver imple
 		
 		MediaType.sortByQualityValue(acceptedMediaTypes);
 		
-		try (ServerHttpResponse outputMessage = new ServletServerHttpResponse(webRequest.getResponse())) {
+		HttpServletResponse response = webRequest.getResponse();
+		
+		if (response == null) {
+			return null;
+		}
+		
+		try (ServerHttpResponse outputMessage = new ServletServerHttpResponse(response)) {
 			Class<?> bodyType = body.getClass();
 			List<HttpMessageConverter<?>> converters = allMessageConverters;
 			

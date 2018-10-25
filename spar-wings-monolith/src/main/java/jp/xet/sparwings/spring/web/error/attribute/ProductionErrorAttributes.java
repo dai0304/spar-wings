@@ -19,12 +19,13 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.springframework.boot.autoconfigure.web.DefaultErrorAttributes;
-import org.springframework.boot.autoconfigure.web.ErrorAttributes;
+import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.WebRequest;
 
 /**
  * TODO for daisuke
@@ -48,7 +49,7 @@ public class ProductionErrorAttributes implements ErrorAttributes {
 	
 	
 	@Override
-	public Map<String, Object> getErrorAttributes(RequestAttributes requestAttributes, boolean includeStackTrace) {
+	public Map<String, Object> getErrorAttributes(WebRequest requestAttributes, boolean includeStackTrace) {
 		Map<String, Object> errorAttributes = new LinkedHashMap<>();
 		errorAttributes.put("timestamp", new Date());
 		addStatus(errorAttributes, requestAttributes);
@@ -74,7 +75,7 @@ public class ProductionErrorAttributes implements ErrorAttributes {
 		}
 	}
 	
-	private void addErrorDetails(Map<String, Object> errorAttributes, RequestAttributes requestAttributes) {
+	private void addErrorDetails(Map<String, Object> errorAttributes, WebRequest requestAttributes) {
 		Throwable error = getError(requestAttributes);
 		Object message = getAttribute(requestAttributes, "javax.servlet.error.message");
 		if ((StringUtils.isEmpty(message) == false || errorAttributes.get("message") == null)
@@ -92,7 +93,7 @@ public class ProductionErrorAttributes implements ErrorAttributes {
 	}
 	
 	@Override
-	public Throwable getError(RequestAttributes requestAttributes) {
+	public Throwable getError(WebRequest requestAttributes) {
 		Throwable exception = getAttribute(requestAttributes, ERROR_ATTRIBUTE);
 		if (exception == null) {
 			exception = getAttribute(requestAttributes, "javax.servlet.error.exception");
@@ -104,4 +105,5 @@ public class ProductionErrorAttributes implements ErrorAttributes {
 	private <T> T getAttribute(RequestAttributes requestAttributes, String name) {
 		return (T) requestAttributes.getAttribute(name, RequestAttributes.SCOPE_REQUEST);
 	}
+	
 }
