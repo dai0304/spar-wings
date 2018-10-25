@@ -63,6 +63,9 @@ public class RedisRateLimitService extends AbstractRateLimitService {
 			delta -= secSinceLastUpdate * fillRate;
 		}
 		Long carma = redisTemplate.opsForValue().increment(cKey, delta);
+		if (carma == null) {
+			throw new AssertionError("Unexpected condition. can not do in transaction");
+		}
 		
 		if (carma < consumption) {
 			redisTemplate.opsForValue().set(cKey, consumption);
@@ -104,6 +107,9 @@ public class RedisRateLimitService extends AbstractRateLimitService {
 			delta -= msSinceLastUpdate * fillRate;
 		}
 		Long carma = redisTemplate.opsForValue().increment(cKey, delta);
+		if (carma == null) {
+			throw new AssertionError("Unexpected condition. can not do in transaction");
+		}
 		
 		long expire = carma / fillRate;
 		redisTemplate.expire(tKey, expire, TimeUnit.SECONDS);
