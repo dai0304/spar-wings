@@ -7,7 +7,7 @@ dependencies {
 	compile "org.springframework:spring-webmvc"
 	compile "org.springframework.security:spring-security-core"
 	compile "org.springframework.data:spring-data-redis"
-	compile "redis.clients:jedis:2.5.2"
+	compile "redis.clients:jedis"
 	compile "jp.xet:baseunits:$baseunitsVersion"
 	compile project(":spar-wings-httpexceptions")
 }
