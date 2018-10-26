@@ -8,7 +8,7 @@ if (System.env.BINTRAY_USER && System.env.BINTRAY_KEY) {
 		dryRun = System.env.CIRCLE_BRANCH != "master"
 		publish = true
 		pkg {
-			repo = "maven"
+			repo = "spar-wings"
 			name = project.name
 			desc = project.description
 			websiteUrl = "https://github.com/dai0304/spar-wings"
@@ -16,6 +16,10 @@ if (System.env.BINTRAY_USER && System.env.BINTRAY_KEY) {
 			vcsUrl = "https://github.com/dai0304/spar-wings.git"
 			licenses = ["Apache-2.0"]
 			labels = ["AWS", "Spring framework"]
+			version {
+				name = project.version
+				vcsTag = project.version
+			}
 		}
 	}
 }

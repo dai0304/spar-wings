@@ -40,6 +40,10 @@ class SpringDataChunkableAnnotationUtils {
 	public static void assertChunkableUniqueness(MethodParameter parameter) {
 		Method method = parameter.getMethod();
 		
+		if (method == null) {
+			throw new IllegalArgumentException("MethodParameter must has method");
+		}
+		
 		if (containsMoreThanOneChunkableParameter(method)) {
 			Annotation[][] annotations = method.getParameterAnnotations();
 			assertQualifiersFor(method.getParameterTypes(), annotations);

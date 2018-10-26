@@ -219,6 +219,11 @@ public class DefaultRestErrorResolver implements RestErrorResolver, MessageSourc
 			if (localeResolver != null) {
 				locale = localeResolver.resolveLocale(webRequest.getRequest());
 			}
+			
+			if (locale == null) {
+				locale = Locale.getDefault();
+			}
+			
 			message = messageSource.getMessage(message, null, message, locale);
 		}
 		
