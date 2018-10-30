@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -60,10 +61,9 @@ public class RedisRateLimitServiceTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
-		jedisConnectionFactory.setHostName("localhost");
-		jedisConnectionFactory.setPort(6379);
-		jedisConnectionFactory.setDatabase(5);
+		RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration("localhost", 6379);
+		configuration.setDatabase(5);
+		JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(configuration);
 		jedisConnectionFactory.afterPropertiesSet();
 		RedisTemplate<String, Long> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
